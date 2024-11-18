@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BookTruckWeb.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookTruckWeb.Models;
+namespace BookTruckWeb.connect;
 
 public partial class BookTruckContext : DbContext
 {

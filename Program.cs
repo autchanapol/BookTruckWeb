@@ -1,7 +1,18 @@
+﻿using BookTruckWeb.connect;
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+
+// เชื่อมต่อกับฐานข้อมูลโดยใช้ Connection String
+builder.Services.AddDbContext<BookTruckContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
 var app = builder.Build();
 
