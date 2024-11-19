@@ -12,5 +12,9 @@ namespace BookTruckWeb.Controllers
         {
             return View();
         }
+        public IActionResult CustomersEdit()
+        {
+            return View();
+        }
     }  
 }
