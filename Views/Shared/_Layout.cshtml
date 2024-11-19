@@ -88,10 +88,43 @@
                         </li>
                         <li class="nav-item">
                             <a asp-controller="Kaiadmin" asp-action="Index">
-                                <i class="icon-control-forward"></i>
-                                <p>Request book vehicle</p>
+                                <i class="icon-note"></i>
+                                <p>Vehicle booking request</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a asp-controller="Kaiadmin" asp-action="Index">
+                                <i class="icon-book-open"></i>
+                                <p>Receiving booking</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Kaiadmin" asp-action="Index">
+                                <i class="icon-check"></i>
+                                <p>Verify and approve</p>
+                            </a>
+                        </li>
+                        <li class="nav-section">
+                            <span class="sidebar-mini-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </span>
+                            <h4 class="text-section">Master</h4>
+                        </li>
+                        <li class="nav-item">
+                            <a href="widgets.html">
+                                <i class="bi bi-car-front">
+                                    <img src="~/img/car-front.svg" alt="Car Icon" style="width: 20px; height: 20px; ">
+                                </i>
+                                <p> Truck</p>
+                            </a>
+                        </li>
+
+                        @* <li class="nav-item">
+                        <a href="widgets.html">
+                        <i class="icon-layers"></i>
+                        <p>Truck</p>
+                        </a>
+                        </li>*@
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>
@@ -116,7 +149,7 @@
                                 <p>Widgets</p>
                                 <span class="badge badge-success">4</span>
                             </a>
-                        </li>                     
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -189,7 +222,7 @@
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
-                                    
+
                                     <li>
                                         <div class="user-box">
                                             <div class="avatar-lg">
@@ -211,7 +244,7 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">Logout</a>
                                     </li>
-                                    
+
                                 </ul>
                             </li>
                         </ul>
@@ -306,28 +339,28 @@
         });
     </script>
 
- @*   <script>
-        $(document).on('click', '.load-content', function (e) {
-            e.preventDefault();
-            var url = $(this).data('url');
+    @*   <script>
+    $(document).on('click', '.load-content', function (e) {
+    e.preventDefault();
+    var url = $(this).data('url');
 
-            $.get(url, function (data) {
-                // โหลด View ใหม่
-                var mainContent = $(data).find('main[role="main"]').html();
-                $('main[role="main"]').html(mainContent);
+    $.get(url, function (data) {
+    // โหลด View ใหม่
+    var mainContent = $(data).find('main[role="main"]').html();
+    $('main[role="main"]').html(mainContent);
 
-                // รันสคริปต์ใน demo.js ซ้ำ
-                if (typeof initializeStatisticsChart === 'function') {
-                    initializeStatisticsChart();
-                }
-                if (typeof initializeOtherComponents === 'function') {
-                    initializeOtherComponents();
-                }
+    // รันสคริปต์ใน demo.js ซ้ำ
+    if (typeof initializeStatisticsChart === 'function') {
+    initializeStatisticsChart();
+    }
+    if (typeof initializeOtherComponents === 'function') {
+    initializeOtherComponents();
+    }
 
-                // อัปเดต URL
-                history.pushState(null, '', url);
-            });
-        });
+    // อัปเดต URL
+    history.pushState(null, '', url);
+    });
+    });
     </script>*@
 
     @await RenderSectionAsync("Scripts", required: false)
