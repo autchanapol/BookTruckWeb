@@ -110,34 +110,37 @@
                             </span>
                             <h4 class="text-section">Master</h4>
                         </li>
-                        <li class="nav-item">
-                            
-                                <a asp-controller="Master" asp-action="Customers">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Master" &&
+                      ViewContext.RouteData.Values["action"]?.ToString() == "Customers" ? "active" : "")">
+                            <a asp-controller="Master" asp-action="Customers">
                                 <i class="icon-people"></i>
                                 <p> Custommers</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="widgets.html">
-                                <i class="icon-grid"></i>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Master" &&
+                      ViewContext.RouteData.Values["action"]?.ToString() == "TruckType" ? "active" : "")">
+                            <a asp-controller="Master" asp-action="TruckType">
+                                <i class="icon-grid"> </i>
+                                <p>Truck Type</p>
 
-                                <p> Truck Type</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="widgets.html">
+                        <li class="nav-item  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Master" &&
+                      ViewContext.RouteData.Values["action"]?.ToString() == "LoadType" ? "active" : "")">
+                            <a asp-controller="Master" asp-action="LoadType">
                                 <i class="bi bi-car-front">
                                     <img src="~/img/minecart-loaded.svg" alt="Car Icon" style="width: 20px; height: 20px; ">
                                 </i>
-                                <p> Load Type</p>
+                                <p>Load Type</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="widgets.html">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Master" &&
+                      ViewContext.RouteData.Values["action"]?.ToString() == "Vehicles" ? "active" : "")">
+                            <a asp-controller="Master" asp-action="Vehicles">
                                 <i class="bi bi-car-front">
                                     <img src="~/img/car-front.svg" alt="Car Icon" style="width: 20px; height: 20px; ">
                                 </i>
-                                <p> Truck</p>
+                                <p>Vehicles</p>
                             </a>
                         </li>
 
@@ -172,12 +175,12 @@
                                 <p> Users</p>
                             </a>
                         </li>
-                      @*  <li class="nav-item">
-                            <a href="widgets.html">
-                                <i class="fas fa-desktop"></i>
-                                <p>Widgets</p>
-                                <span class="badge badge-success">4</span>
-                            </a>
+                        @*  <li class="nav-item">
+                        <a href="widgets.html">
+                        <i class="fas fa-desktop"></i>
+                        <p>Widgets</p>
+                        <span class="badge badge-success">4</span>
+                        </a>
                         </li>*@
                     </ul>
                 </div>

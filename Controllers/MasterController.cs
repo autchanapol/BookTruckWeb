@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace BookTruckWeb.Controllers
 {
-    public class MasterController1 : Controller
+    public class MasterController : Controller
     {
         public IActionResult Index()
         {
@@ -12,9 +13,20 @@ namespace BookTruckWeb.Controllers
         {
             return View();
         }
-        public IActionResult CustomersEdit()
+
+        public IActionResult TruckType()
         {
             return View();
         }
+
+        public IActionResult LoadType()
+        {
+            return View();
+        }
+        public IActionResult Vehicles()
+        {
+            return View();
+        }
+
     }  
 }
