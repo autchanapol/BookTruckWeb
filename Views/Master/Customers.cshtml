@@ -6,6 +6,25 @@
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Customers</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Master</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Customers</a>
+            </li>
+        </ul>
     </div>
     <div class="col-md-12">
         <div class="card">
@@ -34,12 +53,12 @@
                                     <span class="fw-mediumbold"> New</span>
                                     <span class="fw-light"> Row </span>
                                 </h5>
-                                <button type="button"
-                                        class="close"
-                                        data-dismiss="modal"
-                                        aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                                @*                                <button type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>*@
                             </div>
                             <div class="modal-body">
                                 <p class="small">
@@ -51,28 +70,85 @@
                                         <div class="col-sm-12">
                                             <div class="form-group form-group-default">
                                                 <label>Name</label>
-                                                <input id="addName"
+                                                <input id="customer_name"
                                                        type="text"
                                                        class="form-control"
-                                                       placeholder="fill name" />
+                                                       placeholder="Enter Customer Name" />
                                             </div>
                                         </div>
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
-                                                <label>Position</label>
-                                                <input id="addPosition"
+                                                <label>Customer ID</label>
+                                                <input id="customer_id"
                                                        type="text"
                                                        class="form-control"
-                                                       placeholder="fill position" />
+                                                       placeholder="Enter Customer ID" />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group form-group-default">
-                                                <label>Office</label>
-                                                <input id="addOffice"
+                                                <label>Company ID</label>
+                                                <input id="company_id"
                                                        type="text"
                                                        class="form-control"
-                                                       placeholder="fill office" />
+                                                       placeholder="Enter Company ID" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group form-group-default">
+                                                <label>Address 1</label>
+                                                <textarea class="form-control" id="address1" rows="1" placeholder="Enter Address 1"></textarea>
+                                            </div>
+                                            <div class="form-group form-group-default">
+                                                <label>Address 2</label>
+                                                <textarea class="form-control" id="address2" rows="1" placeholder="Enter Address 2"></textarea>
+                                            </div>
+                                            <div class="form-group form-group-default">
+                                                <label>Address 3</label>
+                                                <textarea class="form-control" id="address3" rows="1" placeholder="Enter Address 3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label>city ID</label>
+                                                <input id="customer_id"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="Enter City" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label>Company ID</label>
+                                                <input id="state"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="Enter State" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label>Company ID</label>
+                                                <input id="country"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="Enter Country" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label>Company ID</label>
+                                                <input id="pastal_code"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="Enter Pastal Code" />
                                             </div>
                                         </div>
                                     </div>
@@ -99,22 +175,20 @@
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
+                                <th>No.</th>
+                                <th>Customer ID.</th>
+                                <th>Company ID.</th>
+                                <th>Customer Name.</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
+                                <th>No.</th>
+                                <th>Customer ID.</th>
+                                <th>Company ID.</th>
+                                <th>Customer Name.</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -123,24 +197,72 @@
                                 <td>System Architect</td>
                                 <td>Edinburgh</td>
                                 <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-primary btn-lg"
+                                                data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-danger"
+                                                data-original-title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+
                             </tr>
                             <tr>
                                 <td>Garrett Winters</td>
                                 <td>Accountant</td>
                                 <td>Tokyo</td>
                                 <td>63</td>
-                                <td>2011/07/25</td>
-                                <td>$170,750</td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-primary btn-lg"
+                                                data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-danger"
+                                                data-original-title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+
                             </tr>
                             <tr>
                                 <td>Ashton Cox</td>
                                 <td>Junior Technical Author</td>
                                 <td>San Francisco</td>
                                 <td>66</td>
-                                <td>2009/01/12</td>
-                                <td>$86,000</td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-primary btn-lg"
+                                                data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button type="button"
+                                                data-bs-toggle="tooltip"
+                                                title=""
+                                                class="btn btn-link btn-danger"
+                                                data-original-title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+
                             </tr>
                         </tbody>
                     </table>
