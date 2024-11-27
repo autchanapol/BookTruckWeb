@@ -25,9 +25,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); // ใช้สำหรับให้บริการ Static Files เช่น HTML, CSS, JS
 
-app.UseRouting();
+app.UseRouting(); // ใช้งานระบบ Routing
 
 app.UseAuthorization();
 

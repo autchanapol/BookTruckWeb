@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select2 Example</title>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Select2 Dropdown Example</h2>
+        <div class="col-md-6 col-lg-5">
+            <!-- Dropdown -->
+            <select class="form-select form-control" id="carDropdown" style="width: 100%;">
+                <option value="">-- Select a Car --</option>
+            </select>
+        </div>
+    </div>
+
+    <script>
+        // JSON Data
+        const carData = [
+            { id: 1, registration: "2f2434" },
+            { id: 2, registration: "3frt244" },
+            { id: 3, registration: "4gfg555" },
+            { id: 4, registration: "5hhy323" },
+            { id: 5, registration: "6jjj100" },
+            { id: 6, registration: "7kkk999" },
+            { id: 7, registration: "8lll888" },
+            { id: 8, registration: "9mmm777" },
+            { id: 9, registration: "0nnn666" },
+            { id: 10, registration: "1ooo555" }
+        ];
+
+        $(document).ready(function () {
+            // เติมข้อมูลลงใน Dropdown
+            carData.forEach(car => {
+                $('#carDropdown').append(
+                    `<option value="${car.id}">${car.registration}</option>`
+                );
+            });
+
+            // Event เมื่อผู้ใช้เลือกค่า
+            $('#carDropdown').change(function () {
+                const selectedId = $(this).val();
+                const selectedCar = carData.find(car => car.id == selectedId);
+
+                if (selectedCar) {
+                    alert(`Selected Car ID: ${selectedCar.id}, Registration: ${selectedCar.registration}`);
+                } else {
+                    alert('No car selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

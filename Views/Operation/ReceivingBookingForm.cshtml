@@ -1,0 +1,368 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+</head>
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Request Form</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Operation</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Vehicle booking request</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">New Request Form</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">From Requester</div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="form-group">
+                                <label for="defaultSelect">Departments</label>
+                                <select class="form-select form-control"
+                                        id="department_id">
+                                    <option>IT</option>
+                                    <option>QA</option>
+                                    <option>SA</option>
+                                    <option>DEV</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultSelect">Custommer</label>
+                                <select class="form-select form-control"
+                                        id="department_id">
+                                    <option>TOYOTA</option>
+                                    <option>HONDA</option>
+                                    <option>DENSO</option>
+                                    <option>EIEI</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultSelect">Truck Type</label>
+                                <select class="form-select form-control"
+                                        id="department_id">
+                                    <option>1</option>
+                                    <option>2</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultSelect">Temp</label>
+                                <select class="form-select form-control"
+                                        id="department_id">
+                                    <option>1</option>
+                                    <option>2</option>
+                                </select>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       value=""
+                                       id="flexCheckDefault" />
+                                <label class="form-check-label"
+                                       for="flexCheckDefault">
+                                    Backhual
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">Origin</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="email2"
+                                       placeholder="Enter Origin" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">Loading</label>
+                                <input id="Loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Destination</label>
+                                <textarea class="form-control" id="Destination" rows="5"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="col-md-5 col-lg-5">
+
+                            <div class="form-group">
+                                <label for="eta">ETA to store</label>
+                                <input id="eta" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultSelect">Type Load</label>
+                                <select class="form-select form-control"
+                                        id="department_id">
+                                    <option>1</option>
+                                    <option>2</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">QTY</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="qty"
+                                       placeholder="Enter QTY" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">Weight</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="weight"
+                                       placeholder="Enter Weight" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">CBM</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="cbm"
+                                       placeholder="Enter CBM" />
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">ขอเพิ่มเด็กติดรถ</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="man"
+                                       placeholder="Enter number" />
+                            </div>
+                            <div class="form-check d-flex gap-3">
+                                <div class="col">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value=""
+                                           id="flexCheckDefault" />
+                                    <label class="form-check-label"
+                                           for="flexCheckDefault">
+                                        Handjack
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value=""
+                                           id="flexCheckDefault" />
+                                    <label class="form-check-label"
+                                           for="flexCheckDefault">
+                                        Cart
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value=""
+                                           id="flexCheckDefault" />
+                                    <label class="form-check-label"
+                                           for="flexCheckDefault">
+                                        Cardboard
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value=""
+                                           id="flexCheckDefault" />
+                                    <label class="form-check-label"
+                                           for="flexCheckDefault">
+                                        Foam Box
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value=""
+                                           id="flexCheckDefault" />
+                                    <label class="form-check-label"
+                                           for="flexCheckDefault">
+                                        Dry Ice
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Comment</label>
+                                <textarea class="form-control" id="comment" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">For Approving</div>
+                </div>
+                <div class="card-body">
+
+                    <div class="col-md-4 col-lg-5">
+                        <div class="row">
+                            <!-- License -->
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="carDropdown">License</label>
+                                    <select class="form-select form-control" id="carDropdown">
+                                        <option value="">-- Select a Car --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Truck Type -->
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="sub">Truck Type</label>
+                                    <input type="text"
+                                           disabled
+                                           class="form-control"
+                                           id="sub"
+                                           value="CAR"
+                                           placeholder="CAR" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email2">Driver</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="Driver"
+                                   placeholder="Enter Driver" />
+                            <label for="email2">SUB</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="sub"
+                                   placeholder="Enter Sub" />
+                            <label for="email2">Tel</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="tel"
+                                   placeholder="Enter Sub" />
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="email2">ต้นทุนค่าเที่ยวโดยประมาณ</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="cost"
+                                           placeholder="Enter Sub" />
+                                </div>
+                                <div class="col">
+                                    <label for="email2">ระยะไปกลับ KM</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="km"
+                                           placeholder="Enter Sub" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="card-action">
+                <button class="btn btn-success">Approve</button>
+                <button class="btn btn-danger">Reject</button>
+                <button class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+
+        // JSON Data
+        const carData = [
+            { id: 1, registration: "2f2434" },
+            { id: 2, registration: "3frt244" },
+            { id: 3, registration: "4gfg555" },
+            { id: 4, registration: "5hhy323" },
+            { id: 5, registration: "6jjj100" },
+            { id: 6, registration: "7kkk999" },
+            { id: 7, registration: "8lll888" },
+            { id: 8, registration: "9mmm777" },
+            { id: 9, registration: "0nnn666" },
+            { id: 10, registration: "1ooo555" }
+        ];
+
+        $(document).ready(function () {
+            // เติมข้อมูลลงใน Dropdown
+            carData.forEach(car => {
+                $('#carDropdown').append(
+                    `<option value="${car.id}">${car.registration}</option>`
+                );
+            });
+
+            // Event เมื่อผู้ใช้เลือกค่า
+            $('#carDropdown').change(function () {
+                const selectedId = $(this).val();
+                const selectedCar = carData.find(car => car.id == selectedId);
+
+                //if (selectedCar) {
+                //    alert(`Selected Car ID: ${selectedCar.id}, Registration: ${selectedCar.registration}`);
+                //} else {
+                //    alert('No car selected');
+                //}
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = moment().format("YYYY-MM-DDTHH:mm");
+
+            // ตั้งค่าวันที่ปัจจุบันสำหรับ Loading
+            const startDateInput = document.querySelector("#Loading");
+            startDateInput.value = today;
+            startDateInput.setAttribute(
+                "data-date",
+                moment(today, "YYYY-MM-DDTHH:mm").format(startDateInput.getAttribute("data-date-format"))
+            );
+
+            const eta = document.querySelector("#eta");
+            eta.value = today;
+            eta.setAttribute(
+                "data-date",
+                moment(today, "YYYY-MM-DDTHH:mm").format(eta.getAttribute("data-date-format"))
+            );
+
+        });
+
+        // อัปเดต data-date เมื่อเปลี่ยนแปลงค่า
+        $("input[type='date']").on("change", function () {
+            this.setAttribute(
+                "data-date",
+                moment(this.value, "YYYY-MM-DD").format(this.getAttribute("data-date-format"))
+            );
+        }).trigger("change");
+    </script>
+}
