@@ -41,7 +41,7 @@ public partial class BookTruckContext : DbContext
     public virtual DbSet<VehiclesType> VehiclesTypes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("name=ConnectionStrings:DefaultConnection");
+        => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,9 +78,9 @@ public partial class BookTruckContext : DbContext
             entity.Property(e => e.CustomerId)
                 .HasMaxLength(50)
                 .HasColumnName("customer_id");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.CustomerName)
                 .HasMaxLength(255)
-                .HasColumnName("name");
+                .HasColumnName("customer_name");
             entity.Property(e => e.PastalCode)
                 .HasMaxLength(50)
                 .HasColumnName("pastal_code");
@@ -115,6 +115,7 @@ public partial class BookTruckContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("dpn");
             entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Status1).HasColumnName("status1");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate)
                 .HasColumnType("datetime")

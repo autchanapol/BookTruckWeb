@@ -1,11 +1,16 @@
 ﻿using BookTruckWeb.connect;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    // เปิดการตรวจสอบ Anti-Forgery Token อัตโนมัติ
+    //options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 
 
@@ -13,6 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BookTruckContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
 
 var app = builder.Build();
 
@@ -29,7 +35,10 @@ app.UseStaticFiles(); // ใช้สำหรับให้บริการ 
 
 app.UseRouting(); // ใช้งานระบบ Routing
 
+// ใช้ Authentication/Authorization (ถ้ามี)
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

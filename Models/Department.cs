@@ -13,6 +13,8 @@ public partial class Department
 
     public int? Status { get; set; }
 
+    public int? Status1 { get; set; }
+
     public int? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }

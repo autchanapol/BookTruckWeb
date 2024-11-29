@@ -94,17 +94,18 @@
                                 <p>Vehicle booking request</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="Kaiadmin" asp-action="Index">
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Operation" &&
+                      (ViewContext.RouteData.Values["action"]?.ToString() == "ReceivingBooking" ||ViewContext.RouteData.Values["action"]?.ToString() == "ReceivingBookingForm"  )  ? "active" : "")">
+                            <a asp-controller="Operation" asp-action="ReceivingBooking">
                                 <i class="icon-book-open"></i>
                                 <p>Receiving booking</p>
                             </a>
                         </li>
-                    @*    <li class="nav-item">
-                            <a asp-controller="Kaiadmin" asp-action="Index">
-                                <i class="icon-check"></i>
-                                <p>Verify and approve</p>
-                            </a>
+                        @*    <li class="nav-item">
+                        <a asp-controller="Kaiadmin" asp-action="Index">
+                        <i class="icon-check"></i>
+                        <p>Verify and approve</p>
+                        </a>
                         </li>*@
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">

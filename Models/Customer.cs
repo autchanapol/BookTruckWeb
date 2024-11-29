@@ -11,7 +11,7 @@ public partial class Customer
 
     public string? CompanyId { get; set; }
 
-    public string? Name { get; set; }
+    public string? CustomerName { get; set; }
 
     public string? Address1 { get; set; }
 
