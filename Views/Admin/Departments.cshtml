@@ -7,7 +7,10 @@
 @{
     ViewData["Title"] = "Departments";
 }
-
+<head>
+    <!-- Bootstrap CSS -->
+    @* <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> *@
+</head>
 @Html.AntiForgeryToken()
 <div class="page-inner">
     <div class="page-header">
@@ -43,6 +46,7 @@
                         <i class="fa fa-plus"></i>
                         Add Departmens
                     </button>
+                    @* <button class="btn btn-success" onclick="successClick('OK OK OK OK')">Success</button> *@
                 </div>
             </div>
             <div class="row">
@@ -56,15 +60,8 @@
                         <div class="modal-content">
                             <div class="modal-header border-0">
                                 <h5 class="modal-title">
-                                    <span class="fw-mediumbold"> New</span>
-                                    <span class="fw-light"> Row </span>
+                                    <span id="h_name" class="fw-mediumbold">New Row</span>
                                 </h5>
-                                <button type="button"
-                                        class="close"
-                                        data-dismiss="modal"
-                                        aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
                             </div>
                             <div class="modal-body">
                                 <p class="small">
@@ -72,11 +69,21 @@
                                     fill them all
                                 </p>
                                 <form>
+                                    <input type="hidden" id="departmentId" />
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="form-group form-group-default">
                                                 <label>Department Name</label>
-                                                <input id="addName"
+                                                <input id="departmentName"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="fill name" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group form-group-default">
+                                                <label>DPN</label>
+                                                <input id="dpn"
                                                        type="text"
                                                        class="form-control"
                                                        placeholder="fill name" />
@@ -87,13 +94,14 @@
                             </div>
                             <div class="modal-footer border-0">
                                 <button type="button"
-                                        id="addRowButton"
+                                        id="addDepartment"
+                                        onclick="addDepartmentHandler()"
                                         class="btn btn-primary">
-                                    Add
+                                    Save
                                 </button>
                                 <button type="button"
                                         class="btn btn-danger"
-                                        data-dismiss="modal">
+                                        onclick="$('#addRowModal').modal('hide')">
                                     Close
                                 </button>
                             </div>
@@ -108,6 +116,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Department Name</th>
+                                <th>DPN</th>
                                 <th>ACTION</th>
                             </tr>
                         </thead>
@@ -115,54 +124,12 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Department Name</th>
+                                <th>DPN</th>
                                 <th>ACTION</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            @*       <tr>
-                                <td>1</td>
-                                <td>System Architect</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr> *@
-                            @*    <tr>
-                                <td>2</td>
-                                <td>Accountant</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr> *@
+                           @* data from Javascript *@
                         </tbody>
                     </table>
 
@@ -173,16 +140,23 @@
 </div>
 @section Scripts {
     <script>
+    
         // สร้าง Namespace สำหรับเก็บ URL
         var yourApp = yourApp || {};
         yourApp.Urls = yourApp.Urls || {};
-
         // Base URL ของแอป
         yourApp.Urls.baseUrl = '@Url.Content("~")';
-
         // URL สำหรับเรียก API GetDepartments
         yourApp.Urls.editUserUrl = '@Url.Action("GetDepartments", "Departments")';
+
+        var add_dep = add_dep || {};
+        add_dep.Urls = add_dep.Urls || {};
+        add_dep.Urls.baseUrl = '@Url.Content("~")';
+        add_dep.Urls.saveDep = '@Url.Action("InsertDepartments", "Departments")';
+
+
     </script>
+    <script src="~/js/notify.js"></script>
     <script src="~/js/page/department.js"></script>
 
 }

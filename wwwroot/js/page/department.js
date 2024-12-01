@@ -3,59 +3,65 @@
 const basePath = window.location.pathname.split("/").slice(1, 2).join("/"); // ดึง "app"
 
 var url = yourApp.Urls.editUserUrl;
+var url_add = add_dep.Urls.saveDep;
 
-getDepartments();
-function getDepartments() {
-    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
-    console.log("url", url)
+
+//getDepartments();
+function getDepartments(dataTable) {
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+
     $.ajax({
         url: url,
         type: "POST",
         headers: { "RequestVerificationToken": token },
         success: function (data) {
             console.log("data output", data);
-            $("#departmentsTable tbody").empty();
-            if (data !== null && data.length > 0) {
-    
-                //  เพิ่มข้อมูลใหม่ลงใน Table
+
+            // ล้างข้อมูลใน DataTable
+            dataTable.clear();
+
+            if (Array.isArray(data) && data.length > 0) {
+                // เพิ่มข้อมูลใหม่ใน DataTable
                 data.forEach(department => {
-                    $("#departmentsTable tbody").append(
+                    dataTable.row.add([
+                        department.rowId,
+                        department.departmentName,
+                        department.dpn,
                         `
-                        <tr>
-                          <td>${department.rowId}</td>
-                          <td>${department.departmentName}</td>
-                           <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                        </tr>
+                        <div class="form-button-action">
+                            <button type="button" class="btn btn-link btn-primary btn-lg"
+                                    data-bs-toggle="modal" data-bs-target="#addRowModal"
+                                    data-department-id="${department.rowId}"
+                                    data-department-name="${department.departmentName}"
+                                    data-department-dpn="${department.dpn}">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-link btn-danger"
+                                    data-department-id="${department.rowId}">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
                         `
-                    )
+                    ]);
                 });
+
+                // อัปเดต DataTable
+                dataTable.draw();
+            } else {
+                // แสดงข้อความเมื่อไม่มีข้อมูล
+                dataTable.row.add([
+                    "",
+                    "No departments found.",
+                    "",
+                    ""
+                ]).draw();
             }
-            else {
-                // ไม่มีข้อมูล
-                $("#departmentsTable tbody").empty().append(
-                    `<tr><td colspan="2">No departments found.</td></tr>`
-                );
-            }
-         
-          
-           
         },
         error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -63,61 +69,183 @@ function getDepartments() {
     });
 }
 
+// Click from Table Edir Rows
+$("#departmentsTable").on("click", ".btn-primary", function () {
+    const departmentId = $(this).data("department-id");
+    const departmentName = $(this).data("department-name");
+    const dpn = $(this).data("department-dpn");
 
+    // เปลี่ยนชื่อ Modal Title
+    $("#h_name").text("Edit Row");
+
+    // ใส่ค่าลงในฟิลด์ของ Modal
+    $("#dpn").val(dpn);
+
+    // ใส่ค่าลงในฟิลด์ของ Modal
+    $("#departmentName").val(departmentName);
+
+    // คุณสามารถเก็บ ID ไว้ในที่ซ่อน (hidden input) หากต้องการ
+    $("#departmentId").val(departmentId);
+});
+
+
+$("#departmentsTable").on("click", ".btn-danger", function () {
+    // ดึงค่า department.rowId จาก data-id
+    const departmentId = $(this).data("department-id");
+    //alert(`Remove button for department ID ${departmentId} clicked!`);
+    swal({
+        title: "Are you sure?",
+        text: `Remove button for department ID ${departmentId} clicked!`,
+        type: "warning",
+        buttons: {
+            confirm: {
+                text: "Yes, delete it!",
+                className: "btn btn-success",
+            },
+            cancel: {
+                visible: true,
+                className: "btn btn-danger",
+            },
+        },
+    }).then((Delete) => {
+        if (Delete) {
+            swal({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                type: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                    },
+                },
+            });
+        } else {
+            swal.close();
+        }
+    });
+});
 
 
 $(document).ready(function () {
-    $("#departmentsTable").DataTable({});
-
-    $("#multi-filter-select").DataTable({
-        pageLength: 5,
-        initComplete: function () {
-            this.api()
-                .columns()
-                .every(function () {
-                    var column = this;
-                    var select = $(
-                        '<select class="form-select"><option value=""></option></select>'
-                    )
-                        .appendTo($(column.footer()).empty())
-                        .on("change", function () {
-                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                            column
-                                .search(val ? "^" + val + "$" : "", true, false)
-                                .draw();
-                        });
-
-                    column
-                        .data()
-                        .unique()
-                        .sort()
-                        .each(function (d, j) {
-                            select.append(
-                                '<option value="' + d + '">' + d + "</option>"
-                            );
-                        });
-                });
-        },
+    // สร้าง DataTable เพียงครั้งเดียว
+    var dataTable = $("#departmentsTable").DataTable({
+        pageLength: 10,
+        ordering: true,
+        searching: true,
+        lengthChange: true,
     });
 
-    // Add Row
-    //$("#add-row").DataTable({
-    //    pageLength: 5,
-    //});
-
-    //var action =
-    //    '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-    //$("#addRowButton").click(function () {
-    //    $("#add-row")
-    //        .dataTable()
-    //        .fnAddData([
-    //            $("#addName").val(),
-    //            $("#addPosition").val(),
-    //            $("#addOffice").val(),
-    //            action,
-    //        ]);
-    //    $("#addRowModal").modal("hide");
-    //});
+    // โหลดข้อมูลครั้งแรก
+    getDepartments(dataTable);
 });
+
+
+//$(document).ready(function () {
+//    $("#departmentsTable").DataTable({});
+
+//    $("#multi-filter-select").DataTable({
+//        pageLength: 10,
+//        initComplete: function () {
+//            this.api()
+//                .columns()
+//                .every(function () {
+//                    var column = this;
+//                    var select = $(
+//                        '<select class="form-select"><option value=""></option></select>'
+//                    )
+//                        .appendTo($(column.footer()).empty())
+//                        .on("change", function () {
+//                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+//                            column
+//                                .search(val ? "^" + val + "$" : "", true, false)
+//                                .draw();
+//                        });
+
+//                    column
+//                        .data()
+//                        .unique()
+//                        .sort()
+//                        .each(function (d, j) {
+//                            select.append(
+//                                '<option value="' + d + '">' + d + "</option>"
+//                            );
+//                        });
+//                });
+//        },
+//    });
+
+//});
+
+function addDepartmentHandler() {
+    const newDepartmentName = $("#departmentName").val();
+    const newDpn = $("#dpn").val();
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
+    console.log(url_add);
+    if (!newDepartmentName) {
+        swal("Warning!", "Please input Department Name!", {
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    className: "btn btn-warning",
+                },
+            },
+        });
+        return;
+    } else if (!newDpn) {
+        swal("Warning!", "Please input DPN!", {
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    className: "btn btn-warning",
+                },
+            },
+        });
+        return;
+    }
+    else {
+
+        $.ajax({
+            url: url_add,
+            type: "POST",
+            headers: { "RequestVerificationToken": token },
+            contentType:"application/json",
+            data: JSON.stringify({
+                DepartmentName: newDepartmentName,
+                Dpn: newDpn
+            }),
+            success: function (data) {
+                console.log("data output", data);
+                if (data !== null && typeof data == 'object') {
+                    if (data.success) {
+                        successClick(data.message);
+                        getDepartments(dataTable); // โหลดข้อมูลใหม่ในตาราง
+                        $("#addRowModal").modal("hide");
+                    }
+                    else {
+                        console.log("not success:", data.message);
+                    }
+                }
+                else {
+                    // ไม่มีข้อมูล
+                    console.log("Error:", "Error");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+
+      
+    }
+
+};
+
+$('#addRowModal').on('show.bs.modal', function () {
+    // ล้างค่า Input ทุกช่องใน Modal
+    $('#departmentId').val('');
+    $('#departmentName').val('');
+    $('#dpn').val('');
+});
+
+
