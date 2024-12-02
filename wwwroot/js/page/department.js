@@ -4,10 +4,16 @@ const basePath = window.location.pathname.split("/").slice(1, 2).join("/"); // �
 
 var url = yourApp.Urls.editUserUrl;
 var url_add = add_dep.Urls.saveDep;
-
+var url_edit = edit_dep.Urls.saveDep;
+var dataTable; // กำหนดตัวแปร Global
 
 //getDepartments();
-function getDepartments(dataTable) {
+function getDepartments() {
+    if (!dataTable) { // ตรวจสอบว่า dataTable ถูกสร้างแล้ว
+        console.error("dataTable is not initialized.");
+        return;
+    }
+
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
 
@@ -17,7 +23,7 @@ function getDepartments(dataTable) {
     }
 
     $.ajax({
-        url: url,
+        url: url, // URL ของ API
         type: "POST",
         headers: { "RequestVerificationToken": token },
         success: function (data) {
@@ -55,12 +61,7 @@ function getDepartments(dataTable) {
                 dataTable.draw();
             } else {
                 // แสดงข้อความเมื่อไม่มีข้อมูล
-                dataTable.row.add([
-                    "",
-                    "No departments found.",
-                    "",
-                    ""
-                ]).draw();
+                dataTable.row.add(["", "No departments found.", "", ""]).draw();
             }
         },
         error: function (xhr, status, error) {
@@ -68,6 +69,7 @@ function getDepartments(dataTable) {
         }
     });
 }
+
 
 // Click from Table Edir Rows
 $("#departmentsTable").on("click", ".btn-primary", function () {
@@ -92,10 +94,10 @@ $("#departmentsTable").on("click", ".btn-primary", function () {
 $("#departmentsTable").on("click", ".btn-danger", function () {
     // ดึงค่า department.rowId จาก data-id
     const departmentId = $(this).data("department-id");
-    //alert(`Remove button for department ID ${departmentId} clicked!`);
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
     swal({
         title: "Are you sure?",
-        text: `Remove button for department ID ${departmentId} clicked!`,
+        text: `Remove This Row for ID ${departmentId} clicked!`,
         type: "warning",
         buttons: {
             confirm: {
@@ -109,16 +111,48 @@ $("#departmentsTable").on("click", ".btn-danger", function () {
         },
     }).then((Delete) => {
         if (Delete) {
-            swal({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                type: "success",
-                buttons: {
-                    confirm: {
-                        className: "btn btn-success",
-                    },
+
+            $.ajax({
+                url: url_edit,
+                type: "POST",
+                headers: { "RequestVerificationToken": token },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    RowId: departmentId,
+                    Status : 0
+                }),
+                success: function (data) {
+                    console.log("data output", data);
+                    if (data !== null && typeof data == 'object') {
+                        if (data.success) {
+                            //successClick(data.message);
+                            getDepartments();
+                            swal({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                type: "success",
+                                buttons: {
+                                    confirm: {
+                                        className: "btn btn-success",
+                                    },
+                                },
+                            });
+                        }
+                        else {
+                            console.log("not success:", data.message);
+                        }
+                    }
+                    else {
+                        // ไม่มีข้อมูล
+                        console.log("Error:", "Error");
+                    }
                 },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                }
             });
+
+
         } else {
             swal.close();
         }
@@ -127,61 +161,26 @@ $("#departmentsTable").on("click", ".btn-danger", function () {
 
 
 $(document).ready(function () {
-    // สร้าง DataTable เพียงครั้งเดียว
-    var dataTable = $("#departmentsTable").DataTable({
-        pageLength: 10,
-        ordering: true,
-        searching: true,
-        lengthChange: true,
+    // สร้าง DataTable
+    dataTable = $("#departmentsTable").DataTable({
+        pageLength: 10, // จำนวนแถวต่อหน้า
+        ordering: true, // เปิดใช้งานการเรียงลำดับ
+        searching: true, // เปิดใช้งานการค้นหา
+        lengthChange: true, // อนุญาตให้เปลี่ยนจำนวนแถวต่อหน้า
     });
 
-    // โหลดข้อมูลครั้งแรก
-    getDepartments(dataTable);
+    // เรียกโหลดข้อมูลครั้งแรก
+    getDepartments(); // ไม่จำเป็นต้องส่ง dataTable เพราะเป็นตัวแปร Global
 });
 
 
-//$(document).ready(function () {
-//    $("#departmentsTable").DataTable({});
-
-//    $("#multi-filter-select").DataTable({
-//        pageLength: 10,
-//        initComplete: function () {
-//            this.api()
-//                .columns()
-//                .every(function () {
-//                    var column = this;
-//                    var select = $(
-//                        '<select class="form-select"><option value=""></option></select>'
-//                    )
-//                        .appendTo($(column.footer()).empty())
-//                        .on("change", function () {
-//                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-//                            column
-//                                .search(val ? "^" + val + "$" : "", true, false)
-//                                .draw();
-//                        });
-
-//                    column
-//                        .data()
-//                        .unique()
-//                        .sort()
-//                        .each(function (d, j) {
-//                            select.append(
-//                                '<option value="' + d + '">' + d + "</option>"
-//                            );
-//                        });
-//                });
-//        },
-//    });
-
-//});
 
 function addDepartmentHandler() {
     const newDepartmentName = $("#departmentName").val();
     const newDpn = $("#dpn").val();
+    const RowId = $("#departmentId").val();
     const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
-    console.log(url_add);
+    console.log('Row ID', RowId);
     if (!newDepartmentName) {
         swal("Warning!", "Please input Department Name!", {
             icon: "warning",
@@ -204,39 +203,80 @@ function addDepartmentHandler() {
         return;
     }
     else {
-
-        $.ajax({
-            url: url_add,
-            type: "POST",
-            headers: { "RequestVerificationToken": token },
-            contentType:"application/json",
-            data: JSON.stringify({
-                DepartmentName: newDepartmentName,
-                Dpn: newDpn
-            }),
-            success: function (data) {
-                console.log("data output", data);
-                if (data !== null && typeof data == 'object') {
-                    if (data.success) {
-                        successClick(data.message);
-                        getDepartments(dataTable); // โหลดข้อมูลใหม่ในตาราง
-                        $("#addRowModal").modal("hide");
+        if (!RowId) {
+            $.ajax({
+                url: url_add,
+                type: "POST",
+                headers: { "RequestVerificationToken": token },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    DepartmentName: newDepartmentName,
+                    Dpn: newDpn
+                }),
+                success: function (data) {
+                    console.log("data output", data);
+                    if (data !== null && typeof data == 'object') {
+                        if (data.success) {
+                            successClick(data.message);
+                            getDepartments();
+                            $("#addRowModal").modal("hide");
+                        }
+                        else {
+                            console.log("not success:", data.message);
+                        }
                     }
                     else {
-                        console.log("not success:", data.message);
+                        // ไม่มีข้อมูล
+                        console.log("Error:", "Error");
                     }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
                 }
-                else {
-                    // ไม่มีข้อมูล
-                    console.log("Error:", "Error");
+            });
+        }
+        else {
+            console.log(JSON.stringify({
+                RowId: RowId,
+                DepartmentName: newDepartmentName,
+                Dpn: newDpn,
+                Status: 1
+            }));
+            $.ajax({
+                url: url_edit,
+                type: "POST",
+                headers: { "RequestVerificationToken": token },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    RowId: RowId,
+                    DepartmentName: newDepartmentName,
+                    Dpn: newDpn,
+                    Status: 1
+                }),
+                success: function (data) {
+                    console.log("data output", data);
+                    if (data !== null && typeof data == 'object') {
+                        if (data.success) {
+                            successClick(data.message);
+                            getDepartments();
+                            $("#addRowModal").modal("hide");
+                        }
+                        else {
+                            console.log("not success:", data.message);
+                        }
+                    }
+                    else {
+                        // ไม่มีข้อมูล
+                        console.log("Error:", "Error");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });
+            });
+        }
 
-      
+
     }
 
 };

@@ -114,7 +114,7 @@
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>No.</th>
+                                <th>Row ID.</th>
                                 <th>Department Name</th>
                                 <th>DPN</th>
                                 <th>ACTION</th>
@@ -122,7 +122,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>No.</th>
+                                <th>Row ID.</th>
                                 <th>Department Name</th>
                                 <th>DPN</th>
                                 <th>ACTION</th>
@@ -154,6 +154,10 @@
         add_dep.Urls.baseUrl = '@Url.Content("~")';
         add_dep.Urls.saveDep = '@Url.Action("InsertDepartments", "Departments")';
 
+        var edit_dep = edit_dep || {};
+        edit_dep.Urls = edit_dep.Urls || {};
+        edit_dep.Urls.baseUrl = '@Url.Content("~")';
+        edit_dep.Urls.saveDep = '@Url.Action("UpdateDepartments", "Departments")';
 
     </script>
     <script src="~/js/notify.js"></script>

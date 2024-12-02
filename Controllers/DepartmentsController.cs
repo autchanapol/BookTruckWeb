@@ -25,8 +25,10 @@ namespace BookTruckWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetDepartments()
         {
-            var dep = await _context.Departments.ToListAsync(); // ดึงข้อมูลทั้งหมด
-
+            //var dep = await _context.Departments.ToListAsync(); // ดึงข้อมูลทั้งหมด
+            var dep = await _context.Departments
+                .Where(deps => deps.Status == 1)
+                .Select(deps => new { deps.RowId, deps.DepartmentName, deps.Dpn, deps.Status }).ToListAsync();
             return Ok(dep);
         }
 
@@ -34,7 +36,7 @@ namespace BookTruckWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertDepartments([FromBody] Department dep)
         {
-          
+
             if (dep != null)
             {
                 var newDepartments = new Department
@@ -58,7 +60,8 @@ namespace BookTruckWeb.Controllers
                         DepartmentID = newDepartments.RowId
                     });
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
             }
@@ -72,8 +75,56 @@ namespace BookTruckWeb.Controllers
                 };
                 return Ok(returnJson);
             }
+        }
+        [HttpPost("UpdateDepartments")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateDepartments([FromBody] Department dep)
+        {
+            if (dep.RowId == 0)
+            {
+                return BadRequest("Invalid Row Id.");
+            }
+            else
+            {
+                var existingDep = await _context.Departments.FindAsync(dep.RowId);
+                if (existingDep == null)
+                {
+                    return NotFound("Departments not found");
+                }
 
-         
+                if (!string.IsNullOrEmpty(dep.DepartmentName))
+                {
+                    existingDep.DepartmentName = dep.DepartmentName;
+                }
+                if (!string.IsNullOrEmpty(dep.Dpn))
+                {
+                    existingDep.Dpn = dep.Dpn;
+                }
+                if (dep.Status.HasValue)
+                {
+                    existingDep.Status = dep.Status;
+                }
+
+                existingDep.UpdatedDate = DateTime.Now;
+                existingDep.UpdatedBy = 1;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Dep updated successfully.",
+                        DepartmentID = existingDep.RowId
+                    });
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return StatusCode(500, "An error occurred during the update.");
+                }
+
+            }
         }
 
     }
