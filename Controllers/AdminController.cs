@@ -12,7 +12,7 @@ namespace BookTruckWeb.Controllers
         {
             return View();
         }
-        public IActionResult Roles()
+        public IActionResult Role()
         {
             return View();
         }

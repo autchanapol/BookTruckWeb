@@ -22,10 +22,38 @@ namespace BookTruckWeb.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-              return _context.Users != null ? 
-                          View(await _context.Users.ToListAsync()) :
-                          Problem("Entity set 'BookTruckContext.Users'  is null.");
+            return _context.Users != null ?
+                        View(await _context.Users.ToListAsync()) :
+                        Problem("Entity set 'BookTruckContext.Users'  is null.");
         }
+
+
+        [HttpPost("GetUsers")] // ใช้ POST เพื่อรองรับ Anti-Forgery Token
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetUsers()
+        {
+            var userData = await (from users  in _context.Users
+                                  join dep in _context.Departments on users.DepartmentId equals dep.RowId
+                                  join role in _context.Roles on users.RoleId equals role.RowId
+                                  where users.Status == 1 
+                                  select new {
+                                      users.IdEmployee,
+                                      users.RowId,
+                                      users.Username,
+                                      users.FirstName,
+                                      users.LastName,
+                                      users.Email,
+                                      users.Phone,
+                                      users.Status,
+                                      users.DepartmentId,
+                                      users.RoleId,
+                                      dep.DepartmentName,
+                                      role.RoleName
+                                  }).ToListAsync();
+
+            return Ok(userData);
+        }
+
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -56,6 +84,8 @@ namespace BookTruckWeb.Controllers
         {
             return View();
         }
+
+
 
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -156,14 +186,14 @@ namespace BookTruckWeb.Controllers
             {
                 _context.Users.Remove(user);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool UserExists(int id)
         {
-          return (_context.Users?.Any(e => e.RowId == id)).GetValueOrDefault();
+            return (_context.Users?.Any(e => e.RowId == id)).GetValueOrDefault();
         }
     }
 }

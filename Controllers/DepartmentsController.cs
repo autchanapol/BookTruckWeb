@@ -11,6 +11,7 @@ using System.Text.Json;
 
 namespace BookTruckWeb.Controllers
 {
+    [Route("Departments")]
     public class DepartmentsController : Controller
     {
         private readonly BookTruckContext _context;
@@ -30,6 +31,16 @@ namespace BookTruckWeb.Controllers
                 .Where(deps => deps.Status == 1)
                 .Select(deps => new { deps.RowId, deps.DepartmentName, deps.Dpn, deps.Status }).ToListAsync();
             return Ok(dep);
+        }
+
+        [HttpPost("GetRoles")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetRole()
+        {
+            var roles = await (from role in _context.Roles
+                               where role.Status == 1
+                               select new { role.RowId, role.RoleName }).ToArrayAsync();
+            return Ok(roles);
         }
 
         [HttpPost("InsertDepartments")]
