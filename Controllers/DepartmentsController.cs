@@ -67,7 +67,7 @@ namespace BookTruckWeb.Controllers
                     return Ok(new
                     {
                         success = true,
-                        message = "Departments  inserted successfully.",
+                        message = "Departments inserted successfully.",
                         DepartmentID = newDepartments.RowId
                     });
                 }

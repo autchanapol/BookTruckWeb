@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookTruckWeb.Models;
 using BookTruckWeb.connect;
+using BookTruckWeb.fuc;
 
 namespace BookTruckWeb.Controllers
 {
+    [Route("Users")]
     public class UsersController : Controller
     {
         private readonly BookTruckContext _context;
@@ -32,11 +34,13 @@ namespace BookTruckWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetUsers()
         {
-            var userData = await (from users  in _context.Users
+            Function function = new Function();
+            var userData = await (from users in _context.Users
                                   join dep in _context.Departments on users.DepartmentId equals dep.RowId
                                   join role in _context.Roles on users.RoleId equals role.RowId
-                                  where users.Status == 1 
-                                  select new {
+                                  where users.Status == 1
+                                  select new
+                                  {
                                       users.IdEmployee,
                                       users.RowId,
                                       users.Username,
@@ -46,6 +50,7 @@ namespace BookTruckWeb.Controllers
                                       users.Phone,
                                       users.Status,
                                       users.DepartmentId,
+                                      Password = Function.Decrypt(users.Password),
                                       users.RoleId,
                                       dep.DepartmentName,
                                       role.RoleName
@@ -54,146 +59,149 @@ namespace BookTruckWeb.Controllers
             return Ok(userData);
         }
 
-
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.RowId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // GET: Users/Create
-        public IActionResult Profile()
-        {
-            return View();
-        }
-
-
-
-        // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("InsertUsers")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RowId,IdEmployee,Username,Password,FirstName,LastName,Email,DepartmentId,Phone,Image,RoleId,Status,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate")] User user)
+        public async Task<IActionResult> InsertUsers([FromBody] User user)
         {
-            if (ModelState.IsValid)
+            if (user != null)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RowId,IdEmployee,Username,Password,FirstName,LastName,Email,DepartmentId,Phone,Image,RoleId,Status,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate")] User user)
-        {
-            if (id != user.RowId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
+                var userExists = await _context.Users.AnyAsync(us => us.Username == user.Username);
+                if (userExists)
+                {
+                    var returnData = new
+                    {
+                        status = false,
+                        code = -2,
+                        message = "Duplicate name, cannot be added."
+                    };
+                    return Ok(returnData);
+                }
+                var newUser = new User()
+                {
+                    Username = user.Username,
+                    Password = Function.Encrypt(user.Password),
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Status = 1,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = 1,
+                    RoleId = user.RoleId,
+                    DepartmentId = user.DepartmentId,
+                    IdEmployee = user.IdEmployee
+                };
                 try
                 {
-                    _context.Update(user);
+                    _context.Users.Add(newUser);
                     await _context.SaveChangesAsync();
+                    var returnData = new
+                    {
+                        status = true,
+                        code = 0,
+                        message = "User inserted successfully.",
+                        userId = newUser.RowId
+                    };
+                    return Ok(returnData);
+
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+            else
+            {
+                var returnData = new
+                {
+                    status = false,
+                    code = -1,
+                    message = "No Data Input"
+                };
+                return Ok(returnData);
+
+            }
+        }
+
+        [HttpPost("UpdateUsers")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUsers([FromBody] User user)
+        {
+            if (user == null)
+            {
+                return BadRequest("Invalid Data.");
+            }
+            else if (user.RowId == 0)
+            {
+                return BadRequest("Invalid Row Id.");
+            }
+            else
+            {
+                var existingUser = await _context.Users.FirstOrDefaultAsync(users => users.RowId == user.RowId && users.Status == 1);
+                if (existingUser == null)
+                {
+                    return NotFound("User not found or status is not active");
+                }
+                if (!string.IsNullOrEmpty(user.IdEmployee))
+                {
+                    existingUser.IdEmployee = user.IdEmployee;
+                }
+                // do not update username !!
+                //if (!string.IsNullOrEmpty(user.Username)) 
+                //{
+                //    existingUser.Username = user.Username;
+                //}
+                if (!string.IsNullOrEmpty(user.Password))
+                {
+                    existingUser.Password = Function.Encrypt(user.Password);
+                }
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    existingUser.Email = user.Email;
+                }
+                if (!string.IsNullOrEmpty(user.FirstName))
+                {
+                    existingUser.FirstName = user.FirstName;
+                }
+                if (!string.IsNullOrEmpty(user.LastName))
+                {
+                    existingUser.LastName = user.LastName;
+                }
+                if (!string.IsNullOrEmpty(user.Phone))
+                {
+                    existingUser.Phone = user.Phone;
+                }
+                if (user.DepartmentId.HasValue)
+                {
+                    existingUser.DepartmentId = user.DepartmentId.Value;
+                }
+                if (user.RoleId.HasValue)
+                {
+                    existingUser.RoleId = user.RoleId.Value;
+                }
+                if (user.Status.HasValue)
+                {
+                    existingUser.Status = user.Status.Value;
+                }
+                existingUser.UpdatedDate = DateTime.Now;
+                existingUser.UpdatedBy = 1;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        status = true,
+                        message = "Bed updated successfully.",
+                        UserId = existingUser.RowId
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.RowId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return StatusCode(500, "An error occurred during the update.");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.RowId == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'BookTruckContext.Users'  is null.");
-            }
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(int id)
-        {
-            return (_context.Users?.Any(e => e.RowId == id)).GetValueOrDefault();
-        }
     }
 }

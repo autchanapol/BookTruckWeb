@@ -51,8 +51,8 @@
                         <div class="modal-content">
                             <div class="modal-header border-0">
                                 <h5 class="modal-title">
-                                    <span class="fw-mediumbold"> New</span>
-                                    <span class="fw-light"> Row </span>
+                                    <span id="h_name" class="fw-mediumbold"> New User</span>
+                                    @* <span class="fw-light"> Row </span> *@
                                 </h5>
                                 @* <button type="button"
                                 class="close"
@@ -93,16 +93,20 @@
                                                        placeholder="Enter Password" />
                                             </div>
                                             <div class="form-group form-group-default">
-                                                <label>Names</label>
+                                                <label>Frist Names</label>
                                                 <input type="text"
                                                        class="form-control"
                                                        id="firstName"
                                                        placeholder="Enter Frist Name" />
+
+
+                                            </div>
+                                            <div class="form-group form-group-default">
+                                                <label>Last Names</label>
                                                 <input type="text"
                                                        class="form-control"
                                                        id="lastName"
                                                        placeholder="Enter Last Name" />
-
                                             </div>
                                             <div class="form-group form-group-default">
                                                 <label>Email</label>
@@ -138,9 +142,10 @@
                             </div>
                             <div class="modal-footer border-0">
                                 <button type="button"
-                                        id="addRowButton"
+                                        id="addUserHandler"
+                                        onclick="addUserHandler()"
                                         class="btn btn-primary">
-                                    Add
+                                    Save
                                 </button>
                                 <button type="button"
                                         class="btn btn-danger"
@@ -158,6 +163,7 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
+                                <th>Employee ID</th>
                                 <th>Username</th>
                                 <th>Name</th>
                                 <th>Role</th>
@@ -168,6 +174,7 @@
                         <tfoot>
                             <tr>
                                 <th>No.</th>
+                                <th>Employee ID</th>
                                 <th>Username</th>
                                 <th>Name</th>
                                 <th>Role</th>
@@ -212,6 +219,18 @@
         roles.Urls = roles.Urls || {};
         roles.Urls.baseUrl = '@Url.Content("~")';
         roles.Urls.roleUrl = '@Url.Action("GetRoles", "Roles")';
+
+        var addUser = addUser || {};
+        addUser.Urls = addUser.Urls || {};
+        addUser.Urls.baseUrl = '@Url.Content("~")';
+        addUser.Urls.addUrl = '@Url.Action("InsertUsers", "Users")';
+
+        var editUser = editUser || {};
+        editUser.Urls = editUser.Urls || {};
+        editUser.Urls.baseUrl = '@Url.Content("~")';
+        editUser.Urls.editUrl = '@Url.Action("UpdateUsers", "Users")';
+
+        
 
 
     </script>

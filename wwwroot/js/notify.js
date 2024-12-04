@@ -111,11 +111,11 @@ var warningClick = function () {
 	});
 }
 
-var dangerClick = function () {
+var dangerClick = function (message) {
 	$.notify({
 		// options
 		title: '<strong>Danger</strong>',
-		message: "<br>Lorem ipsum Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum.",
+		message: message,
 		icon: 'glyphicon glyphicon-remove-sign',
 	}, {
 		// settings
@@ -132,7 +132,7 @@ var dangerClick = function () {
 		offset: 20,
 		spacing: 10,
 		z_index: 1031,
-		delay: 3300,
+		delay: 1300,
 		timer: 1000,
 		url_target: '_blank',
 		mouse_over: null,
