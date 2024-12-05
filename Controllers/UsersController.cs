@@ -191,7 +191,7 @@ namespace BookTruckWeb.Controllers
                     return Ok(new
                     {
                         status = true,
-                        message = "Bed updated successfully.",
+                        message = "User updated successfully.",
                         UserId = existingUser.RowId
                     });
                 }
