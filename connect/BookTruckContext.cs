@@ -375,10 +375,7 @@ public partial class BookTruckContext : DbContext
             entity.Property(e => e.CubeCapacity)
                 .HasColumnType("numeric(18, 2)")
                 .HasColumnName("cube_capacity");
-            entity.Property(e => e.Status)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("status");
+            entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
             entity.Property(e => e.UpdatedDate)
                 .HasColumnType("datetime")

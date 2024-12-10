@@ -3,6 +3,7 @@
 *@
 @{
 }
+@Html.AntiForgeryToken()
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Load Type</h3>
@@ -50,15 +51,14 @@
                         <div class="modal-content">
                             <div class="modal-header border-0">
                                 <h5 class="modal-title">
-                                    <span class="fw-mediumbold"> New</span>
-                                    <span class="fw-light"> Row </span>
+                                    <span id="h_name" class="fw-mediumbold"> New Row</span>
                                 </h5>
-                                <button type="button"
+                            @*     <button type="button"
                                         class="close"
                                         data-dismiss="modal"
                                         aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
-                                </button>
+                                </button> *@
                             </div>
                             <div class="modal-body">
                                 <p class="small">
@@ -83,12 +83,14 @@
                             <div class="modal-footer border-0">
                                 <button type="button"
                                         id="addRowButton"
-                                        class="btn btn-primary">
-                                    Add
+                                        class="btn btn-primary"
+                                        onclick="saveLoadType()">
+                                    Save
                                 </button>
                                 <button type="button"
                                         class="btn btn-danger"
-                                        data-dismiss="modal">
+                                        data-dismiss="modal"
+                                        onclick="$('#addRowModal').modal('hide')">
                                     Close
                                 </button>
                             </div>
@@ -97,7 +99,7 @@
                 </div>
                 <!--End  Modal -->
                 <div class="table-responsive">
-                    <table id="basic-datatables"
+                    <table id="loadtype-table"
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
@@ -114,50 +116,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Load 2</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Load 2</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+
                         </tbody>
                     </table>
 
@@ -171,7 +130,17 @@
         var getLoad = getLoad || {};
         getLoad.Urls = getLoad.Urls || {};
         getLoad.Urls.baseUrl = '@Url.Content("~")';
-        yourApp.Urls.getLoadUrl = '@Url.Action("GetUsers", "Users")';
+        getLoad.Urls.getLoadUrl = '@Url.Action("GetLoadType", "LoadType")';
+
+        var addLoad = addLoad || {};
+        addLoad.Urls = addLoad.Urls || {};
+        addLoad.Urls.baseUrl = '@Url.Content("~")';
+        addLoad.Urls.addLoadUrl = '@Url.Action("InsertLoadType", "LoadType")';
+
+        var editLoad = editLoad || {};
+        editLoad.Urls = editLoad.Urls || {};
+        editLoad.Urls.baseUrl = '@Url.Content("~")';
+        editLoad.Urls.editLoadUrl = '@Url.Action("UpdateLoadType", "LoadType")';
     </script>
 
     <script src="~/js/notify.js"></script>

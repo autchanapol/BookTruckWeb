@@ -19,7 +19,7 @@ public partial class Vehicle
 
     public decimal? CubeCapacity { get; set; }
 
-    public string? Status { get; set; }
+    public int? Status { get; set; }
 
     public int? CreatedBy { get; set; }
 

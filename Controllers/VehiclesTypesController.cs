@@ -58,7 +58,7 @@ namespace BookTruckWeb.Controllers
                     await _context.SaveChangesAsync();
                     var returnData = new
                     {
-                        status = true,
+                        success = true,
                         code = 0,
                         message = "VehiclesType inserted successfully.",
                         typeloadId = newVehiclesType.RowId
@@ -103,9 +103,9 @@ namespace BookTruckWeb.Controllers
                     await _context.SaveChangesAsync();
                     return Ok(new
                     {
-                        status = true,
+                        success = true,
                         message = "VehiclesType updated successfully.",
-                        UserId = existingVehiclesType.RowId
+                        typeloadId = existingVehiclesType.RowId
                     });
                 }
                 catch (DbUpdateConcurrencyException)

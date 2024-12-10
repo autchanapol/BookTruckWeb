@@ -278,7 +278,6 @@ function addDepartmentHandler() {
 
 
     }
-
 };
 
 $('#addRowModal').on('show.bs.modal', function () {

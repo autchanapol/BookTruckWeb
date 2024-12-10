@@ -48,7 +48,7 @@ namespace BookTruckWeb.Controllers
                 var newLoadType = new TypeLoad()
                 {
                     LoadName = load.LoadName,
-                    Status = load.Status,
+                    Status = 1,
                     CreatedBy = 1,
                     CreatedDate = DateTime.Now
                 };
