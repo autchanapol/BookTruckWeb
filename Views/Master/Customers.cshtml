@@ -51,15 +51,10 @@
                         <div class="modal-content">
                             <div class="modal-header border-0">
                                 <h5 class="modal-title">
-                                    <span class="fw-mediumbold"> New</span>
-                                    <span class="fw-light"> Row </span>
+                                    <span id="hn" class="fw-mediumbold"> New Customer</span>
+                                    @* <span class="fw-light"> Row </span> *@
                                 </h5>
-                                @*                                <button type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>*@
+
                             </div>
                             <div class="modal-body">
                                 <p class="small">
@@ -68,7 +63,7 @@
                                 </p>
                                 <form>
                                     <div class="row">
-                                        <input id="rowid" hidden />
+                                        <input id="rowId" hidden />
                                         <div class="col-sm-12">
                                             <div class="form-group form-group-default">
                                                 <label>Name</label>
@@ -117,7 +112,7 @@
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
                                                 <label>city ID</label>
-                                                <input id="customer_id"
+                                                <input id="city"
                                                        type="text"
                                                        class="form-control"
                                                        placeholder="Enter City" />
@@ -125,7 +120,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group form-group-default">
-                                                <label>Company ID</label>
+                                                <label>State</label>
                                                 <input id="state"
                                                        type="text"
                                                        class="form-control"
@@ -137,7 +132,7 @@
                                     <div class="row">
                                         <div class="col-md-6 pe-0">
                                             <div class="form-group form-group-default">
-                                                <label>Company ID</label>
+                                                <label>Country</label>
                                                 <input id="country"
                                                        type="text"
                                                        class="form-control"
@@ -146,7 +141,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group form-group-default">
-                                                <label>Company ID</label>
+                                                <label>Pastal Code</label>
                                                 <input id="pastal_code"
                                                        type="text"
                                                        class="form-control"
@@ -159,12 +154,14 @@
                             <div class="modal-footer border-0">
                                 <button type="button"
                                         id="addRowButton"
-                                        class="btn btn-primary">
-                                    Add
+                                        class="btn btn-primary"
+                                        onclick="saveCustomers()">
+                                    Save
                                 </button>
                                 <button type="button"
                                         class="btn btn-danger"
-                                        data-dismiss="modal">
+                                        data-dismiss="modal"
+                                        onclick="$('#addRowModal').modal('hide')">
                                     Close
                                 </button>
                             </div>
@@ -173,7 +170,7 @@
                 </div>
                 <!--End  Modal -->
                 <div class="table-responsive">
-                    <table id="basic-datatables"
+                    <table id="customers-table"
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
@@ -194,10 +191,8 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                          
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
@@ -205,11 +200,17 @@
 </div>
 @section Scripts {
     <script>
-        var getCustomers = getCustomers || {};
-        getCustomers.Urls = getCustomers.Urls || {};
-        getCustomers.Urls.baseUrl = '@Url.Content("~")';
-        getCustomers.Urls.getCustomersUrl = '@Url.Action("GetCustomers", "Customers")';
+
+        window.AppUrls = {
+            getCustomersUrl: '@Url.Action("GetCustomers", "Customers")',
+            getCustomersRowUrl: '@Url.Action("GetCustomersRowId", "Customers")',
+            addCustomersUrl: '@Url.Action("AddCustomers", "Customers")',
+            editCustomersUrl: '@Url.Action("EditCustomers", "Customers")',
+            baseUrl: '@Url.Content("~")'
+        };
+        
     </script>
+
     <script src="~/js/notify.js"></script>
     <script src="~/js/page/customers.js"></script>
 }

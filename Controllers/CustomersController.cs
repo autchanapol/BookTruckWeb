@@ -20,7 +20,7 @@ namespace BookTruckWeb.Controllers
             _context = context;
         }
 
-        [HttpGet("GetCustomers")]
+        [HttpPost("GetCustomers")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetCustomers()
         {
@@ -30,6 +30,7 @@ namespace BookTruckWeb.Controllers
                                   {
                                       customers.RowId,
                                       customers.CustomerId,
+                                      customers.CompanyId,
                                       customers.CustomerName,
                                       customers.Status,
                                       customers.Active
@@ -37,12 +38,18 @@ namespace BookTruckWeb.Controllers
             return Ok(customer);
         }
 
-        [HttpGet("GetCustomersRowId")]
+        [HttpPost("GetCustomersRowId")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GetCustomersRowId(int RowId)
+        public async Task<IActionResult> GetCustomersRowId([FromBody] Customer request)
         {
+            // ตรวจสอบค่า RowId
+            if (request.RowId <= 0)
+            {
+                return BadRequest(new { message = "Invalid RowId" });
+            }
+            // ดึงข้อมูลจากฐานข้อมูล
             var customer = await (from customers in _context.Customers
-                                  where customers.Status == 1 && customers.RowId == RowId
+                                  where customers.Status == 1 && customers.RowId == request.RowId
                                   select new
                                   {
                                       customers.RowId,
@@ -59,10 +66,18 @@ namespace BookTruckWeb.Controllers
                                       customers.Country,
                                       customers.PastalCode,
                                       customers.Remarks
+                                  }).FirstOrDefaultAsync();
 
-                                  }).ToListAsync();
+            // ตรวจสอบว่าพบข้อมูลหรือไม่
+            if (customer == null)
+            {
+                return NotFound(new { message = "Customer not found." });
+            }
+
+            // ส่งข้อมูลกลับในรูปแบบ JSON
             return Ok(customer);
         }
+
 
         [HttpPost("AddCustomers")]
         [ValidateAntiForgeryToken]
