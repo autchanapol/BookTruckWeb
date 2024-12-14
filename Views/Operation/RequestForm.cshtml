@@ -3,6 +3,7 @@
 *@
 @{
 }
+@Html.AntiForgeryToken()
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Request Form</h3>
@@ -45,43 +46,35 @@
                                 <label for="defaultSelect">Departments</label>
                                 <select class="form-select form-control"
                                         id="department_id">
-                                    <option>IT</option>
-                                    <option>QA</option>
-                                    <option>SA</option>
-                                    <option>DEV</option>
+                                    <option value="">-- Select an option --</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Custommer</label>
                                 <select class="form-select form-control"
-                                        id="department_id">
-                                    <option>TOYOTA</option>
-                                    <option>HONDA</option>
-                                    <option>DENSO</option>
-                                    <option>EIEI</option>
+                                        id="customers_id">
+                                    <option value="">-- Select an option --</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Truck Type</label>
                                 <select class="form-select form-control"
-                                        id="department_id">
-                                    <option>1</option>
-                                    <option>2</option>
+                                        id="trucktype_id">
+                                    <option value="">-- Select an option --</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Temp</label>
                                 <select class="form-select form-control"
-                                        id="department_id">
-                                    <option>1</option>
-                                    <option>2</option>
+                                        id="temp_id">
+                                    <option value="">-- Select an option --</option>
                                 </select>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
                                        value=""
-                                       id="flexCheckDefault" />
+                                       id="backhual" />
                                 <label class="form-check-label"
                                        for="flexCheckDefault">
                                     Backhual
@@ -91,31 +84,30 @@
                                 <label for="email2">Origin</label>
                                 <input type="text"
                                        class="form-control"
-                                       id="email2"
+                                       id="origin"
                                        placeholder="Enter Origin" />
                             </div>
                             <div class="form-group">
-                                <label for="email2">Loading</label>
-                                <input id="Loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
+                                <label for="loading">Loading</label>
+                                <input id="loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
                             <div class="form-group">
                                 <label for="comment">Destination</label>
-                                <textarea class="form-control" id="Destination" rows="5"></textarea>
+                                <textarea class="form-control" id="destination" rows="5"></textarea>
                             </div>
-
-                        </div>
-                        <div class="col-md-5 col-lg-5">
-
                             <div class="form-group">
                                 <label for="eta">ETA to store</label>
                                 <input id="eta" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
+                        </div>
+                        <div class="col-md-5 col-lg-5">
+
+
                             <div class="form-group">
                                 <label for="defaultSelect">Type Load</label>
                                 <select class="form-select form-control"
-                                        id="department_id">
-                                    <option>1</option>
-                                    <option>2</option>
+                                        id="typeload_id">
+                                    <option value="">-- Select an option --</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -151,7 +143,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
-                                           id="flexCheckDefault" />
+                                           id="handjack" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
                                         Handjack
@@ -161,7 +153,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
-                                           id="flexCheckDefault" />
+                                           id="cart" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
                                         Cart
@@ -171,7 +163,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
-                                           id="flexCheckDefault" />
+                                           id="cardboard" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
                                         Cardboard
@@ -181,7 +173,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
-                                           id="flexCheckDefault" />
+                                           id="foam_box" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
                                         Foam Box
@@ -191,24 +183,35 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
-                                           id="flexCheckDefault" />
+                                           id="dry_ice" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
                                         Dry Ice
                                     </label>
                                 </div>
-                               
+
                             </div>
-                            <div class="form-group">
-                                <label for="comment">Comment</label>
-                                <textarea class="form-control" id="comment" rows="5"></textarea>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="comment">Comment</label>
+                                    <textarea class="form-control" id="comment" rows="5"></textarea>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="defaultSelect">Assign To</label>
+                                    <select class="form-select form-control"
+                                            id="assign">
+                                        <option value="">-- Select an option --</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
                 <div class="card-action">
-                    <button class="btn btn-success">Submit</button>
+                    <button onclick="saveRequestFrom()" class="btn btn-success">Submit</button>
                     <button class="btn btn-danger">Cancel</button>
                 </div>
             </div>
@@ -218,11 +221,24 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
+
+          window.AppUrls = {
+            getDepartmentsUrl: '@Url.Action("GetDepartments", "Departments")',
+            getCustomersUrl: '@Url.Action("GetCustomers", "Customers")',
+            getVehiclesTypesUrl: '@Url.Action("GetVehiclesTypes", "VehiclesTypes")',
+            getGetLoadTypeUrl: '@Url.Action("GetLoadType", "LoadType")',
+            getTempsUrl: '@Url.Action("GetTemps", "Tamps")',
+            addRequestUrl: '@Url.Action("AddTicketsFrmRequester", "Tickets")',
+            getAssignUrl: '@Url.Action("GetAssign", "Users")',
+            baseUrl: '@Url.Content("~")'
+        };
+    </script>
+    <script>
         document.addEventListener("DOMContentLoaded", function () {
             const today = moment().format("YYYY-MM-DDTHH:mm");
 
             // ตั้งค่าวันที่ปัจจุบันสำหรับ Loading
-            const startDateInput = document.querySelector("#Loading");
+            const startDateInput = document.querySelector("#loading");
             startDateInput.value = today;
             startDateInput.setAttribute(
                 "data-date",
@@ -246,4 +262,8 @@
             );
         }).trigger("change");
     </script>
+
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/page/requestform.js"></script>
+}
 }

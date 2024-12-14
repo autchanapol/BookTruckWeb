@@ -3,6 +3,11 @@
 *@
 @{
 }
+@Html.AntiForgeryToken()
+<head>
+    <!-- ลิงก์ไปยัง CDN ของ Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Vehicle booking request</h3>
@@ -27,6 +32,7 @@
         </ul>
     </div>
     <div class="col-md-12">
+
         <div class="row-cols-3 mb-2">
             <div class="d-flex align-items-center gap-2 ">
                 <lable>Start Date</lable>
@@ -38,7 +44,7 @@
                     <input id="end_date" class="form-control" type="date" data-date="" data-date-format="DD MMMM YYYY" value="">
                 </div>
                 <div class=".col-2">
-                    <button class="btn btn-primary btn-round ms-auto">
+                    <button onclick="getRequestData()" class="btn btn-primary btn-round ms-auto">
                         <i></i> Fine
                     </button>
                 </div>
@@ -59,6 +65,7 @@
                     </a>
                 </div>
             </div>
+
             <div class="row">
                 <!-- Modal -->
                 <div class="modal fade"
@@ -121,24 +128,33 @@
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th>Row Id.</th>
+                                <th>Ticket No.</th>
+                                <th>Customer</th>
+                                <th>Loading Date</th>
+                                <th>Status</th>
+                                <th>Assign To</th>
+                                <th>Active</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th>Row Id.</th>
+                                <th>Ticket No.</th>
+                                <th>Customer</th>
+                                <th>Loading Date</th>
+                                <th>Status</th>
+                                <th>Assign To</th>
+                                <th>Active</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr>
+                            @* <tr>
                                 <td>1</td>
                                 <td>Load 2</td>
                                 <td>
                                     <div class="form-button-action">
+                                   
                                         <button type="button"
                                                 data-bs-toggle="tooltip"
                                                 title=""
@@ -151,33 +167,13 @@
                                                 title=""
                                                 class="btn btn-link btn-danger"
                                                 data-original-title="Remove">
+                                          
                                             <i class="fa fa-times"></i>
                                         </button>
                                     </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Load 2</td>
-                                <td>
-                                    <div class="form-button-action">
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-primary btn-lg"
-                                                data-original-title="Edit Task">
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <button type="button"
-                                                data-bs-toggle="tooltip"
-                                                title=""
-                                                class="btn btn-link btn-danger"
-                                                data-original-title="Remove">
-                                            <i class="fa fa-times"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            </tr> *@
+                            
                         </tbody>
                     </table>
 
@@ -187,6 +183,13 @@
     </div>
 </div>
 @section Scripts {
+    <script>
+        window.AppUrls = {
+            getRequestDataUrl: '@Url.Action("GetTicketsFrmRequester", "Tickets")',
+            baseUrl: '@Url.Content("~")'
+        }
+
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -217,60 +220,8 @@
             );
         }).trigger("change");
 
-        $(document).ready(function () {
-            $("#basic-datatables").DataTable({});
-
-            $("#multi-filter-select").DataTable({
-                pageLength: 5,
-                initComplete: function () {
-                    this.api()
-                        .columns()
-                        .every(function () {
-                            var column = this;
-                            var select = $(
-                                '<select class="form-select"><option value=""></option></select>'
-                            )
-                                .appendTo($(column.footer()).empty())
-                                .on("change", function () {
-                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                    column
-                                        .search(val ? "^" + val + "$" : "", true, false)
-                                        .draw();
-                                });
-
-                            column
-                                .data()
-                                .unique()
-                                .sort()
-                                .each(function (d, j) {
-                                    select.append(
-                                        '<option value="' + d + '">' + d + "</option>"
-                                    );
-                                });
-                        });
-                },
-            });
-
-            // Add Row
-            //$("#add-row").DataTable({
-            //    pageLength: 5,
-            //});
-
-            //var action =
-            //    '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-            //$("#addRowButton").click(function () {
-            //    $("#add-row")
-            //        .dataTable()
-            //        .fnAddData([
-            //            $("#addName").val(),
-            //            $("#addPosition").val(),
-            //            $("#addOffice").val(),
-            //            action,
-            //        ]);
-            //    $("#addRowModal").modal("hide");
-            //});
-        });
     </script>
+
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/page/bookingReeuest.js"></script>
 }

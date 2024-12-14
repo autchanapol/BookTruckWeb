@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BookTruckWeb.Models;
 
-public partial class Tamp
+public partial class Temp
 {
     public int RowId { get; set; }
 

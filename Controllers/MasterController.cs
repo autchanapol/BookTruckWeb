@@ -28,5 +28,10 @@ namespace BookTruckWeb.Controllers
             return View();
         }
 
+        public IActionResult Temp()
+        {
+            return View();
+        }
+
     }  
 }

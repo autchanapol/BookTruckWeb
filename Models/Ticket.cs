@@ -27,6 +27,8 @@ public partial class Ticket
 
     public int? TypeloadId { get; set; }
 
+    public int? TempId { get; set; }
+
     public decimal? Qty { get; set; }
 
     public decimal? Weight { get; set; }

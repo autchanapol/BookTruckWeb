@@ -51,14 +51,14 @@
                              class="navbar-brand"
                              height="20" />
                     </a>
-                    <div class="nav-toggle">
+                    <diวv class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
                             <i class="gg-menu-right"></i>
                         </button>
                         <button class="btn btn-toggle sidenav-toggler">
                             <i class="gg-menu-left"></i>
                         </button>
-                    </div>
+                    </diวv>
                     <button class="topbar-toggler more">
                         <i class="gg-more-vertical-alt"></i>
                     </button>
@@ -125,6 +125,14 @@
                             <a asp-controller="Master" asp-action="TruckType">
                                 <i class="icon-grid"> </i>
                                 <p>Truck Type</p>
+
+                            </a>
+                        </li>
+                        <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Master" &&
+                      ViewContext.RouteData.Values["action"]?.ToString() == "Temp" ? "active" : "")">
+                            <a asp-controller="Master" asp-action="Temp">
+                                <i class="icon-grid"> </i>
+                                <p>Temp</p>
 
                             </a>
                         </li>

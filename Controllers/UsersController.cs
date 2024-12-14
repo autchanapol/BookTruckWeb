@@ -59,6 +59,20 @@ namespace BookTruckWeb.Controllers
             return Ok(userData);
         }
 
+        [HttpPost("GetAssign")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetAssign([FromBody] User user)
+        {
+            var userData = await (from users in _context.Users
+                                  where users.Status == 1 && users.RowId != user.RowId
+                                  select new
+                                  {
+                                      users.RowId,
+                                      Name = users.FirstName + " " + users.LastName
+                                  }).ToListAsync();
+            return Ok(userData);
+        }
+
         [HttpPost("InsertUsers")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> InsertUsers([FromBody] User user)

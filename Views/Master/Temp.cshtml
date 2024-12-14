@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@Html.AntiForgeryToken()
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Truck Type</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Master</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Temp</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title">Temp Information</h4>
+                    <button class="btn btn-primary btn-round ms-auto"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addRowModal">
+                        <i class="fa fa-plus"></i>
+                        Add Temp
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Modal -->
+                <div class="modal fade"
+                     id="addRowModal"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">
+                                    <span id="h_name" class="fw-mediumbold"> New Row</span>
+                                    @* <span class="fw-light"> Row </span> *@
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <p class="small">
+                                    Create a new row using this form, make sure you
+                                    fill them all
+                                </p>
+                                <form>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input id="row_id" hidden />
+                                            <div class="form-group form-group-default">
+                                                <label>Name</label>
+                                                <input id="temp_name"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="Input Temp Name" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button"
+                                        id="addHandler"
+                                        class="btn btn-primary"
+                                        onclick="addHandler()">
+                                    SAVE
+                                </button>
+                                <button type="button"
+                                        class="btn btn-danger"
+                                        onclick="$('#addRowModal').modal('hide')">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End  Modal -->
+                <div class="table-responsive">
+                    <table id="trucktype-table"
+                           class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Row No.</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Row No.</th>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @* data from Javascript *@
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        var yourApp = yourApp || {};
+        yourApp.Urls = yourApp.Urls || {};
+        yourApp.Urls.baseUrl = '@Url.Content("~")';
+        yourApp.Urls.editUserUrl = '@Url.Action("GetTemps", "Tamps")';
+
+        var addTrucType = addTrucType || {};
+        addTrucType.Urls = addTrucType.Urls || {};
+        addTrucType.Urls.baseUrl = '@Url.Content("~")';
+        addTrucType.Urls.addUrl = '@Url.Action("AddTemps", "Tamps")';
+
+        var editTrucType = editTrucType || {};
+        editTrucType.Urls = editTrucType.Urls || {};
+        editTrucType.Urls.baseUrl = '@Url.Content("~")';
+        editTrucType.Urls.editUrl = '@Url.Action("EditTemps", "Tamps")';
+    </script>
+
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/page/temps.js"></script>
+}

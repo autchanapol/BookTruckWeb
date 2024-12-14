@@ -16,6 +16,8 @@ public partial class BookTruckContext : DbContext
     {
     }
 
+    public virtual DbSet<CountJob> CountJobs { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Department> Departments { get; set; }
@@ -28,7 +30,7 @@ public partial class BookTruckContext : DbContext
 
     public virtual DbSet<RoleMenu> RoleMenus { get; set; }
 
-    public virtual DbSet<Tamp> Tamps { get; set; }
+    public virtual DbSet<Temp> Temps { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
 
@@ -40,11 +42,38 @@ public partial class BookTruckContext : DbContext
 
     public virtual DbSet<VehiclesType> VehiclesTypes { get; set; }
 
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CountJob>(entity =>
+        {
+            entity.HasKey(e => e.RowId);
+
+            entity.ToTable("count_job");
+
+            entity.Property(e => e.RowId).HasColumnName("row_id");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("created_date");
+            entity.Property(e => e.Job)
+                .HasMaxLength(50)
+                .HasColumnName("job");
+            entity.Property(e => e.LastUpdate)
+                .HasColumnType("datetime")
+                .HasColumnName("last_update");
+            entity.Property(e => e.Lastnumber).HasColumnName("lastnumber");
+            entity.Property(e => e.Month)
+                .HasMaxLength(2)
+                .HasColumnName("month");
+            entity.Property(e => e.Year)
+                .HasMaxLength(4)
+                .HasColumnName("year");
+        });
+
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.RowId);
@@ -190,11 +219,11 @@ public partial class BookTruckContext : DbContext
             entity.Property(e => e.Status).HasColumnName("status");
         });
 
-        modelBuilder.Entity<Tamp>(entity =>
+        modelBuilder.Entity<Temp>(entity =>
         {
-            entity.HasKey(e => e.RowId);
+            entity.HasKey(e => e.RowId).HasName("PK_tamps");
 
-            entity.ToTable("tamps");
+            entity.ToTable("temps");
 
             entity.Property(e => e.RowId).HasColumnName("row_id");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
@@ -286,6 +315,7 @@ public partial class BookTruckContext : DbContext
             entity.Property(e => e.Tel)
                 .HasMaxLength(50)
                 .HasColumnName("tel");
+            entity.Property(e => e.TempId).HasColumnName("temp_id");
             entity.Property(e => e.TravelCosts)
                 .HasColumnType("numeric(18, 2)")
                 .HasColumnName("travel_costs");
