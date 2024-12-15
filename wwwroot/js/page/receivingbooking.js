@@ -1,7 +1,6 @@
 ﻿const url_getRequest = window.AppUrls.getRequestDataUrl;
 var dataTable; // กำหนดตัวแปร Global
 
-
 $(document).ready(function () {
     // สร้าง DataTable
     dataTable = $("#basic-datatables").DataTable({
@@ -12,7 +11,7 @@ $(document).ready(function () {
     });
 
     getRequestData();
-  
+
 });
 
 
@@ -28,7 +27,7 @@ function getRequestData() {
     }
     console.log('start_date', start_date);
     console.log('end_date', end_date);
-    console.log('Json',  JSON.stringify({
+    console.log('Json', JSON.stringify({
         startData: moment(start_date).format("YYYY-MM-DDTHH:mm:ss"),
         endData: moment(end_date).format("YYYY-MM-DDTHH:mm:ss")
     }));
@@ -48,7 +47,7 @@ function getRequestData() {
             dataTable.clear();
 
             // กำหนด Class สำหรับ statusName ตามเงื่อนไข
-           
+
 
             if (Array.isArray(data) && data.length > 0) {
                 // เพิ่มข้อมูลใหม่ใน DataTable
@@ -79,6 +78,7 @@ function getRequestData() {
                         ticket.customerName,
                         ticket.createdDate,
                         `<span class="${statusClass}">${ticket.statusName}</span>`, // เพิ่ม Class สำหรับสี
+                        ticket.requestFrom,
                         ticket.assignName,
                         `
                         <div class="form-button-action">
@@ -87,26 +87,25 @@ function getRequestData() {
                                     data-temps-id="${ticket.rowId}">
                                 <i class="fa fa-edit"></i>
                             </button>
-                            
+                            <button type="button" class="btn btn-link btn-danger"
+                             data-temps-id="${ticket.rowId}">
+                             <i class="fa fa-times"></i>
+                                </button>
                         </div>
                         `
                     ]);
                 });
-                //<button type="button" class="btn btn-link btn-danger"
-                //    data-temps-id="${temps.rowId}">
-                //    <i class="fa fa-times"></i>
-                //</button>
+                
                 // อัปเดต DataTable
                 dataTable.draw();
             } else {
                 // แสดงข้อความเมื่อไม่มีข้อมูล
-                dataTable.row.add(["","","", "No Requests found.", "", "",""]).draw();
+                dataTable.row.add(["", "", "", "No Requests found.", "", "", "",""]).draw();
             }
-           
+
         },
         error: function (xhr, status, error) {
             console.error("Error:", error);
         }
     });
 }
-

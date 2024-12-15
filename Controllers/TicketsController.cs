@@ -29,12 +29,52 @@ namespace BookTruckWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetTicketsFrmRequester([FromBody] DateRangeDto dateRange)
         {
-            // Debug ค่าที่ได้รับ
-            //if (dateRange == null || dateRange.StartData == default || dateRange.EndData == default)
-            //{
-            //    return BadRequest("Invalid date values.");
-            //}
+            var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+            var ticket = await (from tickets in _context.Tickets
+                                join vechicle in _context.Vehicles on tickets.VehiclesId equals vechicle.RowId into vehicleGroup
+                                from vechicle in vehicleGroup.DefaultIfEmpty()
+                                join vechicleType in _context.VehiclesTypes on vechicle.VehicleType equals vechicleType.RowId into vehicleTypeGroup
+                                from vehicleType in vehicleTypeGroup.DefaultIfEmpty()
+                                join loadType in _context.TypeLoads on tickets.TypeloadId equals loadType.RowId into loadTypeGroup
+                                from loadType in loadTypeGroup.DefaultIfEmpty()
+                                join department in _context.Departments on tickets.DepartmentId equals department.RowId
+                                join customers in _context.Customers on tickets.CustomerId equals customers.RowId
+                                where tickets.Status == 1 && tickets.CreatedDate.Value.Date >= dateRange.StartData && tickets.CreatedDate.Value.Date <= dateRange.EndData
+                                && tickets.CreatedBy == rowId
+                                select new
+                                {
+                                    tickets.RowId,
+                                    tickets.JobNo,
+                                    tickets.DepartmentId,
+                                    DepartmentName = department.DepartmentName,
+                                    tickets.CustomerId,
+                                    CustomerName = customers.CustomerName,
+                                    tickets.Loading,
+                                    tickets.StatusOperation,
+                                    StatusName = tickets.StatusOperation == 1 ? "Watting" :
+                                    tickets.StatusOperation == 2 ? "Received" :
+                                    tickets.StatusOperation == 3 ? "Approved" :
+                                    tickets.StatusOperation == 4 ? "Rejected" :
+                                    tickets.StatusOperation == 5 ? "Canceled" :
+                                    "Draft",
+                                    tickets.Assign,
+                                    AssignName = (from assing in _context.Users
+                                                  where assing.RowId == tickets.Assign
+                                                  select assing.FirstName + " " + assing.LastName).FirstOrDefault(),
+                                    tickets.CreatedDate
+                                }
+                                ).ToListAsync();
 
+            return Ok(ticket);
+
+        }
+
+
+        [HttpPost("GetTicketsAll")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetTicketsAll([FromBody] DateRangeDto dateRange)
+        {
+            var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
             var ticket = await (from tickets in _context.Tickets
                                 join vechicle in _context.Vehicles on tickets.VehiclesId equals vechicle.RowId into vehicleGroup
                                 from vechicle in vehicleGroup.DefaultIfEmpty()
@@ -59,11 +99,15 @@ namespace BookTruckWeb.Controllers
                                     tickets.StatusOperation == 2 ? "Received" :
                                     tickets.StatusOperation == 3 ? "Approved" :
                                     tickets.StatusOperation == 4 ? "Rejected" :
+                                    tickets.StatusOperation == 5 ? "Canceled" :
                                     "Draft",
                                     tickets.Assign,
                                     AssignName = (from assing in _context.Users
-                                                  where assing.RoleId == tickets.Assign
+                                                  where assing.RowId == tickets.Assign
                                                   select assing.FirstName + " " + assing.LastName).FirstOrDefault(),
+                                    RequestFrom = (from requester in _context.Users
+                                                   where requester.RowId == tickets.CreatedBy
+                                                   select requester.FirstName + " " + requester.LastName).FirstOrDefault(),
                                     tickets.CreatedDate
                                 }
                                 ).ToListAsync();

@@ -1,32 +1,6 @@
 ﻿const url_login = window.AppUrls.loginUrl;
 const url_getCustomers = window.AppUrls.getCustomersUrl;
 
-getCustomers();
-
-function getCustomers() {
-    
-    console.log('getCustomers', url_getCustomers);
-    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
-    const token = tokenElement ? tokenElement.value : null;
-    if (!token) {
-        console.error("CSRF Token not found.");
-        return;
-    }
-    console.log('token', token);
-    $.ajax({
-        url: url_getCustomers, // URL ของ API
-        type: "POST",
-        headers: { "RequestVerificationToken": token },
-        success: function (data) {
-            console.log("data cus", data);
-
-        },
-        error: function (xhr, status, error) {
-            console.error("Error:", error);
-        }
-    });
-}
-
 $('#btnLogin').click(function () {
     console.log('Summit', url_login);
     const username = $('#username').val();
