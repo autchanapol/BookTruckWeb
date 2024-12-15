@@ -51,9 +51,6 @@ function getRequestData() {
            
 
             if (Array.isArray(data) && data.length > 0) {
-
-
-
                 // เพิ่มข้อมูลใหม่ใน DataTable
                 data.forEach(ticket => {
 
@@ -100,7 +97,7 @@ function getRequestData() {
                 dataTable.draw();
             } else {
                 // แสดงข้อความเมื่อไม่มีข้อมูล
-                dataTable.row.add(["", "No Temps found.", "", ""]).draw();
+                dataTable.row.add(["","","", "No Requests found.", "", "",""]).draw();
             }
            
         },

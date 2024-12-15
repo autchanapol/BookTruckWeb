@@ -29,6 +29,50 @@ namespace BookTruckWeb.Controllers
                         Problem("Entity set 'BookTruckContext.Users'  is null.");
         }
 
+        [HttpPost("Login")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login([FromBody] User model)
+        {
+            Console.WriteLine("Login action called"); // Debug
+
+            if (model == null || string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
+            {
+                return BadRequest(new { success = false, message = "Invalid username or password" });
+            }
+
+            var user = await (from users in _context.Users
+                              where users.Status == 1 && users.Username == model.Username && users.Password == Function.Encrypt(model.Password)
+                              select new
+                              {
+                                  users.RowId,
+                                  users.Username,
+                                  users.FirstName,
+                                  users.LastName,
+                                  users.Password
+                              }).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return Ok(new { success = false, message = "User not found or inactive." });
+            }
+
+            // ตั้งค่า Session หลังจาก Login สำเร็จ
+            HttpContext.Session.SetString("RowId", user.RowId.ToString());
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("FullName", $"{user.FirstName} {user.LastName}");
+
+            return Ok(new { success = true, redirectUrl = "/Home/Index" });
+        }
+
+
+        [HttpPost("Logout")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // ลบข้อมูลใน Session
+            return RedirectToAction("Index", "Login"); // กลับไปยังหน้า Login
+        }
+
 
         [HttpPost("GetUsers")] // ใช้ POST เพื่อรองรับ Anti-Forgery Token
         [ValidateAntiForgeryToken]
@@ -55,6 +99,7 @@ namespace BookTruckWeb.Controllers
                                       dep.DepartmentName,
                                       role.RoleName
                                   }).ToListAsync();
+
 
             return Ok(userData);
         }

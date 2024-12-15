@@ -288,7 +288,11 @@
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="#">My Profile</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Logout</a>
+                                        @* <a class="dropdown-item" href="#">Logout</a> *@
+                                        <form asp-controller="Users" asp-action="Logout" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken() <!-- ใส่ Anti-Forgery Token -->
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form>
                                     </li>
 
                                 </ul>
@@ -384,6 +388,26 @@
             fillColor: "rgba(255, 165, 52, .14)",
         });
     </script>
+
+
+@*     <script>
+            $('#btnLogout').click(function (e) {
+            e.preventDefault();
+            const token = $('input[name="__RequestVerificationToken"]').val(); // Anti-Forgery Token
+
+            $.ajax({
+                url: '@Url.Action("Logout", "Users")'; ,
+                type: 'POST',
+                headers: { "RequestVerificationToken": token },
+                success: function () {
+                    window.location.href = '/Login/Index';
+                },
+                error: function () {
+                    swal("Error!", "Unable to logout. Please try again.", { icon: "error" });
+                }
+            });
+        });
+    </script> *@
 
     @*   <script>
     $(document).on('click', '.load-content', function (e) {
