@@ -252,27 +252,28 @@ function getLoadType() {
 }
 
 function clearText() {
-    $('#department_id').val();
-    $('#customers_id').val();
-    $('#trucktype_id').val();
-    $('#temp_id').val();
+
+    $('#department_id').val('');
+    $('#customers_id').val('');
+    $('#trucktype_id').val('');
+    $('#temp_id').val('');
     $('#backhual').prop('checked', false);
-    $('#origin').val();
-    $('#loading').val();
-    $('#destination').val();
-    $('#eta').val();
-    $('#typeload_id').val();
-    $('#qty').val();
-    $('#weight').val();
-    $('#cbm').val();
-    $('#man').val();
+    $('#origin').val('');
+    $('#loading').val('');
+    $('#destination').val('');
+    $('#eta').val('');
+    $('#typeload_id').val('');
+    $('#qty').val('');
+    $('#weight').val('');
+    $('#cbm').val('');
+    $('#man').val('');
     $('#handjack').prop('checked', false);
     $('#cart').prop('checked', false);
     $('#cardboard').prop('checked', false);
     $('#foam_box').prop('checked', false);
     $('#dry_ice').prop('checked', false);
-    $('#comment').val();
-    $('#assign').val();
+    $('#comment').val('');
+    $('#assign').val('');
 }
 
 function saveRequestFrom() {

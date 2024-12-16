@@ -42,8 +42,6 @@ public partial class BookTruckContext : DbContext
 
     public virtual DbSet<VehiclesType> VehiclesTypes { get; set; }
 
-
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Name=DefaultConnection");
 
@@ -398,6 +396,7 @@ public partial class BookTruckContext : DbContext
             entity.ToTable("vehicles");
 
             entity.Property(e => e.RowId).HasColumnName("row_id");
+            entity.Property(e => e.Active).HasColumnName("active");
             entity.Property(e => e.CreatedBy).HasColumnName("created_by");
             entity.Property(e => e.CreatedDate)
                 .HasColumnType("datetime")

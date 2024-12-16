@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using BookTruckWeb.Models.DTO;
 
 namespace BookTruckWeb.Controllers
 {
@@ -22,15 +23,30 @@ namespace BookTruckWeb.Controllers
 
             return View();
         }
+        public IActionResult RequestFormShow(string jobNo)
+        {
+            var viewModel = new ReceivingBookingViewModel
+            {
+                JobNo = jobNo,
+            };
+
+            return View(viewModel);
+        }
         public IActionResult ReceivingBooking()
         {
 
             return View();
         }
-        public IActionResult ReceivingBookingForm()
+        public IActionResult ReceivingBookingForm(string jobNo)
         {
+            // ตัวอย่างการดึงข้อมูล (เช่นจากฐานข้อมูล)
+            //var bookingName = "Sample Booking"; // จำลองข้อมูล
+            var viewModel = new ReceivingBookingViewModel
+            {
+                JobNo = jobNo,
+            };
 
-            return View();
+            return View(viewModel);
         }
     }
 }

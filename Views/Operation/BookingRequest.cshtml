@@ -105,6 +105,7 @@
 </div>
 @section Scripts {
     <script>
+         const receivingBookingUrl = '@Url.Action("ReceivingBookingForm", "Operation")';
         window.AppUrls = {
             getRequestDataUrl: '@Url.Action("GetTicketsFrmRequester", "Tickets")',
             baseUrl: '@Url.Content("~")'

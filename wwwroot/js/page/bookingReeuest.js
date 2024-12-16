@@ -57,16 +57,16 @@ function getRequestData() {
                     let statusClass = "";
                     switch (ticket.statusName) {
                         case "Waiting":
-                            statusClass = "badge bg-warning"; // สีเหลือง
+                            statusClass = "badge bg-secondary"; // สีเหลือง
                             break;
-                        case "Received":
+                        case "Approved":
                             statusClass = "badge bg-success"; // สีเขียว
                             break;
                         case "Rejected":
-                            statusClass = "badge bg-orange"; // สีส้มกำหนดเอง
+                            statusClass = "badge bg-danger"; // สีส้มกำหนดเอง
                             break;
-                        case "Canceled":
-                            statusClass = "badge bg-danger"; // สีแดง
+                        case "Closed":
+                            statusClass = "badge bg-warning"; // สีแดง
                             break;
                         default:
                             statusClass = "badge bg-secondary"; // สีเทา

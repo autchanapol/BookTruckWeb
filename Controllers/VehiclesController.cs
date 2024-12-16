@@ -45,6 +45,38 @@ namespace BookTruckWeb.Controllers
             return Ok(vehicles);
         }
 
+        [HttpPost("GetVehiclesActive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesActive([FromBody] Vehicle vehicle)
+        {
+            var vehicles = await (from ve in _context.Vehicles
+                                  join typeV in _context.VehiclesTypes on ve.VehicleType equals typeV.RowId
+                                  where ve.Status == 1 && ve.Active == 1 && ve.VehicleType == vehicle.VehicleType
+                                  select new
+                                  {
+                                      ve.RowId,
+                                      ve.VehicleName
+                                  }
+                                  ).ToListAsync();
+            return Ok(vehicles);
+        }
+
+        [HttpPost("GetVehiclesRowId")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesRowId([FromBody] Vehicle vehicle)
+        {
+            var vehicles = await (from ve in _context.Vehicles
+                                  join typeV in _context.VehiclesTypes on ve.VehicleType equals typeV.RowId
+                                  where ve.Status == 1 && ve.Active == 1 && ve.RowId == vehicle.RowId
+                                  select new
+                                  {
+                                      ve.RowId,
+                                      ve.VehicleLicense
+                                  }
+                                  ).FirstOrDefaultAsync();
+            return Ok(vehicles);
+        }
+
         [HttpPost("AddVehicles")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVehicles([FromBody] Vehicle vehicle)
@@ -77,6 +109,7 @@ namespace BookTruckWeb.Controllers
                     WeightEmpty = vehicle.WeightEmpty != null ? vehicle.WeightEmpty.Value : 0,
                     CubeCapacity = vehicle.CubeCapacity != null ? vehicle.CubeCapacity.Value : 0,
                     CreatedBy = 1,
+                    Active = 1,
                     CreatedDate = DateTime.Now
 
                 };
@@ -126,7 +159,7 @@ namespace BookTruckWeb.Controllers
                     };
                     return Ok(returnData);
                 }
-                if(vehicle.VehicleType.HasValue)
+                if (vehicle.VehicleType.HasValue)
                 {
                     existingVehicles.VehicleType = vehicle.VehicleType.Value;
                 }

@@ -21,6 +21,8 @@ public partial class Vehicle
 
     public int? Status { get; set; }
 
+    public int? Active { get; set; }
+
     public int? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }

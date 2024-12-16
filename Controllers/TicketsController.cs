@@ -11,6 +11,7 @@ using BookTruckWeb.connect;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using System.Runtime.Intrinsics.Arm;
 
 namespace BookTruckWeb.Controllers
 {
@@ -51,10 +52,10 @@ namespace BookTruckWeb.Controllers
                                     CustomerName = customers.CustomerName,
                                     tickets.Loading,
                                     tickets.StatusOperation,
-                                    StatusName = tickets.StatusOperation == 1 ? "Watting" :
-                                    tickets.StatusOperation == 2 ? "Received" :
-                                    tickets.StatusOperation == 3 ? "Approved" :
-                                    tickets.StatusOperation == 4 ? "Rejected" :
+                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    tickets.StatusOperation == 2 ? "Approved" :
+                                    tickets.StatusOperation == 3 ? "Rejected" :
+                                    tickets.StatusOperation == 4 ? "Closed" :
                                     tickets.StatusOperation == 5 ? "Canceled" :
                                     "Draft",
                                     tickets.Assign,
@@ -67,6 +68,134 @@ namespace BookTruckWeb.Controllers
 
             return Ok(ticket);
 
+        }
+
+        [HttpPost("UpdateTicketsFrmJobNo")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTicketsFrmJobNo([FromBody] Ticket ticket)
+        {
+
+            if (ticket.RowId == 0)
+            {
+                return BadRequest("Invalid Row Id.");
+            }
+            else
+            {
+                var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+                var existingTicket = await _context.Tickets.FindAsync(ticket.RowId);
+                if (existingTicket == null)
+                {
+                    return NotFound("Departments not found");
+                }
+
+                existingTicket.DepartmentId = ticket.DepartmentId;
+                existingTicket.CustomerId = ticket.CustomerId;
+                existingTicket.VehiclesTypeId = ticket.VehiclesTypeId;
+                existingTicket.Origin = ticket.Origin;
+                existingTicket.Loading = ticket.Loading;
+                existingTicket.Destination = ticket.Destination;
+                existingTicket.Etatostore = ticket.Etatostore;
+                existingTicket.Backhual = ticket.Backhual;
+                existingTicket.TypeloadId = ticket.TypeloadId;
+                existingTicket.TempId = ticket.TempId;
+                existingTicket.Qty = ticket.Qty;
+                existingTicket.Weight = ticket.Weight;
+                existingTicket.Cbm = ticket.Cbm;
+                existingTicket.DeliveryMan = ticket.DeliveryMan;
+                existingTicket.Handjack = ticket.Handjack;
+                existingTicket.Cart = ticket.Cart;
+                existingTicket.Cardboard = ticket.Cardboard;
+                existingTicket.FoamBox = ticket.FoamBox;
+                existingTicket.DryIce = ticket.DryIce;
+                if (ticket.VehiclesId.HasValue && ticket.VehiclesId != 0)
+                    existingTicket.VehiclesId = ticket.VehiclesId;
+                if (!string.IsNullOrEmpty(ticket.Driver))
+                    existingTicket.Driver = ticket.Driver;
+                if (!string.IsNullOrEmpty(ticket.Sub))
+                    existingTicket.Sub = ticket.Sub;
+                if (!string.IsNullOrEmpty(ticket.Tel))
+                    existingTicket.Tel = ticket.Tel;
+                if (ticket.TravelCosts.HasValue)
+                    existingTicket.TravelCosts = ticket.TravelCosts;
+                if (ticket.Distance.HasValue)
+                    existingTicket.Distance = ticket.Distance;
+                existingTicket.ActionBy = rowId;
+                existingTicket.ReceivedBy = rowId;
+                existingTicket.ActionDate = DateTime.Now;
+                existingTicket.ReceivedDate = DateTime.Now;
+                existingTicket.LastUpdated = DateTime.Now;
+                existingTicket.StatusOperation = ticket.StatusOperation;
+
+                try
+                {
+                    if (ticket.VehiclesId.HasValue && ticket.VehiclesId != 0)
+                    {
+                        // update vichicle
+                        var vichicle = await _context.Vehicles.FindAsync(ticket.VehiclesId);
+                        if (vichicle != null)
+                        {
+                            vichicle.Active = 0;
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Ticket updated successfully."
+                    });
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return StatusCode(500, "An error occurred during the update.");
+                }
+            }
+        }
+
+        [HttpPost("GetTicketsFrmJobNo")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetTicketsFrmJobNo([FromBody] Ticket ticket)
+        {
+            var ticket_ = await (from tickets in _context.Tickets
+                                 where tickets.JobNo == ticket.JobNo
+                                 select new
+                                 {
+                                     tickets.RowId,
+                                     tickets.JobNo,
+                                     tickets.DepartmentId,
+                                     tickets.CustomerId,
+                                     tickets.VehiclesTypeId,
+                                     tickets.Backhual,
+                                     tickets.Origin,
+                                     tickets.Status,
+                                     tickets.Loading,
+                                     tickets.Destination,
+                                     tickets.Etatostore,
+                                     tickets.TypeloadId,
+                                     tickets.TempId,
+                                     tickets.Qty,
+                                     tickets.Weight,
+                                     tickets.Cbm,
+                                     tickets.DeliveryMan,
+                                     tickets.Handjack,
+                                     tickets.Cart,
+                                     tickets.Cardboard,
+                                     tickets.FoamBox,
+                                     tickets.DryIce,
+                                     tickets.Assign,
+                                     tickets.Comment,
+                                     tickets.VehiclesId,
+                                     tickets.Driver,
+                                     tickets.Sub,
+                                     tickets.Tel,
+                                     tickets.TravelCosts,
+                                     tickets.Distance,
+                                     tickets.StatusOperation
+
+                                 }).FirstOrDefaultAsync();
+
+            return Ok(ticket_);
         }
 
 
@@ -95,10 +224,10 @@ namespace BookTruckWeb.Controllers
                                     CustomerName = customers.CustomerName,
                                     tickets.Loading,
                                     tickets.StatusOperation,
-                                    StatusName = tickets.StatusOperation == 1 ? "Watting" :
-                                    tickets.StatusOperation == 2 ? "Received" :
-                                    tickets.StatusOperation == 3 ? "Approved" :
-                                    tickets.StatusOperation == 4 ? "Rejected" :
+                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    tickets.StatusOperation == 2 ? "Approved" :
+                                    tickets.StatusOperation == 3 ? "Rejected" :
+                                    tickets.StatusOperation == 4 ? "Closed" :
                                     tickets.StatusOperation == 5 ? "Canceled" :
                                     "Draft",
                                     tickets.Assign,

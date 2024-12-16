@@ -56,16 +56,16 @@ function getRequestData() {
                     let statusClass = "";
                     switch (ticket.statusName) {
                         case "Waiting":
-                            statusClass = "badge bg-warning"; // สีเหลือง
+                            statusClass = "badge bg-secondary"; // สีเหลือง
                             break;
-                        case "Received":
+                        case "Approved":
                             statusClass = "badge bg-success"; // สีเขียว
                             break;
                         case "Rejected":
-                            statusClass = "badge bg-orange"; // สีส้มกำหนดเอง
+                            statusClass = "badge bg-danger"; // สีส้มกำหนดเอง
                             break;
-                        case "Canceled":
-                            statusClass = "badge bg-danger"; // สีแดง
+                        case "Closed":
+                            statusClass = "badge bg-warning"; // สีแดง
                             break;
                         default:
                             statusClass = "badge bg-secondary"; // สีเทา
@@ -81,12 +81,18 @@ function getRequestData() {
                         ticket.requestFrom,
                         ticket.assignName,
                         `
+                        <!-- ปุ่ม Check -->
                         <div class="form-button-action">
-                            <button type="button" class="btn btn-link btn-primary btn-lg"
-                                    data-bs-toggle="modal" data-bs-target="#addRowModal"
+                         <button type="button" class="btn btn-link btn-primary btn-lg"
                                     data-temps-id="${ticket.rowId}">
+                                <i class="fa fa-check"></i>
+                            </button>
+                            <!-- ปุ่ม Edit -->
+                            <button type="button" class="btn btn-link btn-primary btn-lg"
+                                onclick="redirectToReceivingBookingForm('${ticket.jobNo}')">
                                 <i class="fa fa-edit"></i>
                             </button>
+                            <!-- ปุ่ม Delete -->
                             <button type="button" class="btn btn-link btn-danger"
                              data-temps-id="${ticket.rowId}">
                              <i class="fa fa-times"></i>
@@ -108,4 +114,14 @@ function getRequestData() {
             console.error("Error:", error);
         }
     });
+}
+
+function redirectToReceivingBookingForm(jobNo) {
+    if (!jobNo || jobNo.trim() === "") {
+        console.error("JobNo is invalid.");
+        return;
+    }
+    const url = `${receivingBookingUrl}?JobNo=${encodeURIComponent(jobNo)}`;
+    console.log("Redirecting to:", url);
+    window.location.href = url;
 }
