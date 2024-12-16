@@ -8,7 +8,7 @@
 
 <div class="page-inner">
     <div class="page-header">
-        <h3 class="fw-bold mb-3">Request Form</h3>
+        <h3 class="fw-bold mb-3">Request Form Details</h3>
         <ul class="breadcrumbs mb-3">
             <li class="nav-home">
                 <a href="#">
@@ -31,7 +31,7 @@
                 <i class="icon-arrow-right"></i>
             </li>
             <li class="nav-item">
-                <a href="#">New Request Form</a>
+                <a href="#">Request Form Details</a>
             </li>
         </ul>
     </div>
@@ -213,8 +213,8 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button onclick="saveRequestFrom()" class="btn btn-success">Submit</button>
-                    <button onclick="window.history.back()" class="btn btn-danger">Cancel</button>
+                    <button hidden onclick="saveRequestFrom()" class="btn btn-success">Submit</button>
+                    <button hidden onclick="window.history.back()" class="btn btn-danger">Cancel</button>
                 </div>
             </div>
         </div>
@@ -232,6 +232,7 @@
             getTempsUrl: '@Url.Action("GetTemps", "Tamps")',
             addRequestUrl: '@Url.Action("AddTicketsFrmRequester", "Tickets")',
             getAssignUrl: '@Url.Action("GetAssign", "Users")',
+            getTicketsFrmJobNoUrl: '@Url.Action("GetTicketsFrmJobNo", "Tickets")',
             baseUrl: '@Url.Content("~")'
         };
     </script>

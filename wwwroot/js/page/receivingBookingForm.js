@@ -15,12 +15,7 @@ const jobNo = getQueryParam("JobNo");
 
 
 $(document).ready(function () {
-
-
     initialize();
-
-
-
 });
 
 

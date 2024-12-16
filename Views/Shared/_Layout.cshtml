@@ -325,114 +325,65 @@
             </footer>
         </div>
     </div>
-    <!--   Core JS Files   -->
-    <script src="~/js/core/jquery-3.7.1.min.js"></script>
-    <script src="~/js/core/popper.min.js"></script>
-    <script src="~/js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="~/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-    <!-- Chart JS -->
-    @*<script src="~/js/plugin/chart.js/chart.min.js"></script>*@
-
-    <!-- jQuery Sparkline -->
-    <script src="~/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Chart Circle -->
-    <script src="~/js/plugin/chart-circle/circles.min.js"></script>
-
+    <!-- Core JS Files -->
+    <script src="~/js/core/jquery-3.7.1.min.js"></script> <!-- โหลด jQuery ก่อน -->
+    <script src="~/js/core/popper.min.js"></script> <!-- Popper สำหรับ Bootstrap -->
+    <script src="~/js/core/bootstrap.min.js"></script> <!-- Bootstrap JS -->
+    <!-- jQuery Plugins -->
+    <script src="~/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script> <!-- Scrollbar Plugin -->
+    <script src="~/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script> <!-- jQuery Sparkline -->
+    <!-- Chart Plugins -->
+    <script src="~/js/plugin/chart.js/chart.min.js"></script> <!-- Chart.js -->
+    <script src="~/js/plugin/chart-circle/circles.min.js"></script> <!-- Circle Chart -->
     <!-- Datatables -->
     <script src="~/js/plugin/datatables/datatables.min.js"></script>
 
-    <!-- Bootstrap Notify -->
+    <!-- Notifications -->
     <script src="~/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
-    <!-- jQuery Vector Maps -->
+    <!-- Vector Maps -->
     <script src="~/js/plugin/jsvectormap/jsvectormap.min.js"></script>
     <script src="~/js/plugin/jsvectormap/world.js"></script>
 
     <!-- Sweet Alert -->
     <script src="~/js/plugin/sweetalert/sweetalert.min.js"></script>
 
-    <!-- Kaiadmin JS -->
+    <!-- Kaiadmin JS (ต้องโหลดหลังปลั๊กอินอื่นๆ เพราะอาจใช้งานปลั๊กอินที่โหลดด้านบน) -->
     <script src="~/js/kaiadmin.min.js"></script>
 
-    @*    <!-- Kaiadmin DEMO methods, don't include it in your project! -->
-    <script src="~/js/setting-demo.js"></script>
-    <script src="~/js/demo.js"></script>*@
+    <!-- Custom Inline Scripts -->
     <script>
-        $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-            type: "line",
-            height: "70",
-            width: "100%",
-            lineWidth: "2",
-            lineColor: "#177dff",
-            fillColor: "rgba(23, 125, 255, 0.14)",
-        });
+        // Example: Sparkline Charts Initialization
+        $(document).ready(function () {
+            $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+                type: "line",
+                height: "70",
+                width: "100%",
+                lineWidth: "2",
+                lineColor: "#177dff",
+                fillColor: "rgba(23, 125, 255, 0.14)",
+            });
 
-        $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-            type: "line",
-            height: "70",
-            width: "100%",
-            lineWidth: "2",
-            lineColor: "#f3545d",
-            fillColor: "rgba(243, 84, 93, .14)",
-        });
+            $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+                type: "line",
+                height: "70",
+                width: "100%",
+                lineWidth: "2",
+                lineColor: "#f3545d",
+                fillColor: "rgba(243, 84, 93, .14)",
+            });
 
-        $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-            type: "line",
-            height: "70",
-            width: "100%",
-            lineWidth: "2",
-            lineColor: "#ffa534",
-            fillColor: "rgba(255, 165, 52, .14)",
+            $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+                type: "line",
+                height: "70",
+                width: "100%",
+                lineWidth: "2",
+                lineColor: "#ffa534",
+                fillColor: "rgba(255, 165, 52, .14)",
+            });
         });
     </script>
 
-
-@*     <script>
-            $('#btnLogout').click(function (e) {
-            e.preventDefault();
-            const token = $('input[name="__RequestVerificationToken"]').val(); // Anti-Forgery Token
-
-            $.ajax({
-                url: '@Url.Action("Logout", "Users")'; ,
-                type: 'POST',
-                headers: { "RequestVerificationToken": token },
-                success: function () {
-                    window.location.href = '/Login/Index';
-                },
-                error: function () {
-                    swal("Error!", "Unable to logout. Please try again.", { icon: "error" });
-                }
-            });
-        });
-    </script> *@
-
-    @*   <script>
-    $(document).on('click', '.load-content', function (e) {
-    e.preventDefault();
-    var url = $(this).data('url');
-
-    $.get(url, function (data) {
-    // โหลด View ใหม่
-    var mainContent = $(data).find('main[role="main"]').html();
-    $('main[role="main"]').html(mainContent);
-
-    // รันสคริปต์ใน demo.js ซ้ำ
-    if (typeof initializeStatisticsChart === 'function') {
-    initializeStatisticsChart();
-    }
-    if (typeof initializeOtherComponents === 'function') {
-    initializeOtherComponents();
-    }
-
-    // อัปเดต URL
-    history.pushState(null, '', url);
-    });
-    });
-    </script>*@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

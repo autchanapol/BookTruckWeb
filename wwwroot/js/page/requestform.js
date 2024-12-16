@@ -5,6 +5,9 @@ const url_getGetLoadType = window.AppUrls.getGetLoadTypeUrl;
 const url_getTeamps = window.AppUrls.getTempsUrl;
 const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
 const url_getAssignUrl = window.AppUrls.getAssignUrl;
+const url_getAssignUrl = window.AppUrls.getAssignUrl;
+
+const jobNo = getQueryParam("JobNo");
 
 $(document).ready(function () {
 
@@ -14,10 +17,18 @@ $(document).ready(function () {
     getTrucType();
     getLoadType();
     getAssignUrl();
+    getRequestFrm();
 
 });
 
 
+
+// ดึงค่าจาก URL Query String
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param); // คืนค่าของ parameter ที่ต้องการ
+
+}
 function getAssignUrl() {
     console.log("getAssignUrl", url_getAssignUrl)
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -558,4 +569,61 @@ function saveRequestFrom() {
             }
         });
     }
+}
+
+function getRequestFrm() {
+
+    console.log('getRequestFrm', url_GetTicketsFrmJobNoUrl);
+    console.log("JobNo:", jobNo);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: url_GetTicketsFrmJobNoUrl, // URL ของ API
+            type: "POST",
+            headers: { "RequestVerificationToken": token },
+            contentType: "application/json",
+            data: JSON.stringify({
+                JobNo: jobNo
+            }),
+            success: function (data) {
+                console.log("data getRequestFrm", data);
+                if (data) {
+                    $('#row_id').val(data.rowId);
+                    $('#department_id').val(data.departmentId);
+                    $('#customers_id').val(data.customerId);
+                    $('#trucktype_id').val(data.vehiclesTypeId);
+                    $('#temp_id').val(data.tempId);
+                    $('#backhual').prop('checked', data.backhual === 1);
+                    $('#origin').val(data.origin);
+                    $('#loading').val(data.loading);
+                    $('#destination').val(data.destination);
+                    $('#eta').val(data.etatostore);
+                    $('#typeload_id').val(data.typeloadId);
+                    $('#qty').val(data.qty);
+                    $('#weight').val(data.weight);
+                    $('#cbm').val(data.cbm);
+                    $('#man').val(data.deliveryMan);
+                    $('#handjack').prop('checked', data.handjack === 1);
+                    $('#cart').prop('checked', data.cart === 1);
+                    $('#cardboard').prop('checked', data.cardboard === 1);
+                    $('#foam_box').prop('checked', data.foamBox === 1);
+                    $('#dry_ice').prop('checked', data.dryIce === 1);
+                    $('#comment').val(data.comment);
+                }
+                else {
+
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+    });
 }

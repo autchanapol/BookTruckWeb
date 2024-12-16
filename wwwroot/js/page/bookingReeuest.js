@@ -82,9 +82,8 @@ function getRequestData() {
                         ticket.assignName,
                         `
                         <div class="form-button-action">
-                            <button type="button" class="btn btn-link btn-primary btn-lg"
-                                    data-bs-toggle="modal" data-bs-target="#addRowModal"
-                                    data-temps-id="${ticket.rowId}">
+                           <button type="button" class="btn btn-link btn-primary btn-lg"
+                                onclick="redirectToReceivingBookingForm('${ticket.jobNo}')">
                                 <i class="fa fa-edit"></i>
                             </button>
                             
@@ -108,5 +107,15 @@ function getRequestData() {
             console.error("Error:", error);
         }
     });
+}
+
+function redirectToReceivingBookingForm(jobNo) {
+    if (!jobNo || jobNo.trim() === "") {
+        console.error("JobNo is invalid.");
+        return;
+    }
+    const url = `${requestFormShowUrl}?JobNo=${encodeURIComponent(jobNo)}`;
+    console.log("Redirecting to:", url);
+    window.location.href = url;
 }
 
