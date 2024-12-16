@@ -2,3 +2,13 @@
     background-color: orange;
     color: white; /* เปลี่ยนสีตัวอักษรให้มองเห็นชัดเจน */
 }
+
+.nav-item.active {
+    background-color: #f0f0f0; /* สีพื้นหลังของเมนูที่ Active */
+    font-weight: bold; /* ตัวหนา */
+    color: #000; /* สีข้อความ */
+}
+
+    .nav-item.active i {
+        color: #007bff; /* สีไอคอนของเมนูที่ Active */
+    }

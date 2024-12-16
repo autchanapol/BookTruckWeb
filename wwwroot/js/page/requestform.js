@@ -5,7 +5,7 @@ const url_getGetLoadType = window.AppUrls.getGetLoadTypeUrl;
 const url_getTeamps = window.AppUrls.getTempsUrl;
 const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
 const url_getAssignUrl = window.AppUrls.getAssignUrl;
-const url_getAssignUrl = window.AppUrls.getAssignUrl;
+//const url_getAssignUrl = window.AppUrls.getAssignUrl;
 
 const jobNo = getQueryParam("JobNo");
 
@@ -17,7 +17,7 @@ $(document).ready(function () {
     getTrucType();
     getLoadType();
     getAssignUrl();
-    getRequestFrm();
+    //getRequestFrm();
 
 });
 

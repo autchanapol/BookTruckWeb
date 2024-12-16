@@ -1,0 +1,33 @@
+﻿@model IEnumerable<BookTruckWeb.Models.DTO.MenuViewModel>
+
+<ul class="nav nav-secondary">
+    @if (Model == null || !Model.Any())
+    {
+        <p class="text-muted">No menus available.</p>
+    }
+    else
+    {
+        @foreach (var group in Model.GroupBy(m => m.MenuGroup))
+        {
+            <li class="nav-section">
+                <span class="sidebar-mini-icon">
+                    <i class="fa fa-ellipsis-h"></i>
+                </span>
+                <h4 class="text-section">@group.Key</h4>
+            </li>
+
+            @foreach (var menu in group)
+            {
+                var isActive = ViewContext.RouteData.Values["controller"]?.ToString() == menu.Controller &&
+                ViewContext.RouteData.Values["action"]?.ToString() == menu.Action;
+
+                <li class="nav-item @(isActive ? "active" : "")">
+                    <a asp-controller="@menu.Controller" asp-action="@menu.Action">
+                        <i class="@menu.Icon"></i> <!-- แสดงไอคอน -->
+                        <p>@menu.MenuName</p>
+                    </a>
+                </li>
+            }
+        }
+    }
+</ul>

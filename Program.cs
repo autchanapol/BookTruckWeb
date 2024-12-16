@@ -26,7 +26,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // ป้องกันการเข้าถึง Cookie ผ่าน JavaScript
     options.Cookie.IsEssential = true; // ทำให้ Session คงอยู่เสมอ
 });
-
+builder.Services.AddHttpContextAccessor();
 // Uncomment หากต้องการ Authentication/Authorization ในอนาคต
 // builder.Services.AddAuthentication("CookieAuthentication")
 //     .AddCookie("CookieAuthentication", options =>

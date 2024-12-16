@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<BookTruckWeb.Models.DTO.MenuViewModel>
+
+<div class="sidebar-wrapper scrollbar scrollbar-inner">
+    <div class="sidebar-content">
+        <ul class="nav nav-secondary">
+            @foreach (var group in Model.GroupBy(m => m.MenuGroup))
+            {
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">@group.Key</h4>
+                </li>
+
+                @foreach (var menu in group)
+                {
+                    var isActive = ViewContext.RouteData.Values["controller"]?.ToString() == menu.Controller &&
+                    ViewContext.RouteData.Values["action"]?.ToString() == menu.Action;
+
+                    <li class="nav-item @(isActive ? "active" : "")">
+                        <a asp-controller="@menu.Controller" asp-action="@menu.Action">
+                            <i class="icon-grid"></i>
+                            <p>@menu.MenuName</p>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
