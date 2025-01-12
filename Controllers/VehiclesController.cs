@@ -20,6 +20,27 @@ namespace BookTruckWeb.Controllers
             _context = context;
         }
 
+        [HttpPost("GetVehiclesFrmTicket")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesFrmTicket()
+        {
+            var vehicles = await (from ve in _context.Vehicles
+                                  join tic in _context.Tickets on ve.RowId equals tic.VehiclesId
+                                  where ve.Active == 1 && ve.Status == 1
+                                  group tic by new { ve.RowId, ve.VehicleLicense, ve.VehicleName, tic.Driver } into g
+                                  select new
+                                  {
+                                      g.Key.RowId,
+                                      g.Key.Driver,
+                                      g.Key.VehicleLicense,
+                                      g.Key.VehicleName,
+                                      Counnt_Job = g.Count()
+                                  })
+                                  //.Distinct()
+                                  .ToListAsync();
+            return Ok(vehicles);
+        }
+
 
         [HttpPost("GetVehicles")]
         [ValidateAntiForgeryToken]

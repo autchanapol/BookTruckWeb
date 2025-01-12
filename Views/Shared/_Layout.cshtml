@@ -115,13 +115,14 @@
                                      ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "index" ? "active" : "")">
                                 <a asp-controller="Home" asp-action="Index">
                                     <i class="fas fa-home"></i>
-                                    <p>Dashboard</p>
+                                    <p>หน้าหลัก</p>
                                 </a>
                             </li>
                         }
 
                         <!-- OPERATION MENU -->
-                        @if (menuNames.Contains("vehicle booking request") || menuNames.Contains("receiving booking"))
+                        @if (menuNames.Contains("vehicle booking request") || menuNames.Contains("receiving booking") || 
+                        menuNames.Contains("closed trucks") || menuNames.Contains("approve"))
                         {
                             <li class="nav-section">
                                 <span class="sidebar-mini-icon">
@@ -136,7 +137,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "bookingrequest" ? "active" : "")">
                                     <a asp-controller="Operation" asp-action="BookingRequest">
                                         <i class="icon-note"></i>
-                                        <p>Vehicle booking request</p>
+                                        <p>ทำรายการจองรถ</p>
                                     </a>
                                 </li>
                             }
@@ -147,7 +148,27 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "receivingbooking" ? "active" : "")">
                                     <a asp-controller="Operation" asp-action="ReceivingBooking">
                                         <i class="icon-book-open"></i>
-                                        <p>Receiving booking</p>
+                                        <p>อนุมัติการจอง (1 งาน)</p>
+                                    </a>
+                                </li>
+                            }
+                            @if (menuNames.Contains("approve"))
+                            {
+                                <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
+                                         ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "approve" ? "active" : "")">
+                                    <a asp-controller="Operation" asp-action="Approve">
+                                        <i class="icon-note"></i>
+                                        <p>อนุมัติการจอง (หลายงาน)</p>
+                                    </a>
+                                </li>
+                            }
+                            @if (menuNames.Contains("closed trucks"))
+                            {
+                                <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
+                                         ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "closedtrucks" ? "active" : "")">
+                                    <a asp-controller="Operation" asp-action="ClosedTrucks">
+                                        <i class="icon-note"></i>
+                                        <p>ปิดงาน / ปิดสถานะรถขนส่ง</p>
                                     </a>
                                 </li>
                             }
@@ -169,7 +190,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "customers" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="Customers">
                                         <i class="icon-people"></i>
-                                        <p>Customers</p>
+                                        <p>ลูกค้า</p>
                                     </a>
                                 </li>
                             }
@@ -180,7 +201,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "trucktype" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="TruckType">
                                         <i class="icon-grid"></i>
-                                        <p>Truck Type</p>
+                                        <p>ประเภทยานพาหนะ</p>
                                     </a>
                                 </li>
                             }
@@ -202,7 +223,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "loadtype" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="LoadType">
                                         <i class="icon-grid"></i>
-                                        <p>Load Type</p>
+                                        <p>ประเภทโหลด LOAD</p>
                                     </a>
                                 </li>
                             }
@@ -213,7 +234,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "vehicles" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="Vehicles">
                                         <i class="icon-grid"></i>
-                                        <p>Vehicles</p>
+                                        <p>ยานพาหนะ</p>
                                     </a>
                                 </li>
                             }
@@ -235,7 +256,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "departments" ? "active" : "")">
                                     <a asp-controller="Admin" asp-action="Departments">
                                         <i class="icon-social-dropbox"></i>
-                                        <p>Departments</p>
+                                        <p>แผนก</p>
                                     </a>
                                 </li>
                             }
@@ -257,7 +278,7 @@
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "users" ? "active" : "")">
                                     <a asp-controller="Admin" asp-action="Users">
                                         <i class="icon-user"></i>
-                                        <p>Users</p>
+                                        <p>ผู้ใช้งาน</p>
                                     </a>
                                 </li>
                             }

@@ -26,6 +26,9 @@ namespace BookTruckWeb.Controllers
             _storedProcedureService = storedProcedureService;
         }
 
+
+        //[HttpPost("ClosingTicketsFrmTruck")]
+
         [HttpPost("GetTicketsFrmRequester")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetTicketsFrmRequester([FromBody] DateRangeDto dateRange)

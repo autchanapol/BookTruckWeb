@@ -37,6 +37,18 @@ namespace BookTruckWeb.Controllers
 
             return View();
         }
+
+        public IActionResult Approve()
+        {
+
+            return View();
+        }
+        public IActionResult ClosedTrucks()
+        {
+
+            return View();
+        }
+
         public IActionResult ReceivingBookingForm(string jobNo)
         {
             // ตัวอย่างการดึงข้อมูล (เช่นจากฐานข้อมูล)
