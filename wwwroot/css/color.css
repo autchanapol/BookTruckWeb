@@ -2,6 +2,10 @@
     background-color: orange;
     color: white; /* เปลี่ยนสีตัวอักษรให้มองเห็นชัดเจน */
 }
+.bg-yellow {
+    background-color: #FFFF00;
+    color: black;
+}
 
 .nav-item.active {
     background-color: #f0f0f0; /* สีพื้นหลังของเมนูที่ Active */

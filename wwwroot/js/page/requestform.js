@@ -5,13 +5,14 @@ const url_getGetLoadType = window.AppUrls.getGetLoadTypeUrl;
 const url_getTeamps = window.AppUrls.getTempsUrl;
 const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
 const url_getAssignUrl = window.AppUrls.getAssignUrl;
+const url_getCustomerId = window.AppUrls.getCustomerWid;
 //const url_getAssignUrl = window.AppUrls.getAssignUrl;
-
+var input = document.getElementById("customers_id");
 const jobNo = getQueryParam("JobNo");
 
 $(document).ready(function () {
 
-    getCustomers();
+    //getCustomers();
     getDepartment();
     getTemps();
     getTrucType();
@@ -21,7 +22,32 @@ $(document).ready(function () {
 
 });
 
+input.addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
 
+        const customers_id = $('#customers_id').val();
+        if (!customers_id) {
+            swal("Warning!", "กรุณากรอกรหัสลูกค้าก่อนค้นหา!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+        }
+        else {
+            getCustomersWhereId(customers_id);
+            // ใช้ Bootstrap Modal API เปิด modal
+            //const modal = new bootstrap.Modal(document.getElementById('scrollableModal'));
+            //modal.show(); // แสดง modal
+        }
+    }
+});
 
 // ดึงค่าจาก URL Query String
 function getQueryParam(param) {
@@ -70,6 +96,133 @@ function getAssignUrl() {
         }
     });
 }
+
+function getCustomersWhereId(customerid) {
+    console.log(url_getCustomerId);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+
+    $.ajax({
+        url: url_getCustomerId, 
+        type: "POST",
+        contentType: "application/json",
+        headers: { "RequestVerificationToken": token },
+        data: JSON.stringify({
+            CustomerId: customerid,
+        }),
+       
+        success: function (response) {
+            console.log("customers", response);
+            if (response.status == "success") {
+                populateTable(response.data);
+
+                $('#scrollableModal').modal('show');
+            }
+            else {
+                swal("Warning!", "ไม่พบข้อมูลที่ค้นหา!", {
+                    icon: "warning",
+                    buttons: {
+                        confirm: {
+                            className: "btn btn-warning",
+                        },
+                    },
+                });
+                return;
+            }    
+        },
+        error: function (xhr, status, error) {
+            console.error("Error:", error);
+        }
+    });
+}
+
+function populateTable(data) {
+    const tbody = document.querySelector("#customer-table tbody"); // อ้างอิง <tbody>
+    let selectedRow = null;
+
+    // ล้างข้อมูลเก่า
+    tbody.innerHTML = "";
+
+    // ตรวจสอบข้อมูลก่อนลูป
+    if (!Array.isArray(data)) {
+        console.error("Data is not an array.");
+        return;
+    }
+
+    // เพิ่มข้อมูลใหม่ในตาราง
+    data.forEach((customer, index) => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-rowid", customer.rowId);
+
+        // สร้างเซลล์และเพิ่มข้อมูล
+        const cellIndex = document.createElement("td");
+        cellIndex.textContent = index + 1;
+
+        const cellCustomerId = document.createElement("td");
+        cellCustomerId.textContent = customer.customerId;
+
+        const cellCustomerName = document.createElement("td");
+        cellCustomerName.textContent = customer.customerName;
+
+        // เพิ่มเซลล์ในแถว
+        row.appendChild(cellIndex);
+        row.appendChild(cellCustomerId);
+        row.appendChild(cellCustomerName);
+
+        // เพิ่ม Event Listener สำหรับเลือกแถว
+        row.addEventListener("click", function () {
+            if (selectedRow) {
+                selectedRow.classList.remove("selected"); // เอาคลาส selected ออกจากแถวที่เลือกก่อนหน้า
+            }
+            selectedRow = this; // กำหนดแถวที่เลือกใหม่
+            this.classList.add("selected"); // เพิ่มคลาส selected ให้กับแถวที่เลือก
+        });
+
+        // เพิ่มแถวในตาราง
+        tbody.appendChild(row);
+    });
+
+    // เพิ่ม Event Listener ให้กับปุ่ม "เลือก"
+    const selectBtn = document.getElementById("select-btn");
+    selectBtn.replaceWith(selectBtn.cloneNode(true)); // ลบ Event Listener เก่าถ้ามี
+
+    document.getElementById("select-btn").addEventListener("click", function () {
+        if (selectedRow) {
+            const rowId = selectedRow.getAttribute("data-rowid");
+            const customerId = selectedRow.children[1].textContent;
+            const customerName = selectedRow.children[2].textContent;
+
+            // แสดงข้อมูลที่เลือกใน console.log
+            console.log("RowId:", rowId);
+            console.log("CustomerId:", customerId);
+            console.log("CustomerName:", customerName);
+
+            // เติมค่าในฟิลด์ input
+            $('#customer_row').val(rowId);
+            $('#customers_id').val(customerId);
+            $('#customers_name').val(customerName);
+            
+            // ปิด Modal
+            $('#scrollableModal').modal('hide');
+        } else {
+            swal("Warning!", "กรุณาเลือกรายการก่อน!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+        }
+    });
+}
+
+
+
 
 function getDepartment() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -285,9 +438,12 @@ function clearText() {
     $('#dry_ice').prop('checked', false);
     $('#comment').val('');
     $('#assign').val('');
+    $('#customer_row').val('');
+    
 }
 
 function saveRequestFrom() {
+    const customer_row = $('#customer_row').val();
     const department_id = $('#department_id').val();
     const customers_id = $('#customers_id').val();
     const trucktype_id = $('#trucktype_id').val();
@@ -335,7 +491,7 @@ function saveRequestFrom() {
         });
         return;
     }
-    else if (!customers_id) {
+    else if (!customer_row) {
         swal("Warning!", "Please Select a Customer!", {
             icon: "warning",
             buttons: {
@@ -484,7 +640,7 @@ function saveRequestFrom() {
         console.log("date", JSON.stringify({
             JobNo: "TT",
             DepartmentId: department_id,
-            CustomerId: customers_id,
+            CustomerId: customer_row,
             VehiclesTypeId: trucktype_id,
             TempId: temp_id,
             Backhual: backhual,
@@ -515,7 +671,7 @@ function saveRequestFrom() {
             data: JSON.stringify({
                 JobNo: "TT",
                 DepartmentId: department_id,
-                CustomerId: customers_id,
+                CustomerId: customer_row,
                 VehiclesTypeId: trucktype_id,
                 TempId: temp_id,
                 Backhual: backhual,

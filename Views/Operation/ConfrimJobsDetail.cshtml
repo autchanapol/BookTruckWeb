@@ -96,10 +96,15 @@
                         <div class="col-md-6 col-lg-5">
                             <div class="form-group">
                                 <label for="defaultSelect">แผนก</label>
-                                <select class="form-select form-control"
-                                        id="department_id">
-                                    <option value="">-- Select an option --</option>
-                                </select>
+                                <input type="text"
+                                       class="form-control"
+                                       readonly
+                                       id="department_id"
+                                       placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+                                @* <select class="form-select form-control" *@
+                                @*         id="department_id"> *@
+                                @*     <option value="">-- Select an option --</option> *@
+                                @* </select> *@
                             </div>
                             @* <select class="form-select form-control" *@
                             @*         id="customers_id"> *@
@@ -110,11 +115,11 @@
                                     <div class="col">
                                         <input type="text"
                                                hidden
-                                               id="customer_row"
-                                               />
+                                               id="customer_row" />
                                         <label for="defaultSelect">รหัสลูกค้า</label>
                                         <input type="text"
                                                class="form-control"
+                                               readonly
                                                id="customers_id"
                                                placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
 
@@ -132,22 +137,33 @@
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Truck Type</label>
-                                <select class="form-select form-control"
+                                <input type="text"
+                                       class="form-control"
+                                       readonly
+                                       id="trucktype_id"
+                                       placeholder=".." />
+                              @*   <select class="form-select form-control"
                                         id="trucktype_id">
                                     <option value="">-- กรุณาเลือก --</option>
-                                </select>
+                                </select> *@
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Temp</label>
-                                <select class="form-select form-control"
-                                        id="temp_id">
-                                    <option value="">-- กรุณาเลือก --</option>
-                                </select>
+                                <input type="text"
+                                       class="form-control"
+                                       readonly
+                                       id="temp_id"
+                                       placeholder="typeload_id" />
+                                @* <select class="form-select form-control" *@
+                                @*         id="temp_id"> *@
+                                @*     <option value="">-- กรุณาเลือก --</option> *@
+                                @* </select> *@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
                                        value=""
+                                       disabled
                                        id="backhual" />
                                 <label class="form-check-label"
                                        for="flexCheckDefault">
@@ -159,19 +175,20 @@
                                 <input type="text"
                                        class="form-control"
                                        id="origin"
+                                       readonly
                                        placeholder="Enter Origin" />
                             </div>
                             <div class="form-group">
                                 <label for="loading">วันเวลา Loading</label>
-                                <input id="loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
+                                <input id="loading" disabled  class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
                             <div class="form-group">
                                 <label for="comment">Destination</label>
-                                <textarea class="form-control" id="destination" rows="5"></textarea>
+                                <textarea disabled class="form-control" id="destination" rows="5"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="eta">ETA to store</label>
-                                <input id="eta" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
+                                <input id="eta" disabled class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
                         </div>
                         <div class="col-md-5 col-lg-5">
@@ -179,15 +196,17 @@
 
                             <div class="form-group">
                                 <label for="defaultSelect">Type Load</label>
-                                <select class="form-select form-control"
-                                        id="typeload_id">
-                                    <option value="">-- กรุณาเลือก --</option>
-                                </select>
+                                <input type="text"
+                                       class="form-control"
+                                       disabled
+                                       id="typeload_id"
+                                       placeholder="typeload_id" />
                             </div>
                             <div class="form-group">
                                 <label for="email2">QTY</label>
                                 <input type="number"
                                        class="form-control"
+                                       disabled
                                        id="qty"
                                        placeholder="Enter QTY" />
                             </div>
@@ -195,6 +214,7 @@
                                 <label for="email2">Weight</label>
                                 <input type="number"
                                        class="form-control"
+                                       disabled
                                        id="weight"
                                        placeholder="Enter Weight" />
                             </div>
@@ -202,6 +222,7 @@
                                 <label for="email2">CBM</label>
                                 <input type="number"
                                        class="form-control"
+                                       disabled
                                        id="cbm"
                                        placeholder="Enter CBM" />
                             </div>
@@ -209,6 +230,7 @@
                                 <label for="email2">ขอเพิ่มเด็กติดรถ</label>
                                 <input type="number"
                                        class="form-control"
+                                       disabled
                                        id="man"
                                        placeholder="Enter number" />
                             </div>
@@ -217,6 +239,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
+                                           disabled
                                            id="handjack" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
@@ -227,6 +250,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
+                                           disabled
                                            id="cart" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
@@ -237,6 +261,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
+                                           disabled
                                            id="cardboard" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
@@ -247,6 +272,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
+                                           disabled
                                            id="foam_box" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
@@ -257,6 +283,7 @@
                                     <input class="form-check-input"
                                            type="checkbox"
                                            value=""
+                                           disabled
                                            id="dry_ice" />
                                     <label class="form-check-label"
                                            for="flexCheckDefault">
@@ -268,16 +295,21 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="comment">Comment</label>
-                                    <textarea class="form-control" id="comment" rows="5"></textarea>
+                                    <textarea disabled class="form-control" id="comment" rows="5"></textarea>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
                                     <label for="defaultSelect">Assign To</label>
-                                    <select class="form-select form-control"
+                                    <input type="text"
+                                           class="form-control"
+                                           disabled
+                                           id="assign"
+                                           placeholder="Enter CBM" />
+                                   @*  <select class="form-select form-control"
                                             id="assign">
                                         <option value="">-- Select an option --</option>
-                                    </select>
+                                    </select> *@
                                 </div>
                             </div>
                         </div>
@@ -285,8 +317,8 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button onclick="saveRequestFrom()" class="btn btn-success">Submit</button>
-                    <button onclick="window.history.back()" class="btn btn-danger">Cancel</button>
+                    <button onclick="saveRequestFrom()" class="btn btn-success">รับเรื่อง / รับทราบ</button>
+                    <button onclick="window.history.back()" class="btn btn-danger">ย้อนกลับ</button>
                 </div>
             </div>
         </div>
@@ -297,14 +329,7 @@
     <script>
 
           window.AppUrls = {
-            getDepartmentsUrl: '@Url.Action("GetDepartments", "Departments")',
-            getCustomerWid: '@Url.Action("GetCustomersWhereId", "Customers")',
-            getCustomersUrl: '@Url.Action("GetCustomers", "Customers")',
-            getVehiclesTypesUrl: '@Url.Action("GetVehiclesTypes", "VehiclesTypes")',
-            getGetLoadTypeUrl: '@Url.Action("GetLoadType", "LoadType")',
-            getTempsUrl: '@Url.Action("GetTemps", "Tamps")',
-            addRequestUrl: '@Url.Action("AddTicketsFrmRequester", "Tickets")',
-            getAssignUrl: '@Url.Action("GetAssign", "Users")',
+            getTicketsFrmJobNoUrl: '@Url.Action("GetTicketsFrmJobNo", "Tickets")',
             baseUrl: '@Url.Content("~")'
         };
     </script>
@@ -339,6 +364,6 @@
     </script>
 
     <script src="~/js/notify.js"></script>
-    <script src="~/js/page/requestform.js"></script>
+    <script src="~/js/page/confirmFrmDetail.js"></script>
 }
 }

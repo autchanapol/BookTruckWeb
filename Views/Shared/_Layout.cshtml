@@ -65,6 +65,7 @@
     <link rel="stylesheet" href="~/css/kaiadmin.min.css" />
     <link rel="stylesheet" href="~/css/color.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -138,6 +139,17 @@
                                     <a asp-controller="Operation" asp-action="BookingRequest">
                                         <i class="icon-note"></i>
                                         <p>ทำรายการจองรถ</p>
+                                    </a>
+                                </li>
+                            }
+
+                            @if (menuNames.Contains("confrimjob"))
+                            {
+                                <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
+                                         ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "confrimjobs" ? "active" : "")">
+                                    <a asp-controller="Operation" asp-action="ConfrimJobs">
+                                        <i class="icon-note"></i>
+                                        <p>รับทราบการจอง</p>
                                     </a>
                                 </li>
                             }

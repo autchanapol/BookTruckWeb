@@ -12,6 +12,13 @@ $(document).ready(function () {
     });
 
     getRequestData();
+
+    // ตรวจจับการย้อนกลับ
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || performance.navigation.type === 2) {
+            getRequestData(); // เรียกใช้ฟังก์ชันอีกครั้งเมื่อย้อนกลับมา
+        }
+    });
   
 });
 
@@ -56,8 +63,11 @@ function getRequestData() {
 
                     let statusClass = "";
                     switch (ticket.statusName) {
-                        case "Waiting":
+                        case "New Request":
                             statusClass = "badge bg-secondary"; // สีเหลือง
+                            break;
+                        case "Waiting":
+                            statusClass = "badge bg-yellow"; // สีเหลือง
                             break;
                         case "Approved":
                             statusClass = "badge bg-success"; // สีเขียว
@@ -84,18 +94,13 @@ function getRequestData() {
                         <div class="form-button-action">
                            <button type="button" class="btn btn-link btn-primary btn-lg"
                                 onclick="redirectToReceivingBookingForm('${ticket.jobNo}')">
-                                <i class="fa fa-edit"></i>
+                                <i class="bi bi-eye"></i>
                             </button>
                             
                         </div>
                         `
                     ]);
                 });
-                //<button type="button" class="btn btn-link btn-danger"
-                //    data-temps-id="${temps.rowId}">
-                //    <i class="fa fa-times"></i>
-                //</button>
-                // อัปเดต DataTable
                 dataTable.draw();
             } else {
                 // แสดงข้อความเมื่อไม่มีข้อมูล

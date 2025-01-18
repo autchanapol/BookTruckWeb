@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookTruckWeb.Models;
 using BookTruckWeb.connect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookTruckWeb.Controllers
 {
@@ -78,6 +79,40 @@ namespace BookTruckWeb.Controllers
             return Ok(customer);
         }
 
+        [HttpPost("GetCustomersWhereId")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetCustomersWhereId([FromBody] Customer request)
+        {
+            // ตรวจสอบค่า RowId
+            if (string.IsNullOrEmpty(request.CustomerId))
+            {
+                return BadRequest(new { status = "error", message = "Invalid CustomerId" });
+            }
+
+            var customers = await (from customer in _context.Customers
+                                   where  customer.CustomerId.Contains(request.CustomerId) 
+                                   && customer.Status == 1
+                                   select new
+                                   {
+                                       customer.RowId,
+                                       customer.CustomerId,
+                                       customer.CustomerName,
+                                   }
+                                   ).ToListAsync();
+            // ตรวจสอบว่าพบข้อมูลหรือไม่
+            if (customers == null)
+            {
+                return Ok(new { status = "error", message = "Customer not found." });
+            }
+
+            // ส่งข้อมูลกลับพร้อม status
+            return Ok(new
+            {
+                status = "success",
+                message = "Customer found.",
+                data = customers
+            });
+        }
 
         [HttpPost("AddCustomers")]
         [ValidateAntiForgeryToken]

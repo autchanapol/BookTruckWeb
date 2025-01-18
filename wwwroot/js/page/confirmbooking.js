@@ -65,7 +65,7 @@ function getRequestData() {
                             statusClass = "badge bg-secondary"; // สีเหลือง
                             break;
                         case "Waiting":
-                            statusClass = "badge bg-secondary"; // สีเหลือง
+                            statusClass = "badge bg-yellow"; // สีเหลือง
                             break;
                         case "Approved":
                             statusClass = "badge bg-success"; // สีเขียว
@@ -92,26 +92,27 @@ function getRequestData() {
                         `
                         <!-- ปุ่ม Check -->
                         <div class="form-button-action">
-                            <!-- ปุ่ม Edit -->
-                            <button type="button" class="btn btn-link btn-primary btn-lg"
-                                onclick="redirectToReceivingBookingForm('${ticket.jobNo}')">
-                                <i class="fa fa-edit"></i>
+                         <button type="button" class="btn btn-link btn-primary btn-lg"
+                                    data-ticket-id="${ticket.rowId}" 
+                                    data-ticket-jobno="${ticket.jobNo}" 
+                                    >
+                                <i class="fa fa-check"></i>
                             </button>
-                            <!-- ปุ่ม Delete -->
-                            <button type="button" class="btn btn-link btn-danger"
-                             data-temps-id="${ticket.rowId}">
-                             <i class="fa fa-times"></i>
-                                </button>
+                            <!-- ปุ่ม Edit -->
+                            <button type="button" class="btn btn-link btn-success btn-lg"
+                                onclick="redirectToConfrimBookingForm('${ticket.jobNo}')">
+                                <i class="bi bi-clipboard-check-fill"></i>
+                            </button>
                         </div>
                         `
                     ]);
                 });
-                
+
                 // อัปเดต DataTable
                 dataTable.draw();
             } else {
                 // แสดงข้อความเมื่อไม่มีข้อมูล
-                dataTable.row.add(["", "", "", "No Requests found.", "", "", "",""]).draw();
+                dataTable.row.add(["", "", "", "No Requests found.", "", "", "", ""]).draw();
             }
 
         },
@@ -121,12 +122,43 @@ function getRequestData() {
     });
 }
 
-function redirectToReceivingBookingForm(jobNo) {
+$("#basic-datatables").on("click", ".btn-primary", function () {
+    const ticketid = $(this).data("ticket-id");
+    const jobno = $(this).data("ticket-jobno");
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
+    console.log(ticketid);
+    swal({
+        title: "Are you sure?",
+        text: ` คุณต้องการยืนยันเลขงานที่ ${jobno} clicked!`,
+        icon: "warning",
+        type: "warning",
+        buttons: {
+            confirm: {
+                text: "Yes, delete it!",
+                className: "btn btn-success",
+            },
+            cancel: {
+                visible: true,
+                className: "btn btn-danger",
+            },
+        },
+    }).then((result) => {
+        if (result) {
+            swal({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+            });
+        }
+    });
+});
+
+function redirectToConfrimBookingForm(jobNo) {
     if (!jobNo || jobNo.trim() === "") {
         console.error("JobNo is invalid.");
         return;
     }
-    const url = `${receivingBookingUrl}?JobNo=${encodeURIComponent(jobNo)}`;
+    const url = `${confrimBookingUrl}?JobNo=${encodeURIComponent(jobNo)}`;
     console.log("Redirecting to:", url);
     window.location.href = url;
 }

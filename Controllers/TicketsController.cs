@@ -73,6 +73,43 @@ namespace BookTruckWeb.Controllers
 
         }
 
+        [HttpPost("UpdateTicketsStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTicketsStatus([FromBody] Ticket ticket)
+        {
+            if (ticket.RowId == 0)
+            {
+                return BadRequest("Invalid Row Id.");
+            }
+            else
+            {
+                var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+                var existingTicket = await _context.Tickets.FindAsync(ticket.RowId);
+                if (existingTicket == null)
+                {
+                    return NotFound("Departments not found");
+                }
+                existingTicket.StatusOperation = ticket.StatusOperation;
+                existingTicket.LastUpdated = DateTime.Now;
+                existingTicket.ReceivedBy = rowId;
+                existingTicket.UpdatedBy = rowId;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Ticket updated successfully."
+                    });
+
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return StatusCode(500, "An error occurred during the update.");
+                }
+            }
+        }
+
         [HttpPost("UpdateTicketsFrmJobNo")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTicketsFrmJobNo([FromBody] Ticket ticket)
@@ -123,7 +160,7 @@ namespace BookTruckWeb.Controllers
                 if (ticket.Distance.HasValue)
                     existingTicket.Distance = ticket.Distance;
                 existingTicket.ActionBy = rowId;
-                existingTicket.ReceivedBy = rowId;
+                
                 existingTicket.ActionDate = DateTime.Now;
                 existingTicket.ReceivedDate = DateTime.Now;
                 existingTicket.LastUpdated = DateTime.Now;
@@ -217,6 +254,55 @@ namespace BookTruckWeb.Controllers
                                 join department in _context.Departments on tickets.DepartmentId equals department.RowId
                                 join customers in _context.Customers on tickets.CustomerId equals customers.RowId
                                 where tickets.Status == 1 && tickets.CreatedDate.Value.Date >= dateRange.StartData && tickets.CreatedDate.Value.Date <= dateRange.EndData
+                                select new
+                                {
+                                    tickets.RowId,
+                                    tickets.JobNo,
+                                    tickets.DepartmentId,
+                                    DepartmentName = department.DepartmentName,
+                                    tickets.CustomerId,
+                                    CustomerName = customers.CustomerName,
+                                    tickets.Loading,
+                                    tickets.StatusOperation,
+                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    tickets.StatusOperation == 2 ? "Approved" :
+                                    tickets.StatusOperation == 3 ? "Rejected" :
+                                    tickets.StatusOperation == 4 ? "Closed" :
+                                    tickets.StatusOperation == 5 ? "Canceled" :
+                                    "Draft",
+                                    tickets.Assign,
+                                    AssignName = (from assing in _context.Users
+                                                  where assing.RowId == tickets.Assign
+                                                  select assing.FirstName + " " + assing.LastName).FirstOrDefault(),
+                                    RequestFrom = (from requester in _context.Users
+                                                   where requester.RowId == tickets.CreatedBy
+                                                   select requester.FirstName + " " + requester.LastName).FirstOrDefault(),
+                                    tickets.CreatedDate
+                                }
+                                ).ToListAsync();
+
+            return Ok(ticket);
+
+        }
+
+
+        [HttpPost("GetTicketsWaitting")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetTicketsWaitting([FromBody] DateRangeDto dateRange)
+        {
+            var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+            var ticket = await (from tickets in _context.Tickets
+                                join vechicle in _context.Vehicles on tickets.VehiclesId equals vechicle.RowId into vehicleGroup
+                                from vechicle in vehicleGroup.DefaultIfEmpty()
+                                join vechicleType in _context.VehiclesTypes on vechicle.VehicleType equals vechicleType.RowId into vehicleTypeGroup
+                                from vehicleType in vehicleTypeGroup.DefaultIfEmpty()
+                                join loadType in _context.TypeLoads on tickets.TypeloadId equals loadType.RowId into loadTypeGroup
+                                from loadType in loadTypeGroup.DefaultIfEmpty()
+                                join department in _context.Departments on tickets.DepartmentId equals department.RowId
+                                join customers in _context.Customers on tickets.CustomerId equals customers.RowId
+                                where tickets.Status == 1 
+                                && tickets.CreatedDate.Value.Date >= dateRange.StartData && tickets.CreatedDate.Value.Date <= dateRange.EndData
+                                && tickets.StatusOperation == 1
                                 select new
                                 {
                                     tickets.RowId,

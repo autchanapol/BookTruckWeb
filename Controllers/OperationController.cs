@@ -49,6 +49,19 @@ namespace BookTruckWeb.Controllers
             return View();
         }
 
+        public IActionResult ConfrimJobs()
+        {
+
+            return View();
+        }
+        public IActionResult ConfrimJobsDetail()
+        {
+
+            return View();
+        }
+
+
+
         public IActionResult ReceivingBookingForm(string jobNo)
         {
             // ตัวอย่างการดึงข้อมูล (เช่นจากฐานข้อมูล)
