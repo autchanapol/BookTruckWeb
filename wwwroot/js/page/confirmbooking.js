@@ -1,4 +1,5 @@
 ﻿const url_getRequest = window.AppUrls.getRequestDataUrl;
+const url_setConfirmUrl = window.AppUrls.setConfirmUrl;
 var dataTable; // กำหนดตัวแปร Global
 
 $(document).ready(function () {
@@ -125,7 +126,7 @@ function getRequestData() {
 $("#basic-datatables").on("click", ".btn-primary", function () {
     const ticketid = $(this).data("ticket-id");
     const jobno = $(this).data("ticket-jobno");
-    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
+    
     console.log(ticketid);
     swal({
         title: "Are you sure?",
@@ -144,11 +145,12 @@ $("#basic-datatables").on("click", ".btn-primary", function () {
         },
     }).then((result) => {
         if (result) {
-            swal({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success"
-            });
+            conformTikget(jobno, ticketid);
+            //swal({
+            //    title: "Deleted!",
+            //    text: "Your file has been deleted.",
+            //    icon: "success"
+            //});
         }
     });
 });
@@ -161,4 +163,53 @@ function redirectToConfrimBookingForm(jobNo) {
     const url = `${confrimBookingUrl}?JobNo=${encodeURIComponent(jobNo)}`;
     console.log("Redirecting to:", url);
     window.location.href = url;
+}
+
+function conformTikget(jobNo, ticketid) {
+    console.log(url_setConfirmUrl);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+    if (!jobNo || jobNo.trim() === "" && !ticketid || ticketid === 0) {
+        console.error("JobNo is invalid.");
+        return;
+    }
+    else {
+        $.ajax({
+            url: url_setConfirmUrl, // URL ของ API
+            type: "POST",
+            headers: { "RequestVerificationToken": token },
+            contentType: "application/json",
+            data: JSON.stringify({
+                RowId: ticketid,
+                JobNo: jobNo,
+                StatusOperation : 1
+            }),
+            success: function (data) {
+                console.log("data assign", data);
+
+                if (data.success) {
+                    console.log("Success:", data.message); // แสดงข้อความจาก API
+                    successClick(data.message);
+                    getRequestData(); // เรียกฟังก์ชันเพิ่มเติม
+                } else {
+                    swal({
+                        title: "Error!",
+                        text: data.message,
+                        icon: "error"
+                    });
+                    console.log("Failed:", data.message);
+                }
+
+                getRequestData();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+    }
+
 }

@@ -51,13 +51,17 @@ namespace BookTruckWeb.Controllers
 
         public IActionResult ConfrimJobs()
         {
-
             return View();
         }
-        public IActionResult ConfrimJobsDetail()
+        public IActionResult ConfrimJobsDetail(string jobNo)
         {
 
-            return View();
+            var viewModel = new ReceivingBookingViewModel
+            {
+                JobNo = jobNo,
+            };
+
+            return View(viewModel);
         }
 
 

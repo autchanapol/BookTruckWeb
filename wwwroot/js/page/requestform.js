@@ -7,7 +7,7 @@ const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
 const url_getAssignUrl = window.AppUrls.getAssignUrl;
 const url_getCustomerId = window.AppUrls.getCustomerWid;
 //const url_getAssignUrl = window.AppUrls.getAssignUrl;
-var input = document.getElementById("customers_id");
+var input = document.getElementById("customers_code");
 const jobNo = getQueryParam("JobNo");
 
 $(document).ready(function () {
@@ -28,8 +28,8 @@ input.addEventListener("keypress", function (event) {
         // Cancel the default action, if needed
         event.preventDefault();
 
-        const customers_id = $('#customers_id').val();
-        if (!customers_id) {
+        const customers_code = $('#customers_code').val();
+        if (!customers_code) {
             swal("Warning!", "กรุณากรอกรหัสลูกค้าก่อนค้นหา!", {
                 icon: "warning",
                 buttons: {
@@ -41,10 +41,7 @@ input.addEventListener("keypress", function (event) {
             return;
         }
         else {
-            getCustomersWhereId(customers_id);
-            // ใช้ Bootstrap Modal API เปิด modal
-            //const modal = new bootstrap.Modal(document.getElementById('scrollableModal'));
-            //modal.show(); // แสดง modal
+            getCustomersWhereId(customers_code);
         }
     }
 });
@@ -202,9 +199,11 @@ function populateTable(data) {
             console.log("CustomerName:", customerName);
 
             // เติมค่าในฟิลด์ input
-            $('#customer_row').val(rowId);
-            $('#customers_id').val(customerId);
+            $('#customers_id').val(rowId);
+            $('#customers_code').val(customerId);
             $('#customers_name').val(customerName);
+
+
             
             // ปิด Modal
             $('#scrollableModal').modal('hide');
@@ -491,7 +490,7 @@ function saveRequestFrom() {
         });
         return;
     }
-    else if (!customer_row) {
+    else if (!customers_id) {
         swal("Warning!", "Please Select a Customer!", {
             icon: "warning",
             buttons: {
@@ -640,7 +639,7 @@ function saveRequestFrom() {
         console.log("date", JSON.stringify({
             JobNo: "TT",
             DepartmentId: department_id,
-            CustomerId: customer_row,
+            CustomerId: customers_id,
             VehiclesTypeId: trucktype_id,
             TempId: temp_id,
             Backhual: backhual,
@@ -671,7 +670,7 @@ function saveRequestFrom() {
             data: JSON.stringify({
                 JobNo: "TT",
                 DepartmentId: department_id,
-                CustomerId: customer_row,
+                CustomerId: customers_id,
                 VehiclesTypeId: trucktype_id,
                 TempId: temp_id,
                 Backhual: backhual,
@@ -690,7 +689,7 @@ function saveRequestFrom() {
                 FoamBox: foam_box,
                 DryIce: dry_ice,
                 Comment: comment,
-                StatusOperation: 1,
+                StatusOperation: 0,
                 Assign: assign
             }),
             success: function (data) {

@@ -3,8 +3,8 @@
 *@
 @{
 }
+@model BookTruckWeb.Models.DTO.ReceivingBookingViewModel
 @Html.AntiForgeryToken()
-
 <head>
     <!-- เพิ่ม CSS สำหรับการไฮไลต์แถว -->
     <style>
@@ -89,7 +89,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Form Elements</div>
+                    <div class="card-title">From Requester Job No : @Model.JobNo</div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -113,6 +113,13 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col">
+
+                                        <input type="text"
+                                               class="form-control"
+                                               hidden
+                                               id="row_id"
+                                               placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+
                                         <input type="text"
                                                hidden
                                                id="customer_row" />
@@ -305,7 +312,7 @@
                                            class="form-control"
                                            disabled
                                            id="assign"
-                                           placeholder="Enter CBM" />
+                                           placeholder="Assign" />
                                    @*  <select class="form-select form-control"
                                             id="assign">
                                         <option value="">-- Select an option --</option>
@@ -317,7 +324,7 @@
                     </div>
                 </div>
                 <div class="card-action">
-                    <button onclick="saveRequestFrom()" class="btn btn-success">รับเรื่อง / รับทราบ</button>
+                    <button onclick="saveConfirm()" id="confirmButton" class="btn btn-success">รับเรื่อง / รับทราบ</button>
                     <button onclick="window.history.back()" class="btn btn-danger">ย้อนกลับ</button>
                 </div>
             </div>
@@ -329,7 +336,8 @@
     <script>
 
           window.AppUrls = {
-            getTicketsFrmJobNoUrl: '@Url.Action("GetTicketsFrmJobNo", "Tickets")',
+            getTicketsFrmJobNoUrl: '@Url.Action("GetTicketsViewJobNo", "Tickets")',
+             setConfirmUrl: '@Url.Action("UpdateTicketsStatus", "Tickets")',
             baseUrl: '@Url.Content("~")'
         };
     </script>

@@ -55,7 +55,8 @@ namespace BookTruckWeb.Controllers
                                     CustomerName = customers.CustomerName,
                                     tickets.Loading,
                                     tickets.StatusOperation,
-                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    StatusName = tickets.StatusOperation == 0 ? "New Request" :
+                                    tickets.StatusOperation == 1 ? "Waiting" :
                                     tickets.StatusOperation == 2 ? "Approved" :
                                     tickets.StatusOperation == 3 ? "Rejected" :
                                     tickets.StatusOperation == 4 ? "Closed" :
@@ -87,10 +88,15 @@ namespace BookTruckWeb.Controllers
                 var existingTicket = await _context.Tickets.FindAsync(ticket.RowId);
                 if (existingTicket == null)
                 {
-                    return NotFound("Departments not found");
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "Not found this Ticket"
+                    });
                 }
                 existingTicket.StatusOperation = ticket.StatusOperation;
                 existingTicket.LastUpdated = DateTime.Now;
+                existingTicket.ReceivedDate = DateTime.Now;
                 existingTicket.ReceivedBy = rowId;
                 existingTicket.UpdatedBy = rowId;
                 try
@@ -238,12 +244,77 @@ namespace BookTruckWeb.Controllers
             return Ok(ticket_);
         }
 
+        [HttpPost("GetTicketsViewJobNo")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetTicketsViewJobNo([FromBody] Ticket ticket)
+        {
+            var userid = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+            var ticket_ = await (from tickets in _context.Tickets
+                                 join dep in _context.Departments on tickets.DepartmentId equals dep.RowId
+                                 join customer in _context.Customers on tickets.CustomerId equals customer.RowId
+                                 join vechicle in _context.Vehicles on tickets.VehiclesId equals vechicle.RowId into vehicleGroup
+                                 from vechicle in vehicleGroup.DefaultIfEmpty()
+                                 join temp in _context.Temps on tickets.TempId equals temp.RowId
+                                 join vechicletype in _context.VehiclesTypes on tickets.VehiclesTypeId equals vechicletype.RowId
+                                 join typeload in _context.TypeLoads on tickets.TypeloadId equals typeload.RowId
+                                 join user in _context.Users on tickets.Assign equals user.RowId
+                                 where tickets.JobNo == ticket.JobNo
+                                 //where tickets.JobNo == ticket.JobNo && tickets.Assign == userid
+                                 select new
+                                 {
+                                     tickets.RowId,
+                                     tickets.JobNo,
+                                     tickets.DepartmentId,
+                                     tickets.CustomerId,
+                                     tickets.VehiclesTypeId,
+                                     tickets.Backhual,
+                                     tickets.Origin,
+                                     tickets.Status,
+                                     tickets.Loading,
+                                     tickets.Destination,
+                                     tickets.Etatostore,
+                                     tickets.TypeloadId,
+                                     tickets.TempId,
+                                     tickets.Qty,
+                                     tickets.Weight,
+                                     tickets.Cbm,
+                                     tickets.DeliveryMan,
+                                     tickets.Handjack,
+                                     tickets.Cart,
+                                     tickets.Cardboard,
+                                     tickets.FoamBox,
+                                     tickets.DryIce,
+                                     tickets.Assign,
+                                     tickets.Comment,
+                                     tickets.VehiclesId,
+                                     tickets.Driver,
+                                     tickets.Sub,
+                                     tickets.Tel,
+                                     tickets.TravelCosts,
+                                     tickets.Distance,
+                                     tickets.StatusOperation,
+                                     dep.DepartmentName,
+                                     CustomerCode = customer.CustomerId,
+                                     customer.CustomerName,
+                                     vechicle.VehicleName,
+                                     typeload.LoadName,
+                                     AssignName =  user.FirstName + " " + user.LastName,
+                                     vechicletype.VehicleTypeName,
+                                     temp.TempName
+
+
+
+                                 }).FirstOrDefaultAsync();
+
+            return Ok(ticket_);
+        }
+
 
         [HttpPost("GetTicketsAll")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetTicketsAll([FromBody] DateRangeDto dateRange)
         {
-            var rowId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+            var userid = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
             var ticket = await (from tickets in _context.Tickets
                                 join vechicle in _context.Vehicles on tickets.VehiclesId equals vechicle.RowId into vehicleGroup
                                 from vechicle in vehicleGroup.DefaultIfEmpty()
@@ -253,7 +324,11 @@ namespace BookTruckWeb.Controllers
                                 from loadType in loadTypeGroup.DefaultIfEmpty()
                                 join department in _context.Departments on tickets.DepartmentId equals department.RowId
                                 join customers in _context.Customers on tickets.CustomerId equals customers.RowId
-                                where tickets.Status == 1 && tickets.CreatedDate.Value.Date >= dateRange.StartData && tickets.CreatedDate.Value.Date <= dateRange.EndData
+                                where tickets.Status == 1 
+                                && tickets.StatusOperation != 0
+                                && tickets.CreatedDate.Value.Date >= dateRange.StartData 
+                                && tickets.CreatedDate.Value.Date <= dateRange.EndData
+                                //&& tickets.Assign == userid
                                 select new
                                 {
                                     tickets.RowId,
@@ -264,7 +339,8 @@ namespace BookTruckWeb.Controllers
                                     CustomerName = customers.CustomerName,
                                     tickets.Loading,
                                     tickets.StatusOperation,
-                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    StatusName = tickets.StatusOperation == 0 ? "New Request" :
+                                    tickets.StatusOperation == 1 ? "Waiting" :
                                     tickets.StatusOperation == 2 ? "Approved" :
                                     tickets.StatusOperation == 3 ? "Rejected" :
                                     tickets.StatusOperation == 4 ? "Closed" :
@@ -302,7 +378,7 @@ namespace BookTruckWeb.Controllers
                                 join customers in _context.Customers on tickets.CustomerId equals customers.RowId
                                 where tickets.Status == 1 
                                 && tickets.CreatedDate.Value.Date >= dateRange.StartData && tickets.CreatedDate.Value.Date <= dateRange.EndData
-                                && tickets.StatusOperation == 1
+                                && tickets.StatusOperation == 0
                                 select new
                                 {
                                     tickets.RowId,
@@ -313,7 +389,8 @@ namespace BookTruckWeb.Controllers
                                     CustomerName = customers.CustomerName,
                                     tickets.Loading,
                                     tickets.StatusOperation,
-                                    StatusName = tickets.StatusOperation == 1 ? "Waiting" :
+                                    StatusName = tickets.StatusOperation == 0 ? "New Request" :
+                                    tickets.StatusOperation == 1 ? "Waiting" :
                                     tickets.StatusOperation == 2 ? "Approved" :
                                     tickets.StatusOperation == 3 ? "Rejected" :
                                     tickets.StatusOperation == 4 ? "Closed" :

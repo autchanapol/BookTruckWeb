@@ -1,13 +1,5 @@
-﻿const url_getDepartments = window.AppUrls.getDepartmentsUrl;
-const url_getCustomers = window.AppUrls.getCustomersUrl;
-const url_getVehiclesTypes = window.AppUrls.getVehiclesTypesUrl;
-const url_getGetLoadType = window.AppUrls.getGetLoadTypeUrl;
-const url_getTeamps = window.AppUrls.getTempsUrl;
-const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
-const url_getAssignUrl = window.AppUrls.getAssignUrl;
-const url_getVehiclesUrl = window.AppUrls.getVehiclesUrl;
+﻿
 const url_GetTicketsFrmJobNoUrl = window.AppUrls.getTicketsFrmJobNoUrl;
-const url_getVehiclesRowIdUrl = window.AppUrls.getVehiclesRowIdUrl;
 
 let status_operation = 1;
 // ตัวอย่างการใช้งาน 
@@ -18,17 +10,6 @@ $(document).ready(function () {
     initialize();
 });
 
-
-$("#carDropdown").change(function () {
-    const selectedVehicleId = $(this).val(); // ดึงค่า rowId ของรถที่เลือก
-
-    if (selectedVehicleId) {
-        getVehicleLicense(selectedVehicleId);
-    } else {
-        // หากไม่ได้เลือกอะไร เคลียร์ค่าใน input
-        $("#carshow").val("-");
-    }
-})
 
 function getVehicleLicense(id) {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');

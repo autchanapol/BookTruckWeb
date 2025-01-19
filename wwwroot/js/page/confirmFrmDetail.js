@@ -1,4 +1,5 @@
 ﻿const url_GetTicketsFrmJobNoUrl = window.AppUrls.getTicketsFrmJobNoUrl;
+const url_setConfirmUrl = window.AppUrls.setConfirmUrl;
 
 let status_operation = 1;
 // ตัวอย่างการใช้งาน 
@@ -28,6 +29,89 @@ function getQueryParam(param) {
 
 }
 
+function saveConfirm() {
+    const url = new URL(window.location.href);
+    const row_id = $('#row_id').val();
+    const jobno = url.searchParams.get("JobNo");
+    swal({
+        title: "Are you sure?",
+        text: ` คุณต้องการยืนยันเลขงานที่ ${jobno} clicked!`,
+        icon: "warning",
+        type: "warning",
+        buttons: {
+            confirm: {
+                text: "Yes, delete it!",
+                className: "btn btn-success",
+            },
+            cancel: {
+                visible: true,
+                className: "btn btn-danger",
+            },
+        },
+    }).then((result) => {
+        if (result) {
+            conformTikget(jobno, row_id);
+        }
+    });
+}
+
+function conformTikget(jobNo, ticketid) {
+    console.log(url_setConfirmUrl);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+    if (!jobNo || jobNo.trim() === "" && !ticketid || ticketid === 0) {
+        console.error("JobNo is invalid.");
+        return;
+    }
+    else {
+        $.ajax({
+            url: url_setConfirmUrl, // URL ของ API
+            type: "POST",
+            headers: { "RequestVerificationToken": token },
+            contentType: "application/json",
+            data: JSON.stringify({
+                RowId: ticketid,
+                JobNo: jobNo,
+                StatusOperation: 1
+            }),
+            success: function (data) {
+                console.log("data assign", data);
+
+                if (data.success) {
+                    console.log("Success:", data.message); // แสดงข้อความจาก API
+                    document.getElementById("confirmButton").style.display = "none";
+                    swal("Successfully!", data.message + " Job No." + jobNo, {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: "btn btn-success",
+                            },
+                        },
+                    });
+
+
+                } else {
+                    swal({
+                        title: "Error!",
+                        text: data.message,
+                        icon: "error"
+                    });
+                    console.log("Failed:", data.message);
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+    }
+
+}
+
 function getRequestFrm() {
 
     console.log('getRequestFrm', url_GetTicketsFrmJobNoUrl);
@@ -52,16 +136,18 @@ function getRequestFrm() {
                 console.log("data getRequestFrm", data);
                 if (data) {
                     $('#row_id').val(data.rowId);
-                    $('#department_id').val(data.departmentId);
-                    $('#customers_id').val(data.customerId);
-                    $('#trucktype_id').val(data.vehiclesTypeId);
-                    $('#temp_id').val(data.tempId);
+                    $('#department_id').val(data.departmentName);
+                    $('#customers_id').val(data.customerCode);
+                    $('#customer_row').val(data.customerId);
+                    $('#customers_name').val(data.customerName);
+                    $('#trucktype_id').val(data.vehicleTypeName);
+                    $('#temp_id').val(data.tempName);
                     $('#backhual').prop('checked', data.backhual === 1);
                     $('#origin').val(data.origin);
                     $('#loading').val(data.loading);
                     $('#destination').val(data.destination);
                     $('#eta').val(data.etatostore);
-                    $('#typeload_id').val(data.typeloadId);
+                    $('#typeload_id').val(data.loadName);
                     $('#qty').val(data.qty);
                     $('#weight').val(data.weight);
                     $('#cbm').val(data.cbm);
@@ -72,6 +158,8 @@ function getRequestFrm() {
                     $('#foam_box').prop('checked', data.foamBox === 1);
                     $('#dry_ice').prop('checked', data.dryIce === 1);
                     $('#comment').val(data.comment);
+                    $('#assign').val(data.assignName);
+                    
                 }
                 else {
 
