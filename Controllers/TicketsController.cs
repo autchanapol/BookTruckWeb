@@ -204,6 +204,7 @@ namespace BookTruckWeb.Controllers
         public async Task<IActionResult> GetTicketsFrmJobNo([FromBody] Ticket ticket)
         {
             var ticket_ = await (from tickets in _context.Tickets
+                                 join customer in _context.Customers on tickets.CustomerId equals customer.RowId
                                  where tickets.JobNo == ticket.JobNo
                                  select new
                                  {
@@ -211,6 +212,8 @@ namespace BookTruckWeb.Controllers
                                      tickets.JobNo,
                                      tickets.DepartmentId,
                                      tickets.CustomerId,
+                                     customer.CustomerName,
+                                     CustomerCode = customer.CustomerId,
                                      tickets.VehiclesTypeId,
                                      tickets.Backhual,
                                      tickets.Origin,

@@ -10,7 +10,7 @@
 </head>
 <div class="page-inner">
     <div class="page-header">
-        <h3 class="fw-bold mb-3">Request Form</h3>
+        <h3 class="fw-bold mb-3">Approving Form</h3>
         <ul class="breadcrumbs mb-3">
             <li class="nav-home">
                 <a href="#">
@@ -27,21 +27,64 @@
                 <i class="icon-arrow-right"></i>
             </li>
             <li class="nav-item">
-                <a href="#">Vehicle booking request</a>
+                <a href="#">Receiveing Booking</a>
             </li>
             <li class="separator">
                 <i class="icon-arrow-right"></i>
             </li>
             <li class="nav-item">
-                <a href="#">New Request Form</a>
+                <a href="#">Approving Form</a>
             </li>
         </ul>
     </div>
     <div class="row">
+
+
+        <!-- Scrollable modal -->
+        <!-- Modal -->
+        <div class="modal fade" id="scrollableModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle">กรุณาเลือกลูกค้า</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table id="customer-table" class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>รหัสลูกค้า</th>
+                                        <th>ชื่อลูกค้า</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ข้อมูลจะแสดงที่นี่ -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                onclick="$('#scrollableModal').modal('hide')">
+                            ปิด
+                        </button>
+                        <button id="select-btn" type="button" class="btn btn-primary">เลือก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal -->
+
+
         @* <p>RowId: @Model.RowId</p> *@
 
         <div class="col-md-12">
-            <div class="card">
+            <div  class="card">
                 <div class="card-header">
                     <div class="card-title">From Requester Job No : @Model.JobNo</div>
                 </div>
@@ -57,12 +100,43 @@
                                     <option value="">-- Select an option --</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                          @*   <div class="form-group">
                                 <label for="defaultSelect">Custommer</label>
                                 <select class="form-select form-control"
                                         id="customers_id">
                                     <option value="">-- Select an option --</option>
                                 </select>
+                            </div> *@
+                            <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text"
+                                           hidden
+                                           id="customer_row" />
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="customers_id"
+                                           hidden
+                                           placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+
+                                    <label for="defaultSelect">รหัสลูกค้า</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="customers_code"
+                                           placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+
+                                </div>
+                                <div class="col">
+
+                                    <label for="defaultSelect">ชื่อลูกค้า</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           readonly
+                                           id="customers_name"
+                                           placeholder=".." />
+                                </div>
+                            </div>
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Truck Type</label>
@@ -213,11 +287,11 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div id="card-body" class="card">
                 <div class="card-header">
                     <div class="card-title">For Approving</div>
                 </div>
-                <div class="card-body">
+                <div  class="card-body">
 
                     <div class="col-md-4 col-lg-5">
                         <div class="row">
@@ -225,7 +299,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="carDropdown">Vehicle</label>
-                                    <select class="form-select form-control" id="carDropdown">
+                                    <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
                                         <option value="">-- Select a Car --</option>
                                     </select>
                                 </div>
@@ -285,9 +359,10 @@
                 </div>
             </div>
             <div class="card-action">
-                <button onclick="approve()" class="btn btn-success">Approve</button>
-                <button onclick="reject()" class="btn btn-danger">Reject</button>
-                <button onclick="window.history.back()" class="btn btn-danger">Cancel</button>
+                <button onclick="approve()" id="approve" class="btn btn-success">อนุมัติงาน</button>
+                <button hidden onclick="changejob()" id="changejob" class="btn btn-success">ย้อนสถานะ</button>
+                <button onclick="reject()" id="reject" class="btn btn-danger">ปฏิเสธงาน</button>
+                <button onclick="window.history.back()" class="btn btn-danger">ย้อนกลับ</button>
             </div>
         </div>
     </div>
@@ -299,6 +374,7 @@
 
           window.AppUrls = {
             getDepartmentsUrl: '@Url.Action("GetDepartments", "Departments")',
+            getCustomerWid: '@Url.Action("GetCustomersWhereId", "Customers")',
             getCustomersUrl: '@Url.Action("GetCustomers", "Customers")',
             getVehiclesUrl: '@Url.Action("GetVehiclesActive", "Vehicles")',
             getVehiclesTypesUrl: '@Url.Action("GetVehiclesTypes", "VehiclesTypes")',

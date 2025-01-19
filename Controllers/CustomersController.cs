@@ -100,7 +100,7 @@ namespace BookTruckWeb.Controllers
                                    }
                                    ).ToListAsync();
             // ตรวจสอบว่าพบข้อมูลหรือไม่
-            if (customers == null)
+            if (customers == null || customers.Count == 0)
             {
                 return Ok(new { status = "error", message = "Customer not found." });
             }
