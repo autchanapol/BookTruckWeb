@@ -26,7 +26,7 @@ namespace BookTruckWeb.Controllers
         {
             var vehicles = await (from ve in _context.Vehicles
                                   join tic in _context.Tickets on ve.RowId equals tic.VehiclesId
-                                  where ve.Active == 1 && ve.Status == 1
+                                  where ve.Active == 1 && ve.Status == 1 && tic.StatusOperation == 2
                                   group tic by new { ve.RowId, ve.VehicleLicense, ve.VehicleName, tic.Driver } into g
                                   select new
                                   {
@@ -66,13 +66,44 @@ namespace BookTruckWeb.Controllers
             return Ok(vehicles);
         }
 
+        [HttpPost("GetVehiclesFrmName")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesFrmName([FromBody] Vehicle vehicle)
+        {
+            var vehicles = await (from ve in _context.Vehicles
+                                  join typeV in _context.VehiclesTypes on ve.VehicleType equals typeV.RowId
+                                  where ve.Status == 1 && ve.Active == 0 && ve.VehicleName.Contains(vehicle.VehicleName) 
+                                  select new
+                                  {
+                                      ve.RowId,
+                                      ve.VehicleName,
+                                      ve.VehicleLicense,
+                                      ve.VehicleType,
+                                      typeV.VehicleTypeName
+
+                                  }
+                                  ).ToListAsync();
+            if (vehicles == null || vehicles.Count == 0)
+            {
+                return Ok(new { status = "error", message = "Vehicles not found." });
+            }
+
+            return Ok(new
+            {
+                status = "success",
+                message = "Vehicles found.",
+                data = vehicles
+            });
+
+        }
+
         [HttpPost("GetVehiclesActive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetVehiclesActive([FromBody] Vehicle vehicle)
         {
             var vehicles = await (from ve in _context.Vehicles
                                   join typeV in _context.VehiclesTypes on ve.VehicleType equals typeV.RowId
-                                  where ve.Status == 1 && ve.Active == 1 && ve.VehicleType == vehicle.VehicleType
+                                  where ve.Status == 1 && ve.Active == 0 && ve.VehicleType == vehicle.VehicleType
                                   select new
                                   {
                                       ve.RowId,
@@ -98,6 +129,134 @@ namespace BookTruckWeb.Controllers
             return Ok(vehicles);
         }
 
+        [HttpPost("CloseJobVehicles")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CloseJobVehicles([FromBody] Vehicle vehicle)
+        {
+            if (vehicle == null)
+            {
+                return BadRequest("Invalid Data");
+            }
+            else
+            {
+                var userId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+                var vehicles = await _context.Vehicles.FirstOrDefaultAsync(vt => vt.RowId == vehicle.RowId && vt.Status == 1);
+                if (vehicles == null)
+                {
+                    var returnData = new
+                    {
+                        status = false,
+                        code = -1,
+                        message = "Vehicles not found or status is not active."
+                    };
+                    return Ok(returnData);
+                }
+
+                vehicles.Active = 0;
+                vehicles.UpdatedDate = DateTime.Now;
+                vehicles.UpdatedBy = userId;
+
+                // ค้นหา Tickets ที่เกี่ยวข้อง
+                var ticketsupdate = await _context.Tickets
+                    .Where(t => t.VehiclesId == vehicle.RowId && t.StatusOperation == 2)
+                    .ToListAsync();
+
+                if (ticketsupdate.Any())
+                {
+                    foreach (var ticket in ticketsupdate)
+                    {
+                        ticket.StatusOperation = 4;
+                        ticket.LastUpdated = DateTime.Now;
+                        ticket.UpdatedBy = userId;
+                    }
+                }
+
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        status = true,
+                        message = "Vehicles Closed successfully."
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+
+            }
+        }
+
+        [HttpPost("RevertJobVehicles")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RevertJobVehicles([FromBody] Vehicle vehicle)
+        {
+            if (vehicle == null)
+            {
+                return BadRequest("Invalid Data");
+            }
+            else
+            {
+                var userId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+                var vehicles = await _context.Vehicles.FirstOrDefaultAsync(vt => vt.RowId == vehicle.RowId && vt.Status == 1);
+                if (vehicles == null)
+                {
+                    var returnData = new
+                    {
+                        status = false,
+                        code = -1,
+                        message = "Vehicles not found or status is not active."
+                    };
+                    return Ok(returnData);
+                }
+
+                vehicles.Active = 0;
+                vehicles.UpdatedDate = DateTime.Now;
+                vehicles.UpdatedBy = userId;
+
+                // ค้นหา Tickets ที่เกี่ยวข้อง
+                var ticketsupdate = await _context.Tickets
+                    .Where(t => t.VehiclesId == vehicle.RowId && t.StatusOperation == 2)
+                    .ToListAsync();
+
+                if (ticketsupdate.Any())
+                {
+                    foreach (var ticket in ticketsupdate)
+                    {
+                        ticket.StatusOperation = 1;
+                        ticket.Distance = 0;
+                        ticket.VehiclesId = null;
+                        ticket.Driver = null;
+                        ticket.Sub = null;
+                        ticket.Tel = null;
+                        ticket.ActionBy = null;
+                        ticket.ActionDate = DateTime.Now;
+                        ticket.TravelCosts = 0;
+                        ticket.LastUpdated = DateTime.Now;
+                        ticket.UpdatedBy = userId;
+                    }
+                }
+
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        status = true,
+                        message = "Vehicles Closed successfully."
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+
+            }
+        }
+
         [HttpPost("AddVehicles")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddVehicles([FromBody] Vehicle vehicle)
@@ -108,6 +267,7 @@ namespace BookTruckWeb.Controllers
             }
             else
             {
+                var userId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
                 var vehicleType = await _context.VehiclesTypes.FirstOrDefaultAsync(vt => vt.RowId == vehicle.VehicleType && vt.Status == 1);
                 if (vehicleType == null)
                 {
@@ -129,8 +289,8 @@ namespace BookTruckWeb.Controllers
                     WeightCapacity = vehicle.WeightCapacity != null ? vehicle.WeightCapacity.Value : 0,
                     WeightEmpty = vehicle.WeightEmpty != null ? vehicle.WeightEmpty.Value : 0,
                     CubeCapacity = vehicle.CubeCapacity != null ? vehicle.CubeCapacity.Value : 0,
-                    CreatedBy = 1,
-                    Active = 1,
+                    CreatedBy = userId,
+                    Active = 0,
                     CreatedDate = DateTime.Now
 
                 };
@@ -164,6 +324,7 @@ namespace BookTruckWeb.Controllers
             }
             else
             {
+                var userId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
                 var existingVehicles = await _context.Vehicles.FirstOrDefaultAsync(vt => vt.RowId == vehicle.RowId && vt.Status == 1);
                 if (existingVehicles == null)
                 {
@@ -209,7 +370,7 @@ namespace BookTruckWeb.Controllers
                     existingVehicles.CubeCapacity = vehicle.CubeCapacity.Value;
                 }
                 existingVehicles.UpdatedDate = DateTime.Now;
-                existingVehicles.UpdatedBy = 1;
+                existingVehicles.UpdatedBy = userId;
                 try
                 {
                     await _context.SaveChangesAsync();

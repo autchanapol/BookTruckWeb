@@ -4,6 +4,24 @@
 @{
 }
 @Html.AntiForgeryToken()
+
+<head>
+    <link rel="stylesheet" href="~/css/modals.css" />
+    <style>
+        /* เปลี่ยนสีพื้นหลังของ Modal */
+        #scrollableModal .modal-content {
+            background-color: #f1f1f1;
+            color: #333;
+            border-radius: 8px;
+        }
+
+        /* เปลี่ยนสีพื้นหลังของ Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+        }
+    </style>
+
+</head>
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Receiveing Booking</h3>
@@ -58,13 +76,51 @@
                     <br />  <lable>  </lable>
 
                     @*  <a asp-controller="Operation" asp-action="RequestForm" class="btn btn-primary btn-round ms-auto">
-                        <i class="fa fa-plus"></i>
-                        New Request
+                    <i class="fa fa-plus"></i>
+                    New Request
                     </a>*@
                 </div>
             </div>
             <div class="row">
 
+
+                <!-- Modal vehicle -->
+                <div class="modal fade" id="scrollableModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">เลือกยานพาหนะ</h5>
+                                <button onclick="$('#scrollableModal').modal('hide')" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-hover" id="vehicle-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>ชื่อรถ</th>
+                                            <th>ทะเบียนรถ</th>
+                                            <th>ประเภทรถ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ข้อมูลรถจะแสดงที่นี่ -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        onclick="$('#scrollableModal').modal('hide')">
+                                    ปิด
+                                </button>
+                                <button id="select-btn" type="button" class="btn btn-primary">เลือก</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End Modal vehicle -->
                 <!-- Modal -->
                 <div class="modal fade" id="selectedDataModal" tabindex="-1" role="dialog" aria-labelledby="selectedDataModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl" role="document">
@@ -82,17 +138,26 @@
                                 <div class="row">
                                     <!-- License -->
                                     <div class="col">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="car_id"
+                                               hidden
+                                               placeholder="CAR" />
                                         <div class="form-group">
-                                            <label for="carDropdown">Vehicle</label>
-                                            <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
-                                                <option value="">-- Select a Car --</option>
-                                            </select>
+                                            <label for="carDropdown">ยานพาหนะ</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="carname"
+                                                   placeholder="พิมพ์ลง Enter ค้นหา" />
+                                            @*   <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
+                                            <option value="">-- Select a Car --</option>
+                                            </select> *@
                                         </div>
                                     </div>
                                     <!-- Truck Type -->
                                     <div class="col">
                                         <div class="form-group">
-                                            <label for="sub">License</label>
+                                            <label for="sub">ทะเบียนรถ</label>
                                             <input type="text"
                                                    disabled
                                                    class="form-control"
@@ -105,32 +170,48 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
-                                        <label for="email2">Driver</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="driver"
-                                               placeholder="Enter Driver" />
-                                               </div>
+                                            <label for="email2">ประเภทรถ</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="cartype"
+                                                   disabled
+                                                   value="-"
+                                                   placeholder="" />
                                         </div>
+                                    </div>
                                     <div class="col">
                                         <div class="form-group">
-                                        <label for="email2">SUB</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="sub"
-                                               placeholder="Enter Sub" />
-                                               </div>
+                                            <label for="driver">ผู้ขับขี่</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="driver"
+                                                   placeholder="Enter Driver" />
+                                        </div>
                                     </div>
-                                    </div>
-                                <div class="form-group">
-                                   
-                                    
-                                    <label for="email2">Tel</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           id="tel"
-                                           placeholder="Enter Sub" />
+
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="email2">SUB</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="sub"
+                                                   placeholder="Enter Sub" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="email2">Tel</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="tel"
+                                                   placeholder="Enter Sub" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <table class="table table-striped" id="selectedDataTable">
                                     <thead>
                                         <tr>
@@ -197,10 +278,12 @@
 </div>
 @section Scripts {
     <script>
-        const receivingBookingUrl = '@Url.Action("ReceivingBookingForm", "Operation")';
+        const requestFormShowUrl = '@Url.Action("JobsDetails", "Operation")';
         window.AppUrls = {
             getRequestDataUrl: '@Url.Action("GetTicketsAll", "Tickets")',
             getDataJsonUrl: '@Url.Action("GetTicketsJson", "Tickets")',
+            getVehiclesFrmNameUrl: '@Url.Action("GetVehiclesFrmName", "Vehicles")',
+            setDataApproveUrl: '@Url.Action("MutiUpdateTicketsStatus", "Tickets")',
             baseUrl: '@Url.Content("~")'
         }
 

@@ -74,6 +74,79 @@ namespace BookTruckWeb.Controllers
 
         }
 
+        [HttpPost("MutiUpdateTicketsStatus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MutiUpdateTicketsStatus([FromBody] UpdateTicketsRequest request)
+        {
+            if (request == null || request.Data == null || !request.Data.Any())
+            {
+                return BadRequest("Invalid request data.");
+            }
+            var userId = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
+            // ดำเนินการอัปเดต StatusOperation ของ Tickets
+            foreach (var ticket in request.Data)
+            {
+                var existingTicket = await _context.Tickets.FindAsync(ticket.RowId);
+                if (existingTicket == null)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "Not found this Ticket"
+                    });
+                }
+
+                existingTicket.StatusOperation = request.StatusOperation;
+                existingTicket.Driver = request.Driver;
+                existingTicket.VehiclesId = int.Parse(request.VehiclesId ?? "0");
+                existingTicket.TravelCosts = ticket.TravelCosts;
+                existingTicket.Distance = ticket.Distance;
+                existingTicket.Sub = request.Sub;
+                existingTicket.Tel = request.Tel;
+                existingTicket.LastUpdated = DateTime.Now;
+                existingTicket.ActionDate = DateTime.Now;
+                existingTicket.ActionBy = userId;
+                existingTicket.UpdatedBy = userId;
+            }
+
+            try
+            {
+                int vehiclesId;
+                if (!int.TryParse(request.VehiclesId, out vehiclesId))
+                {
+                    return BadRequest("Invalid VehiclesId.");
+                }
+
+                var existingVehicles = await (from vehicle in _context.Vehicles
+                                              where vehicle.RowId == vehiclesId && vehicle.Active == 0
+                                              select vehicle).FirstOrDefaultAsync();
+
+                if (existingVehicles == null)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "Not found this Vehicles"
+                    });
+                }
+
+                existingVehicles.Active = 1;
+
+                await _context.SaveChangesAsync();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Ticket updated successfully."
+                });
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return StatusCode(500, "An error occurred during the update.");
+            }
+
+        }
+
         [HttpPost("UpdateTicketsStatus")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateTicketsStatus([FromBody] Ticket ticket)
@@ -99,6 +172,23 @@ namespace BookTruckWeb.Controllers
                 existingTicket.ReceivedDate = DateTime.Now;
                 existingTicket.ReceivedBy = rowId;
                 existingTicket.UpdatedBy = rowId;
+
+
+                //var existingVehicles = await (from vehicle in _context.Vehicles
+                //                              where vehicle.RowId == ticket.VehiclesId && vehicle.Active == 0
+                //                              select vehicle).FirstOrDefaultAsync();
+
+                //if (existingVehicles == null)
+                //{
+                //    return Ok(new
+                //    {
+                //        success = false,
+                //        message = "Not found this Vehicles"
+                //    });
+                //}
+
+                //existingVehicles.Active = 1;
+
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -300,6 +390,7 @@ namespace BookTruckWeb.Controllers
                                      CustomerCode = customer.CustomerId,
                                      customer.CustomerName,
                                      vechicle.VehicleName,
+                                     vechicle.VehicleLicense,
                                      typeload.LoadName,
                                      AssignName =  user.FirstName + " " + user.LastName,
                                      vechicletype.VehicleTypeName,

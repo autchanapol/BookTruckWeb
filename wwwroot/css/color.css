@@ -1,4 +1,12 @@
-﻿.bg-orange {
+﻿
+
+.selected {
+    background-color: #a3e9a4; /* สีพื้นหลัง */
+    color: #f1f8e9; /* สีข้อความ */
+    font-weight: bold; /* ตัวหนา */
+}
+
+.bg-orange {
     background-color: orange;
     color: white; /* เปลี่ยนสีตัวอักษรให้มองเห็นชัดเจน */
 }
@@ -12,6 +20,8 @@
     font-weight: bold; /* ตัวหนา */
     color: #000; /* สีข้อความ */
 }
+
+
 
     .nav-item.active i {
         color: #007bff; /* สีไอคอนของเมนูที่ Active */

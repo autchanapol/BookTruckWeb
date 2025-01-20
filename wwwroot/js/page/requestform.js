@@ -25,6 +25,7 @@ $(document).ready(function () {
 input.addEventListener("keypress", function (event) {
     // If the user presses the "Enter" key on the keyboard
     if (event.key === "Enter") {
+        console.log("Enter");
         // Cancel the default action, if needed
         event.preventDefault();
 
@@ -41,6 +42,7 @@ input.addEventListener("keypress", function (event) {
             return;
         }
         else {
+            console.log(customers_code);
             getCustomersWhereId(customers_code);
         }
     }
@@ -170,14 +172,17 @@ function populateTable(data) {
         row.appendChild(cellCustomerId);
         row.appendChild(cellCustomerName);
 
-        // เพิ่ม Event Listener สำหรับเลือกแถว
+        // เพิ่ม Event Listener สำหรับเลือกแถว css
         row.addEventListener("click", function () {
             if (selectedRow) {
-                selectedRow.classList.remove("selected"); // เอาคลาส selected ออกจากแถวที่เลือกก่อนหน้า
+                selectedRow.classList.remove("selected");
+                console.log("Removed selected from:", selectedRow);
             }
-            selectedRow = this; // กำหนดแถวที่เลือกใหม่
-            this.classList.add("selected"); // เพิ่มคลาส selected ให้กับแถวที่เลือก
+            selectedRow = this;
+            this.classList.add("selected");
+            console.log("Added selected to:", selectedRow);
         });
+
 
         // เพิ่มแถวในตาราง
         tbody.appendChild(row);
@@ -435,6 +440,9 @@ function clearText() {
     $('#comment').val('');
     $('#assign').val('');
     $('#customer_row').val('');
+    $('#customer_id').val('');
+    $('#customers_code').val('');
+    $('#customers_name').val('');
     
 }
 

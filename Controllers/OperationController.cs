@@ -64,6 +64,28 @@ namespace BookTruckWeb.Controllers
             return View(viewModel);
         }
 
+        public IActionResult JobsDetail(string jobNo)
+        {
+
+            var viewModel = new ReceivingBookingViewModel
+            {
+                JobNo = jobNo,
+            };
+
+            return View(viewModel);
+        }
+
+        public IActionResult JobsDetails(string jobNo)
+        {
+
+            var viewModel = new ReceivingBookingViewModel
+            {
+                JobNo = jobNo,
+            };
+
+            return View(viewModel);
+        }
+
 
 
         public IActionResult ReceivingBookingForm(string jobNo)

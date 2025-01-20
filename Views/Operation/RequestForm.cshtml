@@ -5,16 +5,6 @@
 }
 @Html.AntiForgeryToken()
 
-<head>
-    <!-- เพิ่ม CSS สำหรับการไฮไลต์แถว -->
-    <style>
-        #customer-table tbody tr.selected {
-            background-color: #f8d7da; /* สีชมพูอ่อน */
-            color: #721c24; /* สีตัวอักษรแดง */
-        }
-    </style>
-</head>
-
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Request Form</h3>
@@ -68,6 +58,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                              @*       <tr class="selected" data-rowid="1">
+                                        <td>1</td>
+                                        <td>12345</td>
+                                        <td>John Doe</td>
+                                    </tr> *@
                                     <!-- ข้อมูลจะแสดงที่นี่ -->
                                 </tbody>
                             </table>
