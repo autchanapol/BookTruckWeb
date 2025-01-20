@@ -202,9 +202,6 @@ function populateTable(data) {
             $('#customers_id').val(rowId);
             $('#customers_code').val(customerId);
             $('#customers_name').val(customerName);
-
-
-            
             // ปิด Modal
             $('#scrollableModal').modal('hide');
         } else {

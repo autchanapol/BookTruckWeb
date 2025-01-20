@@ -1,15 +1,220 @@
 ﻿
+const url_getDepartments = window.AppUrls.getDepartmentsUrl;
+const url_getCustomers = window.AppUrls.getCustomersUrl;
+const url_getVehiclesTypes = window.AppUrls.getVehiclesTypesUrl;
+const url_getGetLoadType = window.AppUrls.getGetLoadTypeUrl;
+const url_getTeamps = window.AppUrls.getTempsUrl;
+const url_addTicketsFrmRequester = window.AppUrls.addRequestUrl;
+const url_getAssignUrl = window.AppUrls.getAssignUrl;
+const url_getVehiclesUrl = window.AppUrls.getVehiclesUrl;
 const url_GetTicketsFrmJobNoUrl = window.AppUrls.getTicketsFrmJobNoUrl;
-
+const url_getVehiclesRowIdUrl = window.AppUrls.getVehiclesRowIdUrl;
+const url_getCustomerId = window.AppUrls.getCustomerWid;
 let status_operation = 1;
 // ตัวอย่างการใช้งาน 
 const jobNo = getQueryParam("JobNo");
-
+var input = document.getElementById("customers_code");
 
 $(document).ready(function () {
     initialize();
 });
 
+async function initialize() {
+    try {
+        console.log("Loading master data...");
+        await Promise.all([
+            wrapWithLogging(getDepartment, "getDepartment"),
+            wrapWithLogging(getTemps, "getTemps"),
+            wrapWithLogging(getTrucType, "getTrucType"),
+            wrapWithLogging(getLoadType, "getLoadType"),
+            wrapWithLogging(getAssignUrl, "getAssignUrl")
+        ]);
+        console.log("Master data loaded successfully.");
+
+        console.log("Calling getRequestFrm...");
+        await getRequestFrm();
+        console.log("getRequestFrm completed successfully.");
+    } catch (error) {
+        console.error("Error occurred in initialize:", error);
+    }
+}
+
+// Helper function for logging
+async function wrapWithLogging(fn, fnName) {
+    try {
+        console.log(`Starting ${fnName}...`);
+        await fn();
+        console.log(`${fnName} completed successfully.`);
+    } catch (error) {
+        console.error(`Error in ${fnName}:`, error);
+        throw error; // Throw error เพื่อหยุด process
+    }
+}
+
+
+input.addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        const customers_code = $('#customers_code').val();
+        if (!customers_code) {
+            swal("Warning!", "กรุณากรอกรหัสลูกค้าก่อนค้นหา!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+        }
+        else {
+            console.log("else ");
+            getCustomersWhereId(customers_code);
+        }
+    }
+});
+
+function getCustomersWhereId(customerid) {
+    console.log(url_getCustomerId);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+
+    $.ajax({
+        url: url_getCustomerId,
+        type: "POST",
+        contentType: "application/json",
+        headers: { "RequestVerificationToken": token },
+        data: JSON.stringify({
+            CustomerId: customerid,
+        }),
+
+        success: function (response) {
+            console.log("customers", response);
+            if (response.status == "success") {
+                if (response.data.length < 0) {
+                    swal("Warning!", "ไม่พบข้อมูลที่ค้นหา!", {
+                        icon: "warning",
+                        buttons: {
+                            confirm: {
+                                className: "btn btn-warning",
+                            },
+                        },
+                    });
+                    return;
+                }
+                else {
+                    populateTable(response.data);
+
+                    $('#scrollableModal').modal('show');
+                }
+            }
+            else {
+                swal("Warning!", "ไม่พบข้อมูลที่ค้นหา!", {
+                    icon: "warning",
+                    buttons: {
+                        confirm: {
+                            className: "btn btn-warning",
+                        },
+                    },
+                });
+                return;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error:", error);
+        }
+    });
+}
+
+function populateTable(data) {
+    const tbody = document.querySelector("#customer-table tbody"); // อ้างอิง <tbody>
+    let selectedRow = null;
+
+    // ล้างข้อมูลเก่า
+    tbody.innerHTML = "";
+
+    // ตรวจสอบข้อมูลก่อนลูป
+    if (!Array.isArray(data)) {
+        console.error("Data is not an array.");
+        return;
+    }
+
+    // เพิ่มข้อมูลใหม่ในตาราง
+    data.forEach((customer, index) => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-rowid", customer.rowId);
+
+        // สร้างเซลล์และเพิ่มข้อมูล
+        const cellIndex = document.createElement("td");
+        cellIndex.textContent = index + 1;
+
+        const cellCustomerId = document.createElement("td");
+        cellCustomerId.textContent = customer.customerId;
+
+        const cellCustomerName = document.createElement("td");
+        cellCustomerName.textContent = customer.customerName;
+
+        // เพิ่มเซลล์ในแถว
+        row.appendChild(cellIndex);
+        row.appendChild(cellCustomerId);
+        row.appendChild(cellCustomerName);
+
+        // เพิ่ม Event Listener สำหรับเลือกแถว
+        row.addEventListener("click", function () {
+            if (selectedRow) {
+                selectedRow.classList.remove("selected"); // เอาคลาส selected ออกจากแถวที่เลือกก่อนหน้า
+            }
+            selectedRow = this; // กำหนดแถวที่เลือกใหม่
+            this.classList.add("selected"); // เพิ่มคลาส selected ให้กับแถวที่เลือก
+        });
+
+        // เพิ่มแถวในตาราง
+        tbody.appendChild(row);
+    });
+
+    // เพิ่ม Event Listener ให้กับปุ่ม "เลือก"
+    const selectBtn = document.getElementById("select-btn");
+    selectBtn.replaceWith(selectBtn.cloneNode(true)); // ลบ Event Listener เก่าถ้ามี
+
+    document.getElementById("select-btn").addEventListener("click", function () {
+        if (selectedRow) {
+            const rowId = selectedRow.getAttribute("data-rowid");
+            const customerId = selectedRow.children[1].textContent;
+            const customerName = selectedRow.children[2].textContent;
+
+            // แสดงข้อมูลที่เลือกใน console.log
+            console.log("RowId:", rowId);
+            console.log("CustomerId:", customerId);
+            console.log("CustomerName:", customerName);
+
+            // เติมค่าในฟิลด์ input
+            $('#customers_id').val(rowId);
+            $('#customers_code').val(customerId);
+            $('#customers_name').val(customerName);
+
+
+
+            // ปิด Modal
+            $('#scrollableModal').modal('hide');
+        } else {
+            swal("Warning!", "กรุณาเลือกรายการก่อน!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+        }
+    });
+}
 
 function getVehicleLicense(id) {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -42,27 +247,9 @@ function getVehicleLicense(id) {
 
 }
 
-async function initialize() {
-    try {
-        await Promise.all([
-            getCustomers(),
-            getDepartment(),
-            getTemps(),
-            getTrucType(),
-            getLoadType(),
-            getAssignUrl(),
-            getRequestFrm()
-            //getVehicles()
-        ]);
-        //await getVehicles();
-        console.log("All functions completed successfully.");
-    } catch (error) {
-        console.error("Error occurred:", error);
-    }
-}
 
-function getRequestFrm() {
-
+async  function getRequestFrm() {
+    console.log("getRequestFrm is called."); // เพิ่ม log นี้
     console.log('getRequestFrm', url_GetTicketsFrmJobNoUrl);
     console.log("JobNo:", jobNo);
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -70,8 +257,9 @@ function getRequestFrm() {
 
     if (!token) {
         console.error("CSRF Token not found.");
-        return;
+        return Promise.reject("CSRF Token not found.");
     }
+
     return new Promise((resolve, reject) => {
         $.ajax({
             url: url_GetTicketsFrmJobNoUrl, // URL ของ API
@@ -86,7 +274,10 @@ function getRequestFrm() {
                 if (data) {
                     $('#row_id').val(data.rowId);
                     $('#department_id').val(data.departmentId);
+                    $('#customer_row').val(data.customerId);
                     $('#customers_id').val(data.customerId);
+                    $('#customers_code').val(data.customerCode);
+                    $('#customers_name').val(data.customerName);
                     $('#trucktype_id').val(data.vehiclesTypeId);
                     $('#temp_id').val(data.tempId);
                     $('#backhual').prop('checked', data.backhual === 1);
@@ -105,19 +296,35 @@ function getRequestFrm() {
                     $('#foam_box').prop('checked', data.foamBox === 1);
                     $('#dry_ice').prop('checked', data.dryIce === 1);
                     $('#comment').val(data.comment);
-                    getVehicles();
-                }
-                else {
 
-                }
+                    if (data.statusOperation == "2") {
+                        document.getElementById("card-body").style.display = "none";
+                        document.getElementById("approve").style.display = "none";
+                        document.getElementById("changejob").removeAttribute("hidden");
+                    }
+                    else if (data.statusOperation == "3") {
+                        document.getElementById("card-body").style.display = "none";
+                        document.getElementById("reject").style.display = "none";
+                        document.getElementById("approve").style.display = "none";
+                    }
 
+                    // เรียก getVehicles() และรอให้เสร็จก่อน resolve
+                    getVehicles()
+                        .then(resolve)
+                        .catch(reject);
+                } else {
+                    console.warn("No data received from getRequestFrm.");
+                    resolve(); // ไม่มี data แต่ยังถือว่า success
+                }
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error); // reject ในกรณีเกิด error
             }
         });
     });
 }
+
 
 // ดึงค่าจาก URL Query String
 function getQueryParam(param) {
@@ -126,7 +333,7 @@ function getQueryParam(param) {
 
 }
 
-function getVehicles() {
+async function getVehicles() {
     const vehicleType = $('#trucktype_id').val();
         console.log("getVehicles", url_getVehiclesUrl)
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
@@ -163,15 +370,17 @@ function getVehicles() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#carDropdown").append('<option value="">No options available</option>');
                 }
+                resolve();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error);
             }
         });
     });
 }
 
-function getAssignUrl() {
+async  function getAssignUrl() {
     console.log("getAssignUrl", url_getAssignUrl)
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
@@ -207,15 +416,17 @@ function getAssignUrl() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#assign").append('<option value="">No options available</option>');
                 }
+                resolve();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error);
             }
         });
     });
 }
 
-function getDepartment() {
+async function getDepartment() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
     if (!token) {
@@ -224,7 +435,7 @@ function getDepartment() {
     }
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: url_getDepartments, // URL ของ API
+            url: url_getDepartments,
             type: "POST",
             headers: { "RequestVerificationToken": token },
             success: function (data) {
@@ -246,55 +457,57 @@ function getDepartment() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#department_id").append('<option value="">No options available</option>');
                 }
+                resolve(); // สำเร็จ
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error); // เกิดข้อผิดพลาด
             }
         });
     });
 }
 
-function getCustomers() {
-    console.log('getCustomers', url_getCustomers);
-    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
-    const token = tokenElement ? tokenElement.value : null;
-    if (!token) {
-        console.error("CSRF Token not found.");
-        return;
-    }
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: url_getCustomers, // URL ของ API
-            type: "POST",
-            headers: { "RequestVerificationToken": token },
-            success: function (data) {
-                console.log("data cus", data);
+//async  function getCustomers() {
+//    console.log('getCustomers', url_getCustomers);
+//    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+//    const token = tokenElement ? tokenElement.value : null;
+//    if (!token) {
+//        console.error("CSRF Token not found.");
+//        return;
+//    }
+//    return new Promise((resolve, reject) => {
+//        $.ajax({
+//            url: url_getCustomers, // URL ของ API
+//            type: "POST",
+//            headers: { "RequestVerificationToken": token },
+//            success: function (data) {
+//                console.log("data cus", data);
 
-                // เคลียร์ Option เก่าทั้งหมดใน Select
-                $("#customers_id").empty();
+//                // เคลียร์ Option เก่าทั้งหมดใน Select
+//                $("#customers_id").empty();
 
-                // เพิ่ม Option เริ่มต้น
-                $("#customers_id").append('<option value="">-- Select an option --</option>');
+//                // เพิ่ม Option เริ่มต้น
+//                $("#customers_id").append('<option value="">-- Select an option --</option>');
 
-                if (Array.isArray(data) && data.length > 0) {
-                    data.forEach(function (cus) {
-                        $("#customers_id").append(
-                            `<option value="${cus.rowId}">${cus.customerName}</option>`
-                        );
-                    });
-                } else {
-                    // เพิ่ม Option กรณีไม่มีข้อมูล
-                    $("#customers_id").append('<option value="">No options available</option>');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error:", error);
-            }
-        });
-    });
-}
+//                if (Array.isArray(data) && data.length > 0) {
+//                    data.forEach(function (cus) {
+//                        $("#customers_id").append(
+//                            `<option value="${cus.rowId}">${cus.customerName}</option>`
+//                        );
+//                    });
+//                } else {
+//                    // เพิ่ม Option กรณีไม่มีข้อมูล
+//                    $("#customers_id").append('<option value="">No options available</option>');
+//                }
+//            },
+//            error: function (xhr, status, error) {
+//                console.error("Error:", error);
+//            }
+//        });
+//    });
+//}
 
-function getTrucType() {
+async function getTrucType() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
     if (!token) {
@@ -325,15 +538,17 @@ function getTrucType() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#trucktype_id").append('<option value="">No options available</option>');
                 }
+                resolve();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error);
             }
         });
     });
 }
 
-function getTemps() {
+async function getTemps() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
     if (!token) {
@@ -364,15 +579,17 @@ function getTemps() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#temp_id").append('<option value="">No options available</option>');
                 }
+                resolve();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error);
             }
         });
     });
 }
 
-function getLoadType() {
+async function getLoadType() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
     if (!token) {
@@ -403,9 +620,11 @@ function getLoadType() {
                     // เพิ่ม Option กรณีไม่มีข้อมูล
                     $("#typeload_id").append('<option value="">No options available</option>');
                 }
+                resolve();
             },
             error: function (xhr, status, error) {
                 console.error("Error:", error);
+                reject(error);
             }
         });
     });
@@ -460,6 +679,8 @@ function reject() {
         }
     });
 }
+
+function changejob() { }
 
 function sendApi() {
     console.log('sendApi', url_addTicketsFrmRequester)
@@ -774,6 +995,22 @@ function sendApi() {
     }
 }
 
+
+function onChangeCar(selectElement) {
+    const selectedValue = selectElement.value; // ค่า value ที่ถูกเลือก
+    const selectedText = selectElement.options[selectElement.selectedIndex].text; // ข้อความที่ถูกเลือก
+
+    console.log("Selected Value:", selectedValue);
+    //console.log("Selected Text:", selectedText);
+
+    if (selectedValue) {
+        getVehicleLicense(selectedValue);
+        //console.log(`You selected ${selectedText} with value ${selectedValue}`);
+    } else {
+        $('#carshow').val("-");
+        console.log("No car selected.");
+    }
+}
 function clearText() {
 
     $('#department_id').val('');

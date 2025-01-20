@@ -36,10 +36,7 @@ function getTruckData() {
             if (Array.isArray(data) && data.length > 0) {
                 data.forEach(trucks => {
                     dataTable.row.add([
-                        ` <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" >
-                          </div>
-                        `,
+                        `<input type="checkbox" class="form-check-input" data-ticket-id="${ticket.rowId}">`, // เพิ่ม Checkbox ในคอลัมน์แรก
                         trucks.rowId,
                         trucks.vehicleName,
                         trucks.vehicleLicense,
@@ -54,8 +51,6 @@ function getTruckData() {
                           </button>
                         </div>
                         `
-
-
                     ]);
                 });
             } else {

@@ -3,3 +3,240 @@
 *@
 @{
 }
+@Html.AntiForgeryToken()
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Receiveing Booking</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Operation</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Receiveing Booking</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div class="row-cols-3 mb-2">
+            <div class="d-flex align-items-center gap-2 ">
+                <lable>Start Date</lable>
+                <div class=".col-2">
+                    <input id="start_date" class="form-control " type="date" data-date="" data-date-format="DD MMMM YYYY" value="">
+                </div>
+                <lable>To</lable>
+                <div class=".col-2">
+                    <input id="end_date" class="form-control" type="date" data-date="" data-date-format="DD MMMM YYYY" value="">
+                </div>
+                <div class=".col-2">
+                    <button onclick="getRequestData()" class="btn btn-primary btn-round ms-auto">
+                        <i></i> Fine
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title pa ">Request Lists</h4>
+                    <button onclick="checkSelectedCheckboxes()" id="btnCheckSelected" class="btn btn-success btn-round ms-auto">
+                        ทำการอนุมัติ
+                    </button>
+                    <br />  <lable>  </lable>
+
+                    @*  <a asp-controller="Operation" asp-action="RequestForm" class="btn btn-primary btn-round ms-auto">
+                        <i class="fa fa-plus"></i>
+                        New Request
+                    </a>*@
+                </div>
+            </div>
+            <div class="row">
+
+                <!-- Modal -->
+                <div class="modal fade" id="selectedDataModal" tabindex="-1" role="dialog" aria-labelledby="selectedDataModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <!-- เพิ่ม modal-lg -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="selectedDataModalLabel">ข้อมูลที่เลือก</h5>
+                                <button onclick="$('#selectedDataModal').modal('hide')" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- ตารางแสดงข้อมูล -->
+
+                                <div class="row">
+                                    <!-- License -->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="carDropdown">Vehicle</label>
+                                            <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
+                                                <option value="">-- Select a Car --</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- Truck Type -->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="sub">License</label>
+                                            <input type="text"
+                                                   disabled
+                                                   class="form-control"
+                                                   id="carshow"
+                                                   value="-"
+                                                   placeholder="CAR" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                        <label for="email2">Driver</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="driver"
+                                               placeholder="Enter Driver" />
+                                               </div>
+                                        </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                        <label for="email2">SUB</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="sub"
+                                               placeholder="Enter Sub" />
+                                               </div>
+                                    </div>
+                                    </div>
+                                <div class="form-group">
+                                   
+                                    
+                                    <label for="email2">Tel</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="tel"
+                                           placeholder="Enter Sub" />
+                                </div>
+                                <table class="table table-striped" id="selectedDataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Job No</th>
+                                            <th>ลูกค้า</th>
+                                            <th>ต้นทุนค่าเที่ยวโดยประมาณ</th>
+                                            <th>ระยะไปกลับ KM</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- แถวข้อมูลจะถูกเพิ่มที่นี่ -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="approveJob()" class="btn btn-success" data-dismiss="modal">อนุมัติรายการที่เลือก</button>
+                                <button onclick="$('#selectedDataModal').modal('hide')" type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="table-responsive">
+                    <table id="basic-datatables"
+                           class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>เลือก</th>
+                                <th>Row Id.</th>
+                                <th>Ticket No.</th>
+                                <th>Customer</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Request From</th>
+                                <th>Assign To</th>
+                                <th>Active</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>เลือก</th>
+                                <th>Row Id.</th>
+                                <th>Ticket No.</th>
+                                <th>Customer</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Request From</th>
+                                <th>Assign To</th>
+                                <th>Active</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const receivingBookingUrl = '@Url.Action("ReceivingBookingForm", "Operation")';
+        window.AppUrls = {
+            getRequestDataUrl: '@Url.Action("GetTicketsAll", "Tickets")',
+            getDataJsonUrl: '@Url.Action("GetTicketsJson", "Tickets")',
+            baseUrl: '@Url.Content("~")'
+        }
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = moment().format("YYYY-MM-DD");
+
+            // ตั้งค่าวันที่ปัจจุบันสำหรับ start_date
+            const startDateInput = document.querySelector("#start_date");
+            startDateInput.value = today;
+            startDateInput.setAttribute(
+                "data-date",
+                moment(today, "YYYY-MM-DD").format(startDateInput.getAttribute("data-date-format"))
+            );
+
+            // ตั้งค่าวันที่ปัจจุบันสำหรับ end_date
+            const endDateInput = document.querySelector("#end_date");
+            endDateInput.value = today;
+            endDateInput.setAttribute(
+                "data-date",
+                moment(today, "YYYY-MM-DD").format(endDateInput.getAttribute("data-date-format"))
+            );
+        });
+
+        // อัปเดต data-date เมื่อเปลี่ยนแปลงค่า
+        $("input[type='date']").on("change", function () {
+            this.setAttribute(
+                "data-date",
+                moment(this.value, "YYYY-MM-DD").format(this.getAttribute("data-date-format"))
+            );
+        }).trigger("change");
+
+    </script>
+
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/page/approve.js"></script>
+}

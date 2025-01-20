@@ -204,6 +204,7 @@ namespace BookTruckWeb.Controllers
         public async Task<IActionResult> GetTicketsFrmJobNo([FromBody] Ticket ticket)
         {
             var ticket_ = await (from tickets in _context.Tickets
+                                 join customer in _context.Customers on tickets.CustomerId equals customer.RowId
                                  where tickets.JobNo == ticket.JobNo
                                  select new
                                  {
@@ -211,6 +212,8 @@ namespace BookTruckWeb.Controllers
                                      tickets.JobNo,
                                      tickets.DepartmentId,
                                      tickets.CustomerId,
+                                     customer.CustomerName,
+                                     CustomerCode = customer.CustomerId,
                                      tickets.VehiclesTypeId,
                                      tickets.Backhual,
                                      tickets.Origin,
@@ -309,6 +312,46 @@ namespace BookTruckWeb.Controllers
             return Ok(ticket_);
         }
 
+
+        [HttpPost("GetTicketsJson")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetTicketsJson([FromBody] List<JobRequest> jobRequests)
+        {
+            if (jobRequests == null || !jobRequests.Any())
+            {
+                return BadRequest("No data received");
+            }
+
+            //// ตัวอย่างการประมวลผลข้อมูล
+            //foreach (var job in jobRequests)
+            //{
+            //    Console.WriteLine($"RowId: {job.RowId}, JobNo: {job.JobNo}");
+            //}
+
+            // ดึง RowId จาก jobRequests
+            //var rowIds = jobRequests.Select(job => job.RowId).ToList();
+            var rowIds = jobRequests.Select(job => int.Parse(job.RowId)).ToList();
+
+            var ticket = await (from tickets in _context.Tickets
+                                join customers in _context.Customers on tickets.CustomerId equals customers.RowId
+                                where tickets.Status == 1
+                                && rowIds.Contains(tickets.RowId) // ใช้ IN ใน LINQ
+                                //&& tickets.Assign == userid
+                                select new
+                                {
+                                    tickets.RowId,
+                                    tickets.JobNo,
+                                    tickets.DepartmentId,
+                                    tickets.CustomerId,
+                                    customers.CustomerName,
+                                    tickets.Loading,
+                                }
+                                ).ToListAsync();
+
+            return Ok(ticket);
+
+            //return Ok(new { message = "Data processed successfully", count = jobRequests.Count });
+        }
 
         [HttpPost("GetTicketsAll")]
         [ValidateAntiForgeryToken]
