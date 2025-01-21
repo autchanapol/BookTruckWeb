@@ -1,4 +1,5 @@
 ﻿const url_getRequest = window.AppUrls.getRequestDataUrl;
+const url_setStatusUrl = window.AppUrls.setStatusUrl;
 var dataTable; // กำหนดตัวแปร Global
 
 $(document).ready(function () {
@@ -98,10 +99,14 @@ function getRequestData() {
                                 <i class="fa fa-edit"></i>
                             </button>
                             <!-- ปุ่ม Delete -->
+                             ${ticket.statusName === "Waiting" ? `
                             <button type="button" class="btn btn-link btn-danger"
-                             data-temps-id="${ticket.rowId}">
+                             data-ticket-id="${ticket.rowId}"
+                              data-ticket-jobno="${ticket.jobNo}"
+                             >
                              <i class="fa fa-times"></i>
                                 </button>
+                                 ` : ""}
                         </div>
                         `
                     ]);
@@ -120,6 +125,78 @@ function getRequestData() {
         }
     });
 }
+
+$("#basic-datatables").on("click", ".btn-danger", function () {
+    const ticketid = $(this).data("ticket-id");
+    const ticketjobno = $(this).data("ticket-jobno");
+    console.log(url_setStatusUrl);
+    console.log(ticketjobno);
+    const token = document.querySelector('input[name="__RequestVerificationToken"]').value; // ดึง CSRF Token
+    swal({
+        title: "Are you sure?",
+        text: `คุณต้องการยกเลิกใบงาน ${ticketjobno} นี้ ใช่หรือไม่ ?`,
+        icon: "warning",
+        type: "warning",
+        buttons: {
+            confirm: {
+                text: "Yes",
+                className: "btn btn-success",
+            },
+            cancel: {
+                visible: true,
+                className: "btn btn-danger",
+            },
+        },
+    }).then((Delete) => {
+        if (Delete) {
+
+            $.ajax({
+                url: url_setStatusUrl,
+                type: "POST",
+                headers: { "RequestVerificationToken": token },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    RowId: ticketid,
+                    StatusOperation: 3
+                }),
+                success: function (data) {
+                    console.log("data output", data);
+                    if (data !== null && typeof data == 'object') {
+                        if (data.success) {
+                            //successClick(data.message);
+                            getRequestData();
+                            swal({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success",
+                                type: "success",
+                                buttons: {
+                                    confirm: {
+                                        className: "btn btn-success",
+                                    },
+                                },
+                            });
+                        }
+                        else {
+                            console.log("not success:", data.message);
+                        }
+                    }
+                    else {
+                        // ไม่มีข้อมูล
+                        console.log("Error:", "Error");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+
+
+        } else {
+            swal.close();
+        }
+    });
+});
 
 function redirectToReceivingBookingForm(jobNo) {
     if (!jobNo || jobNo.trim() === "") {

@@ -270,7 +270,7 @@ namespace BookTruckWeb.Controllers
                         var vichicle = await _context.Vehicles.FindAsync(ticket.VehiclesId);
                         if (vichicle != null)
                         {
-                            vichicle.Active = 0;
+                            vichicle.Active = 1;
                         }
                     }
 

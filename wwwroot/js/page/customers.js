@@ -4,6 +4,7 @@ const url_getCustomers = window.AppUrls.getCustomersUrl;
 const url_getCustomersRow = window.AppUrls.getCustomersRowUrl;
 const url_addCustomers = window.AppUrls.addCustomersUrl;
 const url_editCustomers = window.AppUrls.editCustomersUrl;
+const url_importCustomersUrl = window.AppUrls.importCustomersUrl;
 
 $(document).ready(function () {
     // สร้าง DataTable
@@ -15,6 +16,125 @@ $(document).ready(function () {
     });
     getCustomers();
 });
+
+document.getElementById("importButton").addEventListener("click", function () {
+    const fileInput = document.getElementById("excelFileInput");
+    if (fileInput.files.length === 0) {
+        //alert("Please select an Excel file!");
+        swal({
+            title: "Warning!",
+            text: "Please select an Excel file!",
+            icon: "warning",
+            type: "warning",
+            buttons: {
+                confirm: {
+                    className: "btn btn-success",
+                },
+            },
+        });
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const data = new Uint8Array(event.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        // อ่าน Sheet แรก
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        // แปลงข้อมูลใน Sheet เป็น JSON
+        const rawData = XLSX.utils.sheet_to_json(worksheet);
+
+        // แปลงข้อมูลให้ตรงกับ Model Customer
+        const jsonData = rawData.map(row => ({
+            CustomerId: row["CustomerId"] || null,
+            CompanyId: row["CompanyId"] || null,
+            CustomerName: row["CustomerName"] || null,
+            Address1: row["Address1"] || null,
+            Address2: row["Address2"] || null,
+            Address3: row["Address3"] || null,
+            City: row["City"] || null,
+            State: row["State"] || null,
+            Country: row["Country"] || null,
+            PastalCode: row["PastalCode"] || null,
+            Status: row["Status"] || null,
+            Remarks: row["Remarks"] || null
+        }));
+
+        console.log("JSON Data:", jsonData);
+
+        // ส่ง JSON Array ไปประมวลผลต่อ
+        processExcelData(jsonData);
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+function processExcelData(data) {
+    console.log("Processing Excel Data:", data);
+    console.log(url_importCustomersUrl);
+
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+
+    // แสดง Loading Indicator
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    loadingIndicator.style.display = "block";
+
+    $.ajax({
+        url: url_importCustomersUrl,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        headers: { "RequestVerificationToken": token },
+        success: function (response) {
+            console.log("Data imported successfully:", response);
+
+            if (response.status) {
+
+                // ซ่อน Loading Indicator
+                loadingIndicator.style.display = "none";
+                $("#importExcelModal").modal("hide");
+                // แจ้งผลลัพธ์สำเร็จ
+                //alert("Data imported successfully!");
+                swal({
+                    title: "Success!",
+                    text: response.message,
+                    icon: "success",
+                    type: "success",
+                    buttons: {
+                        confirm: {
+                            className: "btn btn-success",
+                        },
+                    },
+                });
+            }
+            else {
+            }
+        },
+        error: function (error) {
+            console.error("Error importing data:", error);
+
+            // ซ่อน Loading Indicator
+            loadingIndicator.style.display = "none";
+
+            // แจ้งผลลัพธ์ข้อผิดพลาด
+            alert("Error importing data. Please try again.");
+        }
+    });
+}
+
+
+
 
 function getCustomers() {
     console.log('getCustomers', url_getCustomers);

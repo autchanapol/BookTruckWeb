@@ -10,10 +10,13 @@ const url_getVehiclesUrl = window.AppUrls.getVehiclesUrl;
 const url_GetTicketsFrmJobNoUrl = window.AppUrls.getTicketsFrmJobNoUrl;
 const url_getVehiclesRowIdUrl = window.AppUrls.getVehiclesRowIdUrl;
 const url_getCustomerId = window.AppUrls.getCustomerWid;
+const url_getVehiclesFrmNameUrl = window.AppUrls.getVehiclesFrmNameUrl;
+
 let status_operation = 1;
 // ตัวอย่างการใช้งาน 
 const jobNo = getQueryParam("JobNo");
 var input = document.getElementById("customers_code");
+var carinput = document.getElementById("carname");
 
 $(document).ready(function () {
     initialize();
@@ -51,6 +54,165 @@ async function wrapWithLogging(fn, fnName) {
     }
 }
 
+
+carinput.addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        console.log("Enter");
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        const carname = $('#carname').val();
+        if (!carname) {
+            swal("Warning!", "กรุณากรอกชื่อรถก่อน!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+        }
+        else {
+            getVehicleWhereId(carname);
+        }
+    }
+});
+
+
+function getVehicleWhereId(carname) {
+    console.log(url_getVehiclesFrmNameUrl);
+    const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenElement ? tokenElement.value : null;
+    if (!token) {
+        console.error("CSRF Token not found.");
+        return;
+    }
+
+    $.ajax({
+        url: url_getVehiclesFrmNameUrl,
+        type: "POST",
+        contentType: "application/json",
+        headers: { "RequestVerificationToken": token },
+        data: JSON.stringify({
+            VehicleName: carname,
+        }),
+
+        success: function (response) {
+            console.log("customers", response);
+            if (response.status == "success") {
+                populateTables(response.data);
+
+                $('#carModal').modal('show');
+            }
+            else {
+                swal("Warning!", "ไม่พบข้อมูลที่ค้นหา!", {
+                    icon: "warning",
+                    buttons: {
+                        confirm: {
+                            className: "btn btn-warning",
+                        },
+                    },
+                });
+                return;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error:", error);
+        }
+    });
+}
+
+function populateTables(data) {
+    const tbody = document.querySelector("#vehicle-table tbody"); // อ้างอิง <tbody>
+    let selectedRow = null;
+
+    // ล้างข้อมูลเก่า
+    tbody.innerHTML = "";
+
+    // ตรวจสอบข้อมูลก่อนลูป
+    if (!Array.isArray(data)) {
+        console.error("Data is not an array.");
+        return;
+    }
+
+    // เพิ่มข้อมูลใหม่ในตาราง
+    data.forEach((vehicles, index) => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-rowid", vehicles.rowId);
+
+        // สร้างเซลล์และเพิ่มข้อมูล
+        const cellIndex = document.createElement("td");
+        cellIndex.textContent = index + 1;
+
+        const cellvehicleName = document.createElement("td");
+        cellvehicleName.textContent = vehicles.vehicleName;
+
+        const cellVehicleLicense = document.createElement("td");
+        cellVehicleLicense.textContent = vehicles.vehicleLicense;
+
+        const cellVehicleTypeName = document.createElement("td");
+        cellVehicleTypeName.textContent = vehicles.vehicleTypeName;
+
+        // เพิ่มเซลล์ในแถว
+        row.appendChild(cellIndex);
+        row.appendChild(cellvehicleName);
+        row.appendChild(cellVehicleLicense);
+        row.appendChild(cellVehicleTypeName);
+
+        // เพิ่ม Event Listener สำหรับเลือกแถว css
+        row.addEventListener("click", function () {
+            if (selectedRow) {
+                selectedRow.classList.remove("selected");
+                console.log("Removed selected from:", selectedRow);
+            }
+            selectedRow = this;
+            this.classList.add("selected");
+            console.log("Added selected to:", selectedRow);
+        });
+
+
+        // เพิ่มแถวในตาราง
+        tbody.appendChild(row);
+    });
+
+    // เพิ่ม Event Listener ให้กับปุ่ม "เลือก"
+    const selectBtn = document.getElementById("select-btn");
+    selectBtn.replaceWith(selectBtn.cloneNode(true)); // ลบ Event Listener เก่าถ้ามี
+
+    document.getElementById("select-btn").addEventListener("click", function () {
+        if (selectedRow) {
+            const rowId = selectedRow.getAttribute("data-rowid");
+            const vehicleName = selectedRow.children[1].textContent;
+            const vehicleLicense = selectedRow.children[2].textContent;
+            const vehicleTypeName = selectedRow.children[3].textContent;
+
+            // แสดงข้อมูลที่เลือกใน console.log
+            console.log("rowId:", rowId);
+            console.log("vehicleName:", vehicleName);
+            console.log("vehicleLicense:", vehicleLicense);
+            console.log("vehicleTypeName:", vehicleTypeName);
+
+            // เติมค่าในฟิลด์ input
+            $('#car_id').val(rowId);
+            $('#carname').val(vehicleName);
+            $('#carshow').val(vehicleLicense);
+            $('#cartype').val(vehicleTypeName);
+            // ปิด Modal
+            $('#carModal').modal('hide');
+        } else {
+            swal("Warning!", "กรุณาเลือกรายการก่อน!", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+        }
+    });
+}
 
 input.addEventListener("keypress", function (event) {
     // If the user presses the "Enter" key on the keyboard
@@ -708,7 +870,7 @@ function sendApi() {
     const dry_ice = $('#dry_ice').is(':checked') ? 1 : 0;
     const comment = $('#comment').val();
     //const assign = $('#assign').val();
-    const vehiclesId = $('#carDropdown').val();
+    const vehiclesId = $('#car_id').val();
     const driver = $('#driver').val();
     const sub = $('#sub').val();
     const tel = $('#tel').val();
@@ -1034,4 +1196,13 @@ function clearText() {
     $('#dry_ice').prop('checked', false);
     $('#comment').val('');
     $('#assign').val('');
+    $('#car_id').val('');
+    $('#carname').val('');
+    $('#carshow').val('');
+    $('#cartype').val('');
+    $('#driver').val('');
+    $('#sub').val('');
+    $('#tel').val('');
+    $('#cost').val('');
+    $('#km').val('');
 }

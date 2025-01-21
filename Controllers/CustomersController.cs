@@ -43,6 +43,7 @@ namespace BookTruckWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetCustomersRowId([FromBody] Customer request)
         {
+            
             // ตรวจสอบค่า RowId
             if (request.RowId <= 0)
             {
@@ -114,10 +115,88 @@ namespace BookTruckWeb.Controllers
             });
         }
 
+
+        [HttpPost("ImportCustomers")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportCustomers([FromBody] List<Customer> customers)
+        {
+            // ตรวจสอบ Session
+            var userid = int.TryParse(HttpContext.Session.GetString("RowId"), out var parsedUserId) ? parsedUserId : 0;
+            if (userid == 0)
+            {
+                return Unauthorized("Invalid or missing session data.");
+            }
+
+            // ตรวจสอบข้อมูลที่รับมา
+            if (customers == null || !customers.Any())
+            {
+                return BadRequest("No data received.");
+            }
+
+            try
+            {
+                // ตรวจสอบและสร้างรายการใหม่
+                var newCustomers = customers
+                    .Where(customer => !string.IsNullOrWhiteSpace(customer.CustomerId) && !string.IsNullOrWhiteSpace(customer.CustomerName)) // ตรวจสอบข้อมูลจำเป็น
+                    .Select(customer => new Customer
+                    {
+                        CustomerId = customer.CustomerId.Trim(),
+                        CustomerName = customer.CustomerName.Trim(),
+                        CompanyId = customer.CompanyId?.Trim(),
+                        Address1 = customer.Address1?.Trim(),
+                        Address2 = customer.Address2?.Trim(),
+                        Address3 = customer.Address3?.Trim(),
+                        City = customer.City?.Trim(),
+                        State = customer.State?.Trim(),
+                        Country = customer.Country?.Trim(),
+                        PastalCode = customer.PastalCode?.Trim(),
+                        Remarks = customer.Remarks?.Trim(),
+                        Active = 1, // ค่า Active เป็น 1 โดยค่าเริ่มต้น
+                        Status = 1, // ค่า Status เป็น 1 โดยค่าเริ่มต้น
+                        CreatedBy = userid,
+                        CreatedDate = DateTime.Now
+                    })
+                    .ToList();
+
+                // ตรวจสอบว่ามีข้อมูลหลังการกรอง
+                if (!newCustomers.Any())
+                {
+                    return BadRequest("No valid data to import.");
+                }
+
+                // เพิ่มรายการใหม่ทั้งหมดในฐานข้อมูล
+                _context.Customers.AddRange(newCustomers);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    status = true,
+                    code = 0,
+                    message = $"{newCustomers.Count} customers inserted successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log ข้อผิดพลาดเพื่อการตรวจสอบ
+                //_logger.LogError(ex, "Error importing customers.");
+
+                return StatusCode(500, new
+                {
+                    status = false,
+                    code = 500,
+                    message = "An error occurred while importing customers.",
+                    details = ex.Message // ควรซ่อนรายละเอียดใน Production
+                });
+            }
+        }
+
+
+
         [HttpPost("AddCustomers")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCustomers([FromBody] Customer customer)
         {
+            var userid = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
             if (customer == null)
             {
                 return BadRequest("Invalid Data");
@@ -139,7 +218,7 @@ namespace BookTruckWeb.Controllers
                     Remarks = customer.Remarks,
                     Active = customer.Active,
                     Status = 1,
-                    CreatedBy = 1,
+                    CreatedBy = userid,
                     CreatedDate = DateTime.Now
 
                 };
@@ -172,6 +251,7 @@ namespace BookTruckWeb.Controllers
             }
             else
             {
+                var userid = int.Parse(HttpContext.Session.GetString("RowId") ?? "0");
                 var existingCustomer = await _context.Customers.FirstOrDefaultAsync(cus => cus.RowId == customer.RowId && cus.Status == 1);
                 if (existingCustomer == null)
                 {
@@ -227,7 +307,7 @@ namespace BookTruckWeb.Controllers
                     {
                         existingCustomer.Status = customer.Status.Value;
                     }
-                    existingCustomer.UpdatedBy = 1;
+                    existingCustomer.UpdatedBy = userid;
                     existingCustomer.UpdatedDate = DateTime.Now;
 
                     try

@@ -40,6 +40,44 @@
     <div class="row">
 
 
+        <!-- Modal vehicle -->
+        <div class="modal fade" id="carModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">เลือกยานพาหนะ</h5>
+                        <button onclick="$('#carModal').modal('hide')" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-hover" id="vehicle-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>ชื่อรถ</th>
+                                    <th>ทะเบียนรถ</th>
+                                    <th>ประเภทรถ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ข้อมูลรถจะแสดงที่นี่ -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                onclick="$('#carModal').modal('hide')">
+                            ปิด
+                        </button>
+                        <button id="select-btn" type="button" class="btn btn-primary">เลือก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Modal vehicle -->
+
         <!-- Scrollable modal -->
         <!-- Modal -->
         <div class="modal fade" id="scrollableModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
@@ -296,17 +334,26 @@
                         <div class="row">
                             <!-- License -->
                             <div class="col">
+                                <input type="text"
+                                       class="form-control"
+                                       id="car_id"
+                                       hidden
+                                       placeholder="CAR" />
                                 <div class="form-group">
-                                    <label for="carDropdown">Vehicle</label>
-                                    <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
-                                        <option value="">-- Select a Car --</option>
-                                    </select>
+                                    <label for="carDropdown">ยานพาหนะ</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="carname"
+                                           placeholder="พิมพ์ลง Enter ค้นหา" />
+                                    @*   <select class="form-select form-control" id="carDropdown" onchange="onChangeCar(this)">
+                                    <option value="">-- Select a Car --</option>
+                                    </select> *@
                                 </div>
                             </div>
                             <!-- Truck Type -->
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="sub">License</label>
+                                    <label for="sub">ทะเบียนรถ</label>
                                     <input type="text"
                                            disabled
                                            class="form-control"
@@ -317,38 +364,69 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="email2">Driver</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="driver"
-                                   placeholder="Enter Driver" />
-                            <label for="email2">SUB</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="sub"
-                                   placeholder="Enter Sub" />
-                            <label for="email2">Tel</label>
-                            <input type="text"
-                                   class="form-control"
-                                   id="tel"
-                                   placeholder="Enter Sub" />
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="email2">ประเภทรถ</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="cartype"
+                                           disabled
+                                           value="-"
+                                           placeholder="" />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="driver">ผู้ขับขี่</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="driver"
+                                           placeholder="Enter Driver" />
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="email2">SUB</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="sub"
+                                           placeholder="Enter Sub" />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="email2">Tel</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="tel"
+                                           placeholder="Enter Sub" />
+                                </div>
+                            </div>
+                        </div>
+                        
                             <div class="row">
-                                <div class="col">
+                            <div class="col">
+                            <div class="form-group">
+                               
                                     <label for="email2">ต้นทุนค่าเที่ยวโดยประมาณ</label>
                                     <input type="number"
                                            class="form-control"
                                            id="cost"
                                            placeholder="Enter cost" />
                                 </div>
+                            </div>
                                 <div class="col">
+                                <div class="form-group">
                                     <label for="email2">ระยะไปกลับ KM</label>
                                     <input type="number"
                                            class="form-control"
                                            id="km"
                                            placeholder="Enter KM" />
+                                           </div>
                                 </div>
                             </div>
                         </div>
@@ -383,6 +461,7 @@
             getTicketsFrmJobNoUrl: '@Url.Action("GetTicketsFrmJobNo", "Tickets")',
             getAssignUrl: '@Url.Action("GetAssign", "Users")',
             getVehiclesRowIdUrl: '@Url.Action("GetVehiclesRowId", "Vehicles")',
+            getVehiclesFrmNameUrl: '@Url.Action("GetVehiclesFrmName", "Vehicles")',
             baseUrl: '@Url.Content("~")'
         };
     </script>

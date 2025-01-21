@@ -164,6 +164,8 @@ function getRequestFrm() {
                     $('#sub').val(data.sub);
                     $('#driver').val(data.driver);
                     $('#tel').val(data.tel);
+                    $('#cost').val(data.travelCosts);
+                    $('#km').val(data.distance);
                 }
                 else {
 
