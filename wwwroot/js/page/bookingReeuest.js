@@ -86,7 +86,7 @@ function getRequestData() {
                     dataTable.row.add([
                         ticket.rowId,
                         ticket.jobNo,
-                        ticket.customerName,
+                        ticket.title,
                         ticket.createdDate,
                         `<span class="${statusClass}">${ticket.statusName}</span>`, // เพิ่ม Class สำหรับสี
                         ticket.assignName,

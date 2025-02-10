@@ -431,40 +431,85 @@ async  function getRequestFrm() {
             data: JSON.stringify({
                 JobNo: jobNo
             }),
-            success: function (data) {
-                console.log("data getRequestFrm", data);
-                if (data) {
-                    $('#row_id').val(data.rowId);
-                    $('#department_id').val(data.departmentId);
-                    $('#customer_row').val(data.customerId);
-                    $('#customers_id').val(data.customerId);
-                    $('#customers_code').val(data.customerCode);
-                    $('#customers_name').val(data.customerName);
-                    $('#trucktype_id').val(data.vehiclesTypeId);
-                    $('#temp_id').val(data.tempId);
-                    $('#backhual').prop('checked', data.backhual === 1);
-                    $('#origin').val(data.origin);
-                    $('#loading').val(data.loading);
-                    $('#destination').val(data.destination);
-                    $('#eta').val(data.etatostore);
-                    $('#typeload_id').val(data.typeloadId);
-                    $('#qty').val(data.qty);
-                    $('#weight').val(data.weight);
-                    $('#cbm').val(data.cbm);
-                    $('#man').val(data.deliveryMan);
-                    $('#handjack').prop('checked', data.handjack === 1);
-                    $('#cart').prop('checked', data.cart === 1);
-                    $('#cardboard').prop('checked', data.cardboard === 1);
-                    $('#foam_box').prop('checked', data.foamBox === 1);
-                    $('#dry_ice').prop('checked', data.dryIce === 1);
-                    $('#comment').val(data.comment);
+            success: function (response) {
+                console.log("data getRequestFrm", response);
+                if (response) {
+                    $('#row_id').val(response.rowId);
+                    $('#department_id').val(response.departmentId);
+                    $('#trucktype_id').val(response.vehiclesTypeId);
+                    $('#temp_id').val(response.tempId);
+                    $('#backhual').prop('checked', response.backhual === 1);
+                    $('#loading').val(response.loading);
+                    $('#eta').val(response.etatostore);
+                    $('#typeload_id').val(response.typeloadId);
+                    $('#man').val(response.deliveryMan);
+                    $('#handjack').prop('checked', response.handjack === 1);
+                    $('#cart').prop('checked', response.cart === 1);
+                    $('#cardboard').prop('checked', response.cardboard === 1);
+                    $('#foam_box').prop('checked', response.foamBox === 1);
+                    $('#dry_ice').prop('checked', response.dryIce === 1);
+                    $('#comment').val(response.comment);
+                    $('#title').val(response.title);
 
-                    if (data.statusOperation == "2") {
+                    if (response.data) {
+                        $('#dataTable').DataTable({
+                            destroy: true, // ลบ DataTable เดิมก่อนโหลดใหม่
+                            data: response.data, // ใช้ response.data ที่ส่งมาจาก API
+                            columns: [
+                                //{ data: "RowId", title: "No." },
+                                {
+                                    title: "No.",
+                                    data: null,
+                                    render: function (data, type, row, meta) {
+                                        return meta.row + 1;
+                                    }
+                                },
+                                { data: "rowId", title: "RowId", visible: false },
+                                { data: "customerCode", title: "รหัสลูกค้า" },
+                                { data: "customerName", title: "ลูกค้า" },
+                                { data: "origin", title: "Origin" },
+                                { data: "destination", title: "Destination" },
+                                {
+                                    data: "qty",
+                                    title: "QTY",
+                                    render: function (data, type, row) {
+                                        return `<input type="number" class="form-control qty-input" value="${data}" data-id="${row.customerCode}" />`;
+                                    }
+                                },
+                                {
+                                    data: "weight",
+                                    title: "Weight",
+                                    render: function (data, type, row) {
+                                        return `<input type="number" class="form-control weight-input" value="${data}" data-id="${row.customerCode}" />`;
+                                    }
+                                },
+                                {
+                                    data: "cbm",
+                                    title: "CBM",
+                                    render: function (data, type, row) {
+                                        return `<input type="number" class="form-control cbm-input" value="${data}" data-id="${row.customerCode}" />`;
+                                    }
+                                }
+                            ]
+                        });
+
+                        //// เพิ่ม Event Listener สำหรับ input
+                        //$('#dataTable tbody').on('input', '.qty-input, .weight-input, .cbm-input', function () {
+                        //    var rowId = $(this).data("id");
+                        //    var newValue = $(this).val();
+                        //    console.log(`Row ID: ${rowId}, New Value: ${newValue}`);
+                        //});
+
+                    } else {
+                        console.log("No data available");
+                    }
+
+                    if (response.statusOperation == "2") {
                         document.getElementById("card-body").style.display = "none";
                         document.getElementById("approve").style.display = "none";
                         document.getElementById("changejob").removeAttribute("hidden");
                     }
-                    else if (data.statusOperation == "3") {
+                    else if (response.statusOperation == "3") {
                         document.getElementById("card-body").style.display = "none";
                         document.getElementById("reject").style.display = "none";
                         document.getElementById("approve").style.display = "none";
@@ -897,17 +942,6 @@ function sendApi() {
         });
         return;
     }
-    else if (!customers_id) {
-        swal("Warning!", "Please Select a Customer!", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
     else if (!trucktype_id) {
         swal("Warning!", "Please Select a Truck Type!", {
             icon: "warning",
@@ -930,17 +964,6 @@ function sendApi() {
         });
         return;
     }
-    else if (!origin) {
-        swal("Warning!", "Please Specify Origin !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
     else if (!loading) {
         swal("Warning!", "Please Specify Loading Date !", {
             icon: "warning",
@@ -952,52 +975,8 @@ function sendApi() {
         });
         return;
     }
-    else if (!destination) {
-        swal("Warning!", "Please Specify Destination !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
     else if (!eta) {
         swal("Warning!", "Please Specify ETA Date !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!qty) {
-        swal("Warning!", "Please Specify QTY !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!weight) {
-        swal("Warning!", "Please Specify Weight !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!cbm) {
-        swal("Warning!", "Please Specify CBM !", {
             icon: "warning",
             buttons: {
                 confirm: {
@@ -1052,6 +1031,44 @@ function sendApi() {
         return;
     }
     else {
+
+        const table = $('#dataTable').DataTable(); // ใช้ DataTables API
+        const rows = table.rows().nodes(); // ดึงทุกแถวจาก DataTables
+        const data = [];
+        if (rows.length === 0) {
+            swal("Warning!", "กรุณาเพิ่มรายละเอียดงานก่อน", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+        } else {
+           
+
+            // 🔥 แปลง NodeList เป็น Array ก่อนใช้ forEach
+            Array.from(rows).forEach((row, index) => {
+                const rowData = table.row(index).data(); // ดึงข้อมูลแต่ละแถว
+
+                if (!rowData) return; // ป้องกันกรณี DataTables คืนค่า undefined
+
+                const rowObject = {
+                    RowId: rowData.rowId, // ดึงค่าจาก DataTable API
+                    Qty: $(row).find('.qty-input').val().trim(), // ดึงค่าจาก input
+                    Weight: $(row).find('.weight-input').val().trim(),
+                    Cbm: $(row).find('.cbm-input').val().trim()
+                };
+
+                data.push(rowObject);
+            });
+
+            console.log(JSON.stringify(data, null, 2));
+        }
+
+
+
         console.log('data json', JSON.stringify({
             RowId: row_id,
             JobNo: "-",
@@ -1076,13 +1093,13 @@ function sendApi() {
             DryIce: dry_ice,
             Comment: comment,
             StatusOperation: status_operation,
-
             VehiclesId: status_operation === 3 ? null : vehiclesId || null,
             Driver: status_operation === 3 ? null : driver || null,
             Sub: status_operation === 3 ? null : sub || null,
             Tel: status_operation === 3 ? null : tel || null,
             TravelCosts: status_operation === 3 ? null : cost || null,
-            Distance: status_operation === 3 ? null : km || null
+            Distance: status_operation === 3 ? null : km || null,
+            data: data
 
         }) );
 
@@ -1115,13 +1132,13 @@ function sendApi() {
                 DryIce: dry_ice,
                 Comment: comment,
                 StatusOperation: status_operation,
-
                 VehiclesId: status_operation === 3 ? null : vehiclesId || null,
                 Driver: status_operation === 3 ? null : driver || null,
                 Sub: status_operation === 3 ? null : sub || null,
                 Tel: status_operation === 3 ? null : tel || null,
                 TravelCosts: status_operation === 3 ? null : cost || null,
-                Distance: status_operation === 3 ? null : km || null
+                Distance: status_operation === 3 ? null : km || null,
+                data: data
 
             }),
             success: function (data) {

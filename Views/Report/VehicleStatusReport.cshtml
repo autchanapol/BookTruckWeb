@@ -1,0 +1,198 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@Html.AntiForgeryToken()
+<div class="page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Vehicles</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="#">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Report</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">VehicleStatusReport</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title">Vehicles Information</h4>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Modal -->
+                <div class="modal fade"
+                     id="addRowModal"
+                     tabindex="-1"
+                     role="dialog"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">
+                                    <span id="h_name" class="fw-mediumbold"> New Row</span>
+                                    @* <span class="fw-light"> Row </span> *@
+                                </h5>
+                                <button type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="small">
+                                    Create a new row using this form, make sure you
+                                    fill them all
+                                </p>
+                                <form>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input id="rowId" hidden />
+                                            <div class="form-group form-group-default">
+                                                <label>Name</label>
+                                                <input id="vehicle_name"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="input name" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group form-group-default">
+                                                <label>License</label>
+                                                <input id="vehicle_license"
+                                                       type="text"
+                                                       class="form-control"
+                                                       placeholder="input License" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group form-group-default">
+                                                <label>Vehicle Type</label>
+                                                <select class="form-select"
+                                                        id="vehicle_type">
+                                                    <option value="">-- Select an option --</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label>Weight Empty</label>
+                                                <input id="weight_empty"
+                                                       type="number"
+                                                       class="form-control"
+                                                       placeholder="input weight empty" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label>Weight Capacity</label>
+                                                <input id="weight_capacity"
+                                                       type="number"
+                                                       class="form-control"
+                                                       placeholder="input weight capacity" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 pe-0">
+                                            <div class="form-group form-group-default">
+                                                <label>Cube Capacity</label>
+                                                <input id="cube_capacity"
+                                                       type="number"
+                                                       class="form-control"
+                                                       placeholder="input cube capacity" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button"
+                                        id="addRowButton"
+                                        class="btn btn-primary"
+                                        onclick="saveVehicles()">
+                                    Save
+                                </button>
+                                <button type="button"
+                                        class="btn btn-danger"
+                                        data-dismiss="modal"
+                                        onclick="$('#addRowModal').modal('hide')">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End  Modal -->
+                <div class="table-responsive">
+                    <table id="vehicles-table"
+                           class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Row ID.</th>
+                                <th>Name</th>
+                                <th>License</th>
+                                <th>Vehicle Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Row ID.</th>
+                                <th>Name</th>
+                                <th>License</th>
+                                <th>Vehicle Type</th>
+                                <th>Status</th>
+
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+         var yourApp = yourApp || {};
+        yourApp.Urls = yourApp.Urls || {};
+        yourApp.Urls.baseUrl = '@Url.Content("~")';
+        yourApp.Urls.editUserUrl = '@Url.Action("GetVehiclesReport", "Vehicles")';
+
+        var getvehicleType = getvehicleType || {};
+        getvehicleType.Urls = getvehicleType.Urls || {};
+        getvehicleType.Urls.baseUrl = '@Url.Content("~")';
+        getvehicleType.Urls.getvehicle_url = '@Url.Action("GetVehiclesReport", "VehiclesTypes")';
+
+
+        var addvehicle = addvehicle || {};
+        addvehicle.Urls = addvehicle.Urls || {};
+        addvehicle.Urls.baseUrl = '@Url.Content("~")';
+        addvehicle.Urls.addvehicle_url = '@Url.Action("AddVehicles", "Vehicles")';
+
+        var editvehicle = editvehicle || {};
+        editvehicle.Urls = editvehicle.Urls || {};
+        editvehicle.Urls.baseUrl = '@Url.Content("~")';
+        editvehicle.Urls.editvehicle_url = '@Url.Action("EditVehicles", "Vehicles")';
+
+    </script>
+    <script src="~/js/notify.js"></script>
+    <script src="~/js/page/vehiclesReport.js"></script>
+}

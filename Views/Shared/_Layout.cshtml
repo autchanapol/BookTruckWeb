@@ -137,7 +137,7 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "bookingrequest" ? "active" : "")">
                                     <a asp-controller="Operation" asp-action="BookingRequest">
-                                        <i class="icon-note"></i>
+                                        <i class="bi bi-file-earmark-plus-fill"></i>
                                         <p>ทำรายการจองรถ</p>
                                     </a>
                                 </li>
@@ -148,7 +148,7 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "confrimjobs" ? "active" : "")">
                                     <a asp-controller="Operation" asp-action="ConfrimJobs">
-                                        <i class="icon-note"></i>
+                                        <i class="bi bi-book"></i>
                                         <p>รับทราบการจอง</p>
                                     </a>
                                 </li>
@@ -159,12 +159,12 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "receivingbooking" ? "active" : "")">
                                     <a asp-controller="Operation" asp-action="ReceivingBooking">
-                                        <i class="icon-book-open"></i>
-                                        <p>อนุมัติการจอง (1 งาน)</p>
+                                        <i class="bi bi-calendar-check"></i>
+                                        <p>อนุมัติการจอง</p>
                                     </a>
                                 </li>
                             }
-                            @if (menuNames.Contains("approve"))
+                           @*  @if (menuNames.Contains("approve"))
                             {
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "approve" ? "active" : "")">
@@ -173,7 +173,7 @@
                                         <p>อนุมัติการจอง (หลายงาน)</p>
                                     </a>
                                 </li>
-                            }
+                            } *@
                             @if (menuNames.Contains("closed trucks"))
                             {
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "operation" &&
@@ -223,7 +223,7 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "master" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "temp" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="Temp">
-                                        <i class="icon-grid"></i>
+                                        <i class="bi bi-thermometer"></i>
                                         <p>Temp</p>
                                     </a>
                                 </li>
@@ -234,7 +234,7 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "master" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "loadtype" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="LoadType">
-                                        <i class="icon-grid"></i>
+                                        <i class="bi bi-minecart-loaded"></i>
                                         <p>ประเภทโหลด LOAD</p>
                                     </a>
                                 </li>
@@ -245,11 +245,34 @@
                                 <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "master" &&
                                          ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "vehicles" ? "active" : "")">
                                     <a asp-controller="Master" asp-action="Vehicles">
-                                        <i class="icon-grid"></i>
+                                        <i class="bi bi-truck"></i>
                                         <p>ยานพาหนะ</p>
                                     </a>
                                 </li>
                             }
+                        }
+
+                         <!-- MASTER MENU -->
+                        @if (menuNames.Contains("empty car"))
+                        {
+                            <li class="nav-section">
+                                <span class="sidebar-mini-icon">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </span>
+                                <h4 class="text-section">Report</h4>
+                            </li>
+
+                            @if (menuNames.Contains("empty car"))
+                            {
+                                <li class="nav-item @(ViewContext.RouteData.Values["controller"]?.ToString().ToLower() == "report" &&
+                                         ViewContext.RouteData.Values["action"]?.ToString().ToLower() == "vehiclestatusreport" ? "active" : "")">
+                                    <a asp-controller="Report" asp-action="VehicleStatusReport">
+                                        <i class="bi bi-file-earmark-text-fill"></i>
+                                        <p>รายงานสถานะรถ</p>
+                                    </a>
+                                </li>
+                            }
+
                         }
 
                         <!-- ADMIN MENU -->

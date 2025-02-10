@@ -4,6 +4,25 @@
 @{
 }
 @Html.AntiForgeryToken()
+
+<head>
+    <link rel="stylesheet" href="~/css/modals.css" />
+    <style>
+        /* เปลี่ยนสีพื้นหลังของ Modal */
+        #scrollableModal .modal-content {
+            background-color: #f1f1f1;
+            color: #333;
+            border-radius: 8px;
+        }
+
+        /* เปลี่ยนสีพื้นหลังของ Backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+        }
+    </style>
+
+</head>
+
 <div class="page-inner">
     <div class="page-header">
         <h3 class="fw-bold mb-3">Vehicles</h3>
@@ -42,23 +61,25 @@
                            class="display table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>เลือก</th>
-                                <th>Row ID.</th>
+                           @*      <th>เลือก</th> *@
+                                <th style="width:7%">Row ID.</th>
                                 <th>ชื่อรถ</th>
                                 <th>ทะเบียนรถ</th>
                                 <th>ชื่อคนขับรถ</th>
-                                <th>จำนวนงาน</th>
-                                <th>Action</th>
+                                <th>หมายเลขงาน</th>
+                                <th>เวลาที่จะปิดงาน</th>
+                                <th style="width:20%">Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>เลือก</th>
+                            @*     <th>เลือก</th> *@
                                 <th>Row ID.</th>
                                 <th>ชื่อรถ</th>
                                 <th>ทะเบียนรถ</th>
                                 <th>ชื่อคนขับรถ</th>
-                                <th>จำนวนงาน</th>
+                                <th>หมายเลขงาน</th>
+                                <th>เวลาที่จะปิดงาน</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
@@ -67,6 +88,145 @@
                     </table>
 
                 </div>
+            </div>
+            <div class="row">
+                <!-- Modal -->
+                <div class="modal fade" id="changeTruckModal" tabindex="-1" role="dialog" aria-labelledby="selectedDataModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <!-- เพิ่ม modal-lg -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="selectedDataModalLabel">การเปลี่ยนแปลงรถขนส่ง</h5>
+                                <button onclick="$('#changeTruckModal').modal('hide')" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- ตารางแสดงข้อมูล -->
+
+                                <div class="row">
+                                    <!-- License -->
+                                    <div class="col">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="car_id"
+                                               hidden
+                                               placeholder="CAR" />
+                                        <input type="text"
+                                               class="form-control"
+                                               id="jobno"
+                                               hidden
+                                                />
+                                        <div class="form-group">
+                                            <label for="carDropdown">ยานพาหนะ</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="carname"
+                                                   placeholder="พิมพ์ลง Enter ค้นหา" />
+                                        </div>
+                                    </div>
+                                    <!-- Truck Type -->
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="sub">ทะเบียนรถ</label>
+                                            <input type="text"
+                                                   disabled
+                                                   class="form-control"
+                                                   id="carshow"
+                                                   value="-"
+                                                   placeholder="CAR" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="email2">ประเภทรถ</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="cartype"
+                                                   disabled
+                                                   value="-"
+                                                   placeholder="" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="driver">ผู้ขับขี่</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="driver"
+                                                   placeholder="Enter Driver" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="email2">SUB</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="sub"
+                                                   placeholder="Enter Sub" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="email2">Tel</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="tel"
+                                                   placeholder="Enter Sub" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="saveTruck()" class="btn btn-success" data-dismiss="modal">บันทึกการเปลี่ยนรถ</button>
+                                <button onclick="$('#changeTruckModal').modal('hide')" type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal vehicle Selector -->
+                <div class="modal fade" id="scrollableModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">เลือกยานพาหนะ</h5>
+                                <button onclick="$('#scrollableModal').modal('hide')" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-hover" id="vehicle-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>ชื่อรถ</th>
+                                            <th>ทะเบียนรถ</th>
+                                            <th>ประเภทรถ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- ข้อมูลรถจะแสดงที่นี่ -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        onclick="$('#scrollableModal').modal('hide')">
+                                    ปิด
+                                </button>
+                                <button id="select-btn" type="button" class="btn btn-primary">เลือก</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -78,6 +238,9 @@
             getTruckDataUrl: '@Url.Action("GetVehiclesFrmTicket", "Vehicles")',
             setClosedUrl: '@Url.Action("CloseJobVehicles", "Vehicles")',
             setRevertUrl: '@Url.Action("RevertJobVehicles", "Vehicles")',
+            getVehiclesFrmJobUrl: '@Url.Action("GetVehiclesFrmJob", "Vehicles")',
+            getVehiclesFrmNameUrl: '@Url.Action("GetVehiclesFrmName", "Vehicles")',
+            setChangeTruckUrl: '@Url.Action("ChangeTruckTicket", "Tickets")',
             baseUrl: '@Url.Content("~")'
         }
 

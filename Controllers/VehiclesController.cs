@@ -20,27 +20,89 @@ namespace BookTruckWeb.Controllers
             _context = context;
         }
 
+        //[HttpPost("GetVehiclesFrmTicket")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> GetVehiclesFrmTicket()
+        //{
+        //    var vehicles = await (from ve in _context.Vehicles
+        //                          join tic in _context.Tickets on ve.RowId equals tic.VehiclesId
+        //                          where ve.Active == 1 && ve.Status == 1 && tic.StatusOperation == 2
+        //                          group tic by new { ve.RowId, ve.VehicleLicense, ve.VehicleName, tic.Driver } into g
+        //                          select new
+        //                          {
+        //                              g.Key.RowId,
+        //                              g.Key.Driver,
+        //                              g.Key.VehicleLicense,
+        //                              g.Key.VehicleName,
+        //                              Counnt_Job = g.Count()
+        //                          })
+        //                          //.Distinct()
+        //                          .ToListAsync();
+        //    return Ok(vehicles);
+        //}
+
         [HttpPost("GetVehiclesFrmTicket")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GetVehiclesFrmTicket()
         {
             var vehicles = await (from ve in _context.Vehicles
                                   join tic in _context.Tickets on ve.RowId equals tic.VehiclesId
+                                  join veType in _context.VehiclesTypes on ve.VehicleType equals veType.RowId
                                   where ve.Active == 1 && ve.Status == 1 && tic.StatusOperation == 2
-                                  group tic by new { ve.RowId, ve.VehicleLicense, ve.VehicleName, tic.Driver } into g
                                   select new
                                   {
-                                      g.Key.RowId,
-                                      g.Key.Driver,
-                                      g.Key.VehicleLicense,
-                                      g.Key.VehicleName,
-                                      Counnt_Job = g.Count()
+                                      ve.RowId,
+                                      tic.Driver,
+                                      ve.VehicleLicense,
+                                      ve.VehicleName,
+                                      veType.VehicleTypeName,
+                                      tic.Etatostore,
+                                      tic.JobNo
+
                                   })
                                   //.Distinct()
                                   .ToListAsync();
-            return Ok(vehicles);
+
+            var formattedVehicles = vehicles.Select(v => new
+            {
+                v.RowId,
+                v.Driver,
+                v.VehicleLicense,
+                v.VehicleName,
+                v.VehicleTypeName,
+                Etatostore = v.Etatostore?.ToString("yyyy-MM-dd HH:mm:ss"), // จัดรูปแบบที่นี่
+                v.JobNo
+            }).ToList();
+
+            return Ok(formattedVehicles);
         }
 
+
+        [HttpPost("GetVehiclesFrmJob")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesFrmJob([FromBody] Ticket _ticket)
+        {
+            var tickets = await (from ticket in _context.Tickets
+                                 join vehicle in _context.Vehicles on ticket.VehiclesId equals vehicle.RowId
+                                 join vehicleType in _context.VehiclesTypes on vehicle.VehicleType equals vehicleType.RowId
+                                 where ticket.JobNo == _ticket.JobNo
+                                 select new
+                                 {
+                                     ticket.RowId,
+                                     ticket.Driver,
+                                     ticket.Sub,
+                                     ticket.Tel,
+                                     ticket.VehiclesId,
+                                     vehicle.VehicleLicense,
+                                     vehicle.VehicleName,
+                                     vehicleType.VehicleTypeName
+
+                                 }
+                                 ).FirstOrDefaultAsync();
+
+
+            return Ok(tickets);
+        }
 
         [HttpPost("GetVehicles")]
         [ValidateAntiForgeryToken]
@@ -60,6 +122,33 @@ namespace BookTruckWeb.Controllers
                                       ve.WeightEmpty,
                                       ve.WeightCapacity,
                                       ve.CubeCapacity
+
+                                  }
+                                  ).ToListAsync();
+            return Ok(vehicles);
+        }
+
+        [HttpPost("GetVehiclesReport")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetVehiclesReport()
+        {
+            var vehicles = await (from ve in _context.Vehicles
+                                  join typeV in _context.VehiclesTypes on ve.VehicleType equals typeV.RowId
+                                  where ve.Status == 1
+                                  select new
+                                  {
+                                      ve.RowId,
+                                      ve.VehicleName,
+                                      ve.VehicleLicense,
+                                      ve.VehicleType,
+                                      typeV.VehicleTypeName,
+                                      ve.Status,
+                                      ve.WeightEmpty,
+                                      ve.WeightCapacity,
+                                      ve.CubeCapacity,
+                                      StatusName = ve.Active == 0 ? "Unavailable" :
+                                      ve.Active == 1 ? "Available" :
+                                      "Unavailable"
 
                                   }
                                   ).ToListAsync();

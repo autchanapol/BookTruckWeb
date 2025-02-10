@@ -9,6 +9,104 @@ const url_getCustomerId = window.AppUrls.getCustomerWid;
 //const url_getAssignUrl = window.AppUrls.getAssignUrl;
 var input = document.getElementById("customers_code");
 const jobNo = getQueryParam("JobNo");
+var i = 0;
+
+// Alert /////
+let title_ticketInput = document.getElementById("title_ticket");
+let department_idOption = document.getElementById("department_id");
+let trucktype_idOption = document.getElementById("trucktype_id");
+let temp_idOption = document.getElementById("temp_id");
+let loading_input = document.getElementById("loading");
+let eta_input = document.getElementById("eta");
+let typeload_idOption = document.getElementById("typeload_id");
+let assign_option = document.getElementById("assign");
+let customers_idInput = document.getElementById("customers_id");
+let customers_codeInput = document.getElementById("customers_code");
+let origin_input = document.getElementById("origin");
+let destination_input = document.getElementById("destination");
+let qty_input = document.getElementById("qty");
+let weight_input = document.getElementById("weight");
+let cbm_input = document.getElementById("cbm");
+
+title_ticketInput.addEventListener("input", function () {
+    if (title_ticketInput.value.trim() !== "") {
+        title_ticketInput.classList.remove("is-invalid");
+    }
+
+});
+department_idOption.addEventListener("change", function () {
+    if (department_idOption.value.trim() !== "") {
+        department_idOption.classList.remove("is-invalid");
+    }
+})
+trucktype_idOption.addEventListener("change", function () {
+    if (trucktype_idOption.value.trim() !== "") {
+        trucktype_idOption.classList.remove("is-invalid");
+    }
+})
+temp_idOption.addEventListener("change", function () {
+    if (temp_idOption.value.trim() !== "") {
+        temp_idOption.classList.remove("is-invalid");
+    }
+})
+loading_input.addEventListener("input", function () {
+    if (loading_input.value.trim() !== "") {
+        loading_input.classList.remove("is-invalid");
+    }
+})
+eta_input.addEventListener("input", function () {
+    if (eta_input.value.trim() !== "") {
+        eta_input.classList.remove("is-invalid");
+    }
+})
+typeload_idOption.addEventListener("change", function () {
+    if (typeload_idOption.value.trim() !== "") {
+        typeload_idOption.classList.remove("is-invalid");
+    }
+})
+assign_option.addEventListener("change", function () {
+    if (assign_option.value.trim() !== "") {
+        assign_option.classList.remove("is-invalid");
+    }
+})
+customers_codeInput.addEventListener("input", function () {
+    if (customers_codeInput.value.trim() !== "") {
+        customers_codeInput.classList.remove("is-invalid");
+    }
+});
+customers_idInput.addEventListener("input", function () {
+    if (customers_idInput.value.trim() !== "") {
+        customers_codeInput.classList.remove("is-invalid");
+    }
+});
+origin_input.addEventListener("input", function () {
+    if (origin_input.value.trim() !== "") {
+        origin_input.classList.remove("is-invalid");
+    }
+    //document.querySelector(".error-message").style.display = "block"; // แสดงข้อความ error
+});
+destination_input.addEventListener("input", function () {
+    if (destination_input.value.trim() !== "") {
+        destination_input.classList.remove("is-invalid");
+    }
+});
+qty_input.addEventListener("input", function () {
+    if (qty_input.value.trim() !== "") {
+        qty_input.classList.remove("is-invalid");
+    }
+});
+weight_input.addEventListener("input", function () {
+    if (weight_input.value.trim() !== "") {
+        weight_input.classList.remove("is-invalid");
+    }
+});
+cbm_input.addEventListener("input", function () {
+    if (cbm_input.value.trim() !== "") {
+        cbm_input.classList.remove("is-invalid");
+    }
+});
+
+// End Alert /////
 
 $(document).ready(function () {
 
@@ -223,8 +321,6 @@ function populateTable(data) {
 }
 
 
-
-
 function getDepartment() {
     const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
     const token = tokenElement ? tokenElement.value : null;
@@ -417,16 +513,30 @@ function getLoadType() {
 }
 
 function clearText() {
-
+    const today = moment().format("YYYY-MM-DDTHH:mm");
+    //$('#loading').val('');
+    //$('#eta').val('');
+    const startDateInput = document.querySelector("#loading");
+    const eta = document.querySelector("#eta");
+    startDateInput.value = today;
+    eta.value = today;
+    startDateInput.setAttribute(
+        "data-date",
+        moment(today, "YYYY-MM-DDTHH:mm").format(startDateInput.getAttribute("data-date-format"))
+    );
+    eta.setAttribute(
+        "data-date",
+        moment(today, "YYYY-MM-DDTHH:mm").format(eta.getAttribute("data-date-format"))
+    );
+    i = 0;
     $('#department_id').val('');
     $('#customers_id').val('');
+    $('#title_ticket').val('');
     $('#trucktype_id').val('');
     $('#temp_id').val('');
     $('#backhual').prop('checked', false);
     $('#origin').val('');
-    $('#loading').val('');
     $('#destination').val('');
-    $('#eta').val('');
     $('#typeload_id').val('');
     $('#qty').val('');
     $('#weight').val('');
@@ -443,24 +553,145 @@ function clearText() {
     $('#customer_id').val('');
     $('#customers_code').val('');
     $('#customers_name').val('');
+    const tableBody = document.getElementById('dataTable').querySelector('tbody');
+    tableBody.innerHTML = ""; // ลบข้อมูลทั้งหมดใน <tbody>
+
     
+}
+
+function clearTextDetails() {
+    $('#customers_code').val('');
+    $('#customers_name').val('');
+    $('#customers_id').val('');
+    $('#destination').val('');
+    $('#qty').val('');
+    $('#weight').val('');
+    $('#cbm').val('');
+    $('#origin').val('');
+
+}
+
+
+function addRequestRow() {
+    let isValid = true;
+    const customers_id = $('#customers_id').val();
+    const customers_code = $('#customers_code').val();
+    const customers_name = $('#customers_name').val();
+    const destination = $('#destination').val();
+    const qty = $('#qty').val();
+    const weight = $('#weight').val();
+    const cbm = $('#cbm').val();
+    const origin = $('#origin').val();
+
+    if (!destination) {
+        isValid = false;
+        destination_input.classList.add("is-invalid");
+    }
+    else {
+        destination_input.classList.remove("is-invalid");
+    }
+
+    if (!customers_id) {
+        isValid = false;
+        customers_codeInput.classList.add("is-invalid");
+    }
+    else {
+        customers_codeInput.classList.remove("is-invalid");
+    }
+    if (!qty) {
+        isValid = false;
+        qty_input.classList.add("is-invalid");
+    }
+    else {
+        qty_input.classList.remove("is-invalid");
+    }
+    if (!weight) {
+        isValid = false;
+        weight_input.classList.add("is-invalid");
+    }
+    else {
+        weight_input.classList.remove("is-invalid");
+    }
+    if (!cbm) {
+        isValid = false;
+        cbm_input.classList.add("is-invalid");
+    }
+    else {
+        cbm_input.classList.remove("is-invalid");
+    }
+    if (!origin) {
+        isValid = false;
+        origin_input.classList.add("is-invalid");
+    }
+    else {
+        origin_input.classList.remove("is-invalid");
+    }
+    if (isValid == false)
+    {
+        swal("Warning!", "กรุณารุะบุตามในช่องที่แดงให้ครบก่อน !", {
+            icon: "warning",
+            buttons: {
+                confirm: {
+                    className: "btn btn-warning",
+                },
+            },
+        });
+        return;
+    }
+    else {
+
+        const tableBody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        // สร้างแถวใหม่
+        const newRow = tableBody.insertRow();
+        i += 1;
+        const cell0 = newRow.insertCell();
+        cell0.textContent = i;
+       
+        //const cell1 = newRow.insertCell();
+        //cell1.textContent = customers_code;
+
+        newRow.insertCell().textContent = customers_code;
+        newRow.insertCell().textContent = customers_name;
+        newRow.insertCell().textContent = origin;
+        newRow.insertCell().textContent = destination;
+        newRow.insertCell().textContent = qty;
+        newRow.insertCell().textContent = weight;
+        newRow.insertCell().textContent = cbm;
+
+        // ✅ เพิ่มปุ่มลบในแถวนี้
+        const actionCell = newRow.insertCell();
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "ลบ";
+        deleteButton.style.backgroundColor = "red";
+        deleteButton.style.color = "white";
+        deleteButton.style.border = "none";
+        deleteButton.style.padding = "5px";
+        deleteButton.style.cursor = "pointer";
+
+        // เมื่อกดปุ่มลบ ให้ลบแถวนี้
+        deleteButton.onclick = function () {
+            newRow.remove();
+        };
+        actionCell.appendChild(deleteButton);
+
+        newRow.setAttribute('data-customers_id', customers_id);
+    }
+
+
+    clearTextDetails();
+
 }
 
 function saveRequestFrom() {
     const customer_row = $('#customer_row').val();
+    const title_ticket = $('#title_ticket').val();
     const department_id = $('#department_id').val();
-    const customers_id = $('#customers_id').val();
     const trucktype_id = $('#trucktype_id').val();
     const temp_id = $('#temp_id').val();
     const backhual = $('#backhual').is(':checked') ? 1 : 0;
-    const origin = $('#origin').val();
     const loading = $('#loading').val();
-    const destination = $('#destination').val();
     const eta = $('#eta').val();
     const typeload_id = $('#typeload_id').val();
-    const qty = $('#qty').val();
-    const weight = $('#weight').val();
-    const cbm = $('#cbm').val();
     const man = $('#man').val();
     const handjack = $('#handjack').is(':checked') ? 1 : 0;
     const cart = $('#cart').is(':checked') ? 1 : 0;
@@ -478,68 +709,54 @@ function saveRequestFrom() {
     console.log(loading);
     console.log(date_loading);
     console.log(currentDateTime);
-
+    let isValid = true; // ใช้เพื่อตรวจสอบว่ามีข้อผิดพลาดหรือไม่
     if (!token) {
         console.error("CSRF Token not found.");
         return;
     }
 
+    if (!title_ticket) {
+        title_ticketInput.classList.add("is-invalid");
+        isValid = false;
+        //swal("Warning!", "Please Specify a Title!", {
+        //    icon: "warning",
+        //    buttons: {
+        //        confirm: {
+        //            className: "btn btn-warning",
+        //        },
+        //    },
+        //});
+        //return;
+    }
+    else {
+        title_ticketInput.classList.remove("is-invalid");
+    }
+
     if (!department_id) {
-        swal("Warning!", "Please Select a Department!", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+        isValid = false;
+        department_idOption.classList.add("is-invalid");
     }
-    else if (!customers_id) {
-        swal("Warning!", "Please Select a Customer!", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+    else {
+        department_idOption.classList.remove("is-invalid");
     }
-    else if (!trucktype_id) {
-        swal("Warning!", "Please Select a Truck Type!", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+    if (!trucktype_id) {
+        isValid = false;
+        trucktype_idOption.classList.add("is-invalid")
     }
-    else if (!temp_id) {
-        swal("Warning!", "Please Select a Temp!", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+    else {
+        trucktype_idOption.classList.remove("is-invalid")
     }
-    else if (!origin) {
-        swal("Warning!", "Please Specify Origin !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+
+
+    if (!temp_id) {
+        isValid = false;
+        temp_idOption.classList.add("is-invalid");
     }
-    else if (!loading) {
+    else {
+        temp_idOption.classList.remove("is-invalid");
+    }
+    
+     if (!loading) {
         swal("Warning!", "Please Specify Loading Date !", {
             icon: "warning",
             buttons: {
@@ -550,29 +767,7 @@ function saveRequestFrom() {
         });
         return;
     }
-    //else if (date_loading < currentDateTime) {
-    //    swal("Warning!", "The selected date and time is in the past (Loading) !", {
-    //        icon: "warning",
-    //        buttons: {
-    //            confirm: {
-    //                className: "btn btn-warning",
-    //            },
-    //        },
-    //    });
-    //    return;
-    //}
-    else if (!destination) {
-        swal("Warning!", "Please Specify Destination !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!eta) {
+     if (!eta) {
         swal("Warning!", "Please Specify ETA Date !", {
             icon: "warning",
             buttons: {
@@ -583,110 +778,71 @@ function saveRequestFrom() {
         });
         return;
     }
-    //else if (date_eta < currentDateTime)
-    //{
-    //    swal("Warning!", "The selected date and time is in the past (ETA) !", {
-    //        icon: "warning",
-    //        buttons: {
-    //            confirm: {
-    //                className: "btn btn-warning",
-    //            },
-    //        },
-    //    });
-    //    return;
-    //}
-    else if (!qty) {
-        swal("Warning!", "Please Specify QTY !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!weight) {
-        swal("Warning!", "Please Specify Weight !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!cbm) {
-        swal("Warning!", "Please Specify CBM !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
-    }
-    else if (!assign) {
-        swal("Warning!", "Please Specify Assign To !", {
-            icon: "warning",
-            buttons: {
-                confirm: {
-                    className: "btn btn-warning",
-                },
-            },
-        });
-        return;
+    if (!assign) {
+        isValid = false;
+        assign_option.classList.add("is-invalid");
     }
     else {
+        assign_option.classList.remove("is-invalid");
+    }
 
-        console.log("date", JSON.stringify({
-            JobNo: "TT",
-            DepartmentId: department_id,
-            CustomerId: customers_id,
-            VehiclesTypeId: trucktype_id,
-            TempId: temp_id,
-            Backhual: backhual,
-            Origin: origin,
-            Loading: loading,
-            Destination: destination,
-            Etatostore: eta,
-            TypeloadId: typeload_id,
-            Qty: qty,
-            Weight: weight,
-            Cbm: cbm,
-            DeliveryMan: man,
-            Handjack: handjack,
-            Cart: cart,
-            Cardboard: cardboard,
-            FoamBox: foam_box,
-            DryIce: dry_ice,
-            Comment: comment,
-            StatusOperation: 1,
-            Assign: assign
-        }));
+    if (isValid == false) {
+            swal("Warning!", "กรุณากรอกตามช่องสีแดงให้ครบก่อน !", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+    }
 
-        $.ajax({
-            url: url_addTicketsFrmRequester,
-            type: "POST",
-            headers: { "RequestVerificationToken": token },
-            contentType: "application/json",
-            data: JSON.stringify({
+ 
+        const tableBody = document.getElementById('dataTable').querySelector('tbody');
+        const rows = tableBody.querySelectorAll('tr');
+
+        if (rows.length == 0) {
+            swal("Warning!", "กรุณาเพิ่มรายละเอียดงานก่อน", {
+                icon: "warning",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-warning",
+                    },
+                },
+            });
+            return;
+        }
+        else {
+            const data = [];
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+
+                const rowData = {
+                    CustomerId: row.getAttribute('data-customers_id'),
+                    Origin: cells[3].textContent.trim(),
+                    Destination: cells[4].textContent.trim(),
+                    Qty: cells[5].textContent.trim(),
+                    Weight: cells[6].textContent.trim(),
+                    Cbm: cells[7].textContent.trim()
+                };
+
+                data.push(rowData);
+            });
+
+            console.log(JSON.stringify(data, null, 2));
+
+            console.log("date", JSON.stringify({
                 JobNo: "TT",
+                Title: title_ticket,
                 DepartmentId: department_id,
-                CustomerId: customers_id,
                 VehiclesTypeId: trucktype_id,
                 TempId: temp_id,
                 Backhual: backhual,
-                Origin: origin,
                 Loading: loading,
-                Destination: destination,
                 Etatostore: eta,
                 TypeloadId: typeload_id,
-                Qty: qty,
-                Weight: weight,
-                Cbm: cbm,
                 DeliveryMan: man,
                 Handjack: handjack,
                 Cart: cart,
@@ -694,41 +850,71 @@ function saveRequestFrom() {
                 FoamBox: foam_box,
                 DryIce: dry_ice,
                 Comment: comment,
-                StatusOperation: 0,
-                Assign: assign
-            }),
-            success: function (data) {
-                console.log("data output", data);
-                if (data !== null && typeof data == 'object') {
-                    if (data.status) {
-                        clearText();
-                        swal("Successfully!", data.message + " Job No." + data.jobNo, {
-                            icon: "success",
-                            buttons: {
-                                confirm: {
-                                    className: "btn btn-success",
+                StatusOperation: 1,
+                Assign: assign,
+                Data: data
+            }));
+
+            $.ajax({
+                url: url_addTicketsFrmRequester,
+                type: "POST",
+                headers: { "RequestVerificationToken": token },
+                contentType: "application/json",
+                data: JSON.stringify({
+                    JobNo: "TT",
+                    Title: title_ticket,
+                    DepartmentId: department_id,
+                    VehiclesTypeId: trucktype_id,
+                    TempId: temp_id,
+                    Backhual: backhual,
+                    Loading: loading,
+                    Etatostore: eta,
+                    TypeloadId: typeload_id,
+                    DeliveryMan: man,
+                    Handjack: handjack,
+                    Cart: cart,
+                    Cardboard: cardboard,
+                    FoamBox: foam_box,
+                    DryIce: dry_ice,
+                    Comment: comment,
+                    StatusOperation: 0,
+                    Assign: assign,
+                    Data: data
+                }),
+                success: function (data) {
+                    console.log("data output", data);
+                    if (data !== null && typeof data == 'object') {
+                        if (data.status) {
+                            clearText();
+                            swal("Successfully!", data.message + " Job No." + data.jobNo, {
+                                icon: "success",
+                                buttons: {
+                                    confirm: {
+                                        className: "btn btn-success",
+                                    },
                                 },
-                            },
-                        });
-                        return;
-                        //successClick(data.message);
+                            });
+                            return;
+                            //successClick(data.message);
+                        }
+                        else {
+                            console.log("not success:", data.message);
+                        }
                     }
                     else {
-                        console.log("not success:", data.message);
+                        // ไม่มีข้อมูล
+                        console.log("Error:", "Error");
                     }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Status:", status);
+                    console.error("Error:", error);
+                    console.error("Response:", xhr.responseText); // ข้อความตอบกลับจากเซิร์ฟเวอร์
                 }
-                else {
-                    // ไม่มีข้อมูล
-                    console.log("Error:", "Error");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Status:", status);
-                console.error("Error:", error);
-                console.error("Response:", xhr.responseText); // ข้อความตอบกลับจากเซิร์ฟเวอร์
-            }
-        });
-    }
+            });
+        }
+
+    
 }
 
 function getRequestFrm() {

@@ -84,60 +84,41 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Form Elements</div>
+                    <div class="card-title">ข้อมูลเอกสารการขอ</div>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row needs-validation">
                         <div class="col-md-6 col-lg-5">
+                            <div class="form-group">
+                                <label for="head">หัวข้อเอกสาร</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="title_ticket"
+                                       placeholder="กรอกหัวข้อ" />
+                                <div class="invalid-feedback">
+                                    กรุณาใส่หัวข้อเอกสาร
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="defaultSelect">แผนก</label>
                                 <select class="form-select form-control"
                                         id="department_id">
                                     <option value="">-- Select an option --</option>
                                 </select>
-                            </div>
-                            @* <select class="form-select form-control" *@
-                            @*         id="customers_id"> *@
-                            @*     <option value="">-- Select an option --</option> *@
-                            @* </select> *@
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col">
-                                        <input type="text"
-                                               hidden
-                                               id="customer_row"
-                                               />
-
-                                        <input type="text"
-                                               class="form-control"
-                                               id="customers_id"
-                                               hidden
-                                               placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
-
-                                        <label for="defaultSelect">รหัสลูกค้า</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               id="customers_code"
-                                               placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
-
-                                    </div>
-                                    <div class="col">
-
-                                        <label for="defaultSelect">ชื่อลูกค้า</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               readonly
-                                               id="customers_name"
-                                               placeholder=".." />
-                                    </div>
+                                <div class="invalid-feedback">
+                                    กรุณาเลือกแผนก
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <label for="defaultSelect">Truck Type</label>
+                                <label for="defaultSelect">ประเภทรถ</label>
                                 <select class="form-select form-control"
                                         id="trucktype_id">
                                     <option value="">-- กรุณาเลือก --</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    กรุณาเลือกประเภทรถ
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="defaultSelect">Temp</label>
@@ -145,6 +126,9 @@
                                         id="temp_id">
                                     <option value="">-- กรุณาเลือก --</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    กรุณาเลือก Temp
+                                </div>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input"
@@ -156,57 +140,29 @@
                                     Backhual
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label for="email2">Origin</label>
-                                <input type="text"
-                                       class="form-control"
-                                       id="origin"
-                                       placeholder="Enter Origin" />
-                            </div>
+                           
                             <div class="form-group">
                                 <label for="loading">วันเวลา Loading</label>
                                 <input id="loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
-                            <div class="form-group">
-                                <label for="comment">Destination</label>
-                                <textarea class="form-control" id="destination" rows="5"></textarea>
-                            </div>
+                           
                             <div class="form-group">
                                 <label for="eta">ETA to store</label>
                                 <input id="eta" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
                         </div>
                         <div class="col-md-5 col-lg-5">
-
-
                             <div class="form-group">
-                                <label for="defaultSelect">Type Load</label>
+                                <label for="defaultSelect">ประเภทการโหลด</label>
                                 <select class="form-select form-control"
                                         id="typeload_id">
                                     <option value="">-- กรุณาเลือก --</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    กรุณาเลือก ประเภทการโหลด
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="email2">QTY</label>
-                                <input type="number"
-                                       class="form-control"
-                                       id="qty"
-                                       placeholder="Enter QTY" />
-                            </div>
-                            <div class="form-group">
-                                <label for="email2">Weight</label>
-                                <input type="number"
-                                       class="form-control"
-                                       id="weight"
-                                       placeholder="Enter Weight" />
-                            </div>
-                            <div class="form-group">
-                                <label for="email2">CBM</label>
-                                <input type="number"
-                                       class="form-control"
-                                       id="cbm"
-                                       placeholder="Enter CBM" />
-                            </div>
+                            
                             <div class="form-group">
                                 <label for="email2">ขอเพิ่มเด็กติดรถ</label>
                                 <input type="number"
@@ -280,11 +236,147 @@
                                             id="assign">
                                         <option value="">-- Select an option --</option>
                                     </select>
+                                    <div class="invalid-feedback">
+                                        กรุณาเลือก assign !
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
+                    <div class="card-header">
+                        <div class="card-title">รายละเอียดงานที่ขอ</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text"
+                                               hidden
+                                               id="customer_row" />
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="customers_id"
+                                               hidden
+                                               placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+
+                                        <label for="defaultSelect">รหัสลูกค้า</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="customers_code"
+                                               placeholder="รหัสลูกค้าและ Enter เพื่อเลือก" />
+                                        <div class="invalid-feedback">
+                                            กรุณาเลือกลูกค้า !
+                                        </div>
+
+                                    </div>
+                                    <div class="col">
+
+                                        <label for="defaultSelect">ชื่อลูกค้า</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               readonly
+                                               id="customers_name"
+                                               placeholder=".." />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">Origin</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="origin"
+                                       placeholder="Enter Origin" />
+                                <div class="invalid-feedback">
+                                    กรุณากรอก origin !
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Destination</label>
+                                <textarea class="form-control" id="destination" rows="5"></textarea>
+                                <div class="invalid-feedback">
+                                    กรุณากรอก Destination !
+                                </div>
+                            </div>
+                      
+                        </div>
+                        <div class="col-md-5 col-lg-5">
+                            <div class="form-group">
+                                <label for="email2">QTY</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="qty"
+                                       placeholder="Enter QTY" />
+                                <div class="invalid-feedback">
+                                    กรุณาระบุ QTY !
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">Weight</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="weight"
+                                       placeholder="Enter Weight" />
+                                <div class="invalid-feedback">
+                                    กรุณาระบุ Weight !
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email2">CBM</label>
+                                <input type="number"
+                                       class="form-control"
+                                       id="cbm"
+                                       placeholder="Enter CBM" />
+                                <div class="invalid-feedback">
+                                    กรุณาระบุ CBM !
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button onclick="addRequestRow()" class="btn btn-primary">Add</button>
+                                </div>
+                          
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    <h4 class="card_title">รายละเอียดงาน</h4>
+
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="table-responsive">
+                                    <table id="dataTable"
+                                           class="display table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                         
+                                                <th>No.</th>
+                                                <th>รหัสลูกค้า</th>
+                                                <th>ลูกค้า</th>
+                                                <th>Origin</th>
+                                                <th>Destination</th>
+                                                <th>QTY</th>
+                                                <th>Weight</th>
+                                                <th>CBM</th>
+                                                <th>action</th>
+                                            </tr>
+                                        </thead>
+                                    
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-action">
                     <button onclick="saveRequestFrom()" class="btn btn-success">Submit</button>

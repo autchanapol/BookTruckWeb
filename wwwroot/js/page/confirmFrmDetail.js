@@ -132,33 +132,52 @@ function getRequestFrm() {
             data: JSON.stringify({
                 JobNo: jobNo
             }),
-            success: function (data) {
-                console.log("data getRequestFrm", data);
-                if (data) {
-                    $('#row_id').val(data.rowId);
-                    $('#department_id').val(data.departmentName);
-                    $('#customers_id').val(data.customerCode);
-                    $('#customer_row').val(data.customerId);
-                    $('#customers_name').val(data.customerName);
-                    $('#trucktype_id').val(data.vehicleTypeName);
-                    $('#temp_id').val(data.tempName);
-                    $('#backhual').prop('checked', data.backhual === 1);
-                    $('#origin').val(data.origin);
-                    $('#loading').val(data.loading);
-                    $('#destination').val(data.destination);
-                    $('#eta').val(data.etatostore);
-                    $('#typeload_id').val(data.loadName);
-                    $('#qty').val(data.qty);
-                    $('#weight').val(data.weight);
-                    $('#cbm').val(data.cbm);
-                    $('#man').val(data.deliveryMan);
-                    $('#handjack').prop('checked', data.handjack === 1);
-                    $('#cart').prop('checked', data.cart === 1);
-                    $('#cardboard').prop('checked', data.cardboard === 1);
-                    $('#foam_box').prop('checked', data.foamBox === 1);
-                    $('#dry_ice').prop('checked', data.dryIce === 1);
-                    $('#comment').val(data.comment);
-                    $('#assign').val(data.assignName);
+            success: function (response) {
+                console.log("data getRequestFrm", response);
+                if (response) {
+                    $('#row_id').val(response.rowId);
+                    $('#department_id').val(response.departmentName);
+                    $('#trucktype_id').val(response.vehicleTypeName);
+                    $('#temp_id').val(response.tempName);
+                    $('#backhual').prop('checked', response.backhual === 1);
+                    $('#loading').val(response.loading);
+                    $('#eta').val(response.etatostore);
+                    $('#typeload_id').val(response.loadName);
+                    $('#man').val(response.deliveryMan);
+                    $('#handjack').prop('checked', response.handjack === 1);
+                    $('#cart').prop('checked', response.cart === 1);
+                    $('#cardboard').prop('checked', response.cardboard === 1);
+                    $('#foam_box').prop('checked', response.foamBox === 1);
+                    $('#dry_ice').prop('checked', response.dryIce === 1);
+                    $('#comment').val(response.comment);
+                    $('#assign').val(response.assignName);
+                    $('#title').val(response.title);
+
+                    if (response.data) {
+                        $('#dataTable').DataTable({
+                            destroy: true, // ลบ DataTable เดิมก่อนโหลดใหม่
+                            data: response.data, // ใช้ response.data ที่ส่งมาจาก API
+                            columns: [
+                                //{ data: "RowId", title: "No." },
+                                {
+                                    title: "No.",
+                                    data: null,
+                                    render: function (data, type, row, meta) {
+                                        return meta.row + 1;
+                                    }
+                                },
+                                { data: "customerCode", title: "รหัสลูกค้า" },
+                                { data: "customerName", title: "ลูกค้า" },
+                                { data: "origin", title: "Origin" },
+                                { data: "destination", title: "Destination" },
+                                { data: "qty", title: "QTY" },
+                                { data: "weight", title: "Weight" },
+                                { data: "cbm", title: "CBM" }
+                            ]
+                        });
+                    } else {
+                        console.log("No data available");
+                    }
                     
                 }
                 else {

@@ -9,6 +9,8 @@ public partial class Ticket
 
     public string JobNo { get; set; } = null!;
 
+    public string? Title { get; set; }
+
     public int? DepartmentId { get; set; }
 
     public int? CustomerId { get; set; }

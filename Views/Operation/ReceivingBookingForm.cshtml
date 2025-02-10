@@ -132,20 +132,22 @@
                                id="row_id" hidden />
                         <div class="col-md-6 col-lg-5">
                             <div class="form-group">
+                                <label for="defaultSelect">หัวข้อ</label>
+                                <input type="text"
+                                       class="form-control"
+                                       readonly
+                                       id="title"
+                                       placeholder="...." />
+
+                            </div>
+                            <div class="form-group">
                                 <label for="defaultSelect">Departments</label>
                                 <select class="form-select form-control"
                                         id="department_id">
                                     <option value="">-- Select an option --</option>
                                 </select>
                             </div>
-                          @*   <div class="form-group">
-                                <label for="defaultSelect">Custommer</label>
-                                <select class="form-select form-control"
-                                        id="customers_id">
-                                    <option value="">-- Select an option --</option>
-                                </select>
-                            </div> *@
-                            <div class="form-group">
+                            <div hidden class="form-group">
                             <div class="row">
                                 <div class="col">
                                     <input type="text"
@@ -200,7 +202,7 @@
                                     Backhual
                                 </label>
                             </div>
-                            <div class="form-group">
+                            <div hidden class="form-group">
                                 <label for="email2">Origin</label>
                                 <input type="text"
                                        class="form-control"
@@ -211,7 +213,7 @@
                                 <label for="email2">Loading</label>
                                 <input id="loading" class="form-control" type="datetime-local" data-date="" data-date-format="DD MMMM YYYY HH:mm" value="">
                             </div>
-                            <div class="form-group">
+                            <div hidden class="form-group">
                                 <label for="comment">Destination</label>
                                 <textarea class="form-control" id="destination" rows="5"></textarea>
                             </div>
@@ -230,21 +232,21 @@
                                     <option value="">-- Select an option --</option>
                                 </select>
                             </div>
-                            <div class="form-group">
+                            <div hidden class="form-group">
                                 <label for="email2">QTY</label>
                                 <input type="number"
                                        class="form-control"
                                        id="qty"
                                        placeholder="Enter QTY" />
                             </div>
-                            <div class="form-group">
+                            <div hidden class="form-group">
                                 <label for="email2">Weight</label>
                                 <input type="number"
                                        class="form-control"
                                        id="weight"
                                        placeholder="Enter Weight" />
                             </div>
-                            <div class="form-group">
+                            <div hidden class="form-group">
                                 <label for="email2">CBM</label>
                                 <input type="number"
                                        class="form-control"
@@ -314,6 +316,43 @@
                             <div class="form-group">
                                 <label for="comment">Comment</label>
                                 <textarea class="form-control" id="comment" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="d-flex align-items-center">
+                                        <h4 class="card_title">รายละเอียดงาน</h4>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="table-responsive">
+                                        <table id="dataTable"
+                                               class="display table ">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>No.</th>
+                                                    <th>RowId</th>
+                                                    <th>รหัสลูกค้า</th>
+                                                    <th>ลูกค้า</th>
+                                                    <th>Origin</th>
+                                                    <th>Destination</th>
+                                                    <th>QTY</th>
+                                                    <th>Weight</th>
+                                                    <th>CBM</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

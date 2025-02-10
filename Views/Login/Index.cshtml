@@ -1,9 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-
+﻿
 @{
     ViewData["Title"] = "Login";
     Layout = null;
@@ -44,15 +39,21 @@
                                 </div>
 
                                 <p class="text-center">Book Truck Systems</p>
-                                <form id="loginForm">
+                                <form id="loginForm" class="needs-validation" novalidate>
                                   
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Username</label>
-                                        <input type="email" class="form-control" id="username" aria-describedby="emailHelp">
+                                        <input type="email" class="form-control" id="username" aria-describedby="emailHelp" required>
+                                        <div class="invalid-feedback">
+                                            Please input username.
+                                        </div>
                                     </div>
                                     <div class="mb-4">
                                         <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password">
+                                        <input  type="password" class="form-control" id="password" required>
+                                        <div class="invalid-feedback">
+                                            Please input passwrod.
+                                        </div>
                                     </div>
                                     <button type="button" id="btnLogin" class="btn btn-primary w-100">Sign In</button>
                                 </form>

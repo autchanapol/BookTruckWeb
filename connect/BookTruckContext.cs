@@ -24,6 +24,8 @@ public partial class BookTruckContext : DbContext
 
     public virtual DbSet<Log> Logs { get; set; }
 
+    public virtual DbSet<LogisticHistory> LogisticHistories { get; set; }
+
     public virtual DbSet<Menu> Menus { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -33,6 +35,8 @@ public partial class BookTruckContext : DbContext
     public virtual DbSet<Temp> Temps { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
+
+    public virtual DbSet<TicketsDetail> TicketsDetails { get; set; }
 
     public virtual DbSet<TypeLoad> TypeLoads { get; set; }
 
@@ -166,6 +170,23 @@ public partial class BookTruckContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("mesages");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+        });
+
+        modelBuilder.Entity<LogisticHistory>(entity =>
+        {
+            entity.HasKey(e => e.RowId);
+
+            entity.ToTable("logistic_history");
+
+            entity.Property(e => e.RowId).HasColumnName("row_id");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("created_date");
+            entity.Property(e => e.Remarks)
+                .HasMaxLength(100)
+                .HasColumnName("remarks");
+            entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
         });
 
         modelBuilder.Entity<Menu>(entity =>
@@ -314,6 +335,9 @@ public partial class BookTruckContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("tel");
             entity.Property(e => e.TempId).HasColumnName("temp_id");
+            entity.Property(e => e.Title)
+                .HasMaxLength(50)
+                .HasColumnName("title");
             entity.Property(e => e.TravelCosts)
                 .HasColumnType("numeric(18, 2)")
                 .HasColumnName("travel_costs");
@@ -323,6 +347,42 @@ public partial class BookTruckContext : DbContext
             entity.Property(e => e.VehiclesTypeId).HasColumnName("vehicles_type_id");
             entity.Property(e => e.Weight)
                 .HasColumnType("numeric(18, 2)")
+                .HasColumnName("weight");
+        });
+
+        modelBuilder.Entity<TicketsDetail>(entity =>
+        {
+            entity.HasKey(e => e.RowId);
+
+            entity.ToTable("tickets_details");
+
+            entity.Property(e => e.RowId).HasColumnName("row_id");
+            entity.Property(e => e.Cbm)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("cbm");
+            entity.Property(e => e.CreatedBy).HasColumnName("created_by");
+            entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasColumnName("created_date");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.Destination)
+                .HasMaxLength(255)
+                .HasColumnName("destination");
+            entity.Property(e => e.JobNo)
+                .HasMaxLength(50)
+                .HasColumnName("job_no");
+            entity.Property(e => e.LastUpdated)
+                .HasColumnType("datetime")
+                .HasColumnName("last_updated");
+            entity.Property(e => e.Origin)
+                .HasMaxLength(50)
+                .HasColumnName("origin");
+            entity.Property(e => e.Qty)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("qty");
+            entity.Property(e => e.UpdatedBy).HasColumnName("updated_by");
+            entity.Property(e => e.Weight)
+                .HasColumnType("decimal(18, 2)")
                 .HasColumnName("weight");
         });
 
